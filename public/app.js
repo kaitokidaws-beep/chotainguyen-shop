@@ -105,21 +105,32 @@ async function loadProducts() {
     const items = list.filter(p => p.platform === pl);
     const st = PLATFORM_STYLE[pl] || { c: '#0b7a52', l: pl[0] };
     return `<div class="platform-panel">
-      <div class="panel-head"><span class="panel-logo" style="background:${st.c}">${st.l}</span><b>${esc(pl)}</b><span class="muted small">${items.length} sản phẩm</span></div>
-      <div class="platform-grid">${items.map(p => `
+      <div class="panel-head"><span class="panel-logo" style="background:${st.c}">${st.l}</span><b>${esc(pl)}</b><span class="muted small"><span class="dot"></span> ${items.length} sản phẩm</span></div>
+      <div class="platform-grid">${items.map(p => {
+        const old = Number(p.old_price || 0);
+        const disc = old > p.price ? Math.round((1 - p.price / old) * 100) : 0;
+        const bh = (String(p.warranty || '').match(/(\d+)\s*ngày/) || [])[1];
+        const sold = Number(p.sold || 0);
+        return `
         <div class="product-card compact" onclick="openProduct(${p.id})">
-          <div class="p-banner" style="background:${st.c}"><span>${esc(pl)}</span><i class="stock-badge ${p.stock > 0 ? 'in' : 'out'}">${p.stock > 0 ? 'Còn hàng' : 'Hết hàng'}</i></div>
+          <div class="p-banner" style="background:${st.c}">
+            <span class="p-banner-logo">${st.l}</span>
+            ${disc ? `<span class="disc-badge">-${disc}%</span>` : ''}
+            <i class="stock-badge ${p.stock > 0 ? 'in' : 'out'}">${p.stock > 0 ? '● Còn hàng' : 'Hết hàng'}</i>
+            ${bh ? `<span class="bh-pill">🛡️ BH ${bh} ngày</span>` : ''}
+          </div>
           <div class="p-body">
             <b class="p-name">${esc(p.name)}</b>
+            <span class="sold-line">Đã bán ${sold} • Còn ${p.stock}</span>
+            ${p.is_hot ? '<span class="hot-pill">Hot</span>' : ''}
+            <span class="price-row"><span class="price">${fmt(p.price)}</span>${old > p.price ? ` <s class="old-price">${fmt(old)}</s>` : ''}</span>
             <span class="warranty-chip">🛡️ ${esc(p.warranty)}</span>
-            <span class="price">${fmt(p.price)}</span>
-            <span class="muted small">Còn ${p.stock} tài khoản</span>
             <div class="p-actions">
-              <button class="btn-primary" onclick="event.stopPropagation();buyNow(${p.id})">Mua ngay</button>
+              <button class="btn-primary" onclick="event.stopPropagation();buyNow(${p.id})">🛒 Mua ngay</button>
               <button class="btn-ghost add-cart" onclick="event.stopPropagation();addToCart(${p.id})">+ Giỏ</button>
             </div>
           </div>
-        </div>`).join('')}</div>
+        </div>`; }).join('')}</div>
     </div>`;
   }).join('');
   updateCartBadge();
@@ -129,8 +140,8 @@ function openProduct(id) {
   const p = products.find(x => x.id === id); if (!p) return;
   $('productModalBox').innerHTML = `<button class="x" style="float:right;background:none;border:none;font-size:18px" onclick="closeModal()">✕</button>
     <span class="platform-tag">${esc(p.platform)}</span><h2>${esc(p.name)}</h2>
-    <p class="muted">${esc(p.description)}</p><p class="price">${fmt(p.price)}</p>
-    <p class="stock">Còn ${p.stock} tài khoản</p><p class="warranty">🛡️ ${esc(p.warranty)}</p>
+    <p class="muted">${esc(p.description)}</p><p class="price">${fmt(p.price)}${Number(p.old_price || 0) > p.price ? ` <s class="old-price">${fmt(p.old_price)}</s> <span class="disc-badge">-${Math.round((1 - p.price / p.old_price) * 100)}%</span>` : ''}</p>
+    <p class="stock">Đã bán ${Number(p.sold || 0)} • Còn ${p.stock} tài khoản</p><p class="warranty">🛡️ ${esc(p.warranty)}</p>
     <button class="btn-primary" onclick="buyNow(${p.id}); closeModal()">Mua ngay</button>
     <button class="btn-ghost" onclick="addToCart(${p.id}); closeModal()">Thêm vào giỏ</button>`;
   $('productModal').hidden = false;

@@ -155,3 +155,17 @@ footer { margin-top: 28px; background: var(--bg2); border-top: 1px solid var(--b
 .modal-box { width: min(480px, 100%); max-height: 85vh; overflow-y: auto; }
 .admin-block { border-top: 1px solid var(--border); padding-top: 8px; }
 .admin-form { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; }
+
+/* Thẻ sản phẩm kiểu ảnh mẫu: huy hiệu giảm giá, BH trên banner, giá cũ gạch ngang, Hot */
+.chips-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0 4px; }
+.chips-row .chip { background: var(--card); color: var(--gold-bright); border: 1px solid var(--gold); border-radius: 999px; padding: 11px 18px; font-weight: 700; font-size: 14px; }
+.chips-row .chip:hover { background: var(--card2); }
+.p-banner { height: 110px; }
+.p-banner-logo { font-size: 52px; line-height: 1; text-shadow: 0 3px 10px rgba(0,0,0,.35); }
+.disc-badge { position: absolute; top: 8px; left: 8px; background: #f59e0b; color: #231303; font-size: 12px; font-weight: 900; padding: 4px 9px; border-radius: 999px; }
+.bh-pill { position: absolute; left: 8px; bottom: 8px; background: rgba(6,20,15,.85); color: #dbeafe; font-size: 11px; font-weight: 700; padding: 4px 9px; border-radius: 999px; border: 1px solid rgba(255,255,255,.25); }
+.sold-line { font-size: 13px; color: var(--muted); }
+.hot-pill { display: inline-block; align-self: flex-start; background: rgba(46,230,168,.18); color: var(--pine-soft); border: 1px solid var(--pine); font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 999px; }
+.price-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.old-price { color: var(--muted); font-size: 14px; font-weight: 600; }
+.p-actions .btn-primary { white-space: normal; line-height: 1.25; padding: 11px 10px; }
