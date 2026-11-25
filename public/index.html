@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chợ Tài Nguyên Mmo — Shop Tài Khoản Mạng Xã Hội</title>
-<link rel="stylesheet" href="style.css?v=10">
+<link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
 <div id="app">
@@ -67,11 +67,11 @@
 
   <main id="shop" hidden>
     <section id="tab-shop" class="tab">
-      <div class="card notice-card">
-        <div class="notif-head"><b>🔔 Thông báo mua hàng</b> <span class="chip-green">● Mới nhất</span> <span class="muted small" id="notifCount"></span></div>
-        <div id="notifFeatured"></div>
-        <ul id="notifList" class="notif-list"></ul>
-        <div class="notif-dots" id="notifDots"></div>
+      <div class="card activity-card">
+        <div class="act-head"><span class="act-dot"></span><b>Hoạt động gần đây</b><span class="act-live">Live</span></div>
+        <p class="muted act-sub">Giao dịch mới nhất từ hệ thống</p>
+        <div id="actList"></div>
+        <button class="act-more" onclick="showTab('wallet')">Nạp tiền ngay →</button>
       </div>
       <div class="chips-row">
         <button class="chip" onclick="openBot()">💬 Hỗ trợ tự động 24/7</button>
@@ -212,6 +212,6 @@
 
   <div id="productModal" class="modal" hidden><div class="modal-box card" id="productModalBox"></div></div>
 </div>
-<script src="app.js?v=10"></script>
+<script src="app.js?v=11"></script>
 </body>
 </html>

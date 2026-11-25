@@ -58,7 +58,7 @@ async function rename() {
 // ---------- vào shop ----------
 async function enterShop() {
   $('gate').hidden = true; $('shop').hidden = false; $('walletRow').hidden = false;
-  await loadMe(); await loadProducts(); await loadNotifs(); await loadWallet();
+  await loadMe(); await loadProducts(); await loadActivity(); await loadWallet();
   showTab('shop', 'home');
 }
 async function loadMe() {
@@ -176,10 +176,10 @@ async function placeOrder() {
   try {
     const j = await api('/api/orders', { method: 'POST', body: JSON.stringify({ items: cart, buyer_name: $('orderName').value, contact: $('orderContact').value, pay_method: $('payMethod').value }) });
     $('orderResult').innerHTML = `<p><b>Mã đơn của bạn: ${j.code}</b> — Tổng ${fmt(j.total)}. ${esc(j.message)}</p>`;
-    cart = []; localStorage.setItem('ctn_cart', '[]'); updateCartBadge(); await loadMe(); await loadProducts(); await loadNotifs();
+    cart = []; localStorage.setItem('ctn_cart', '[]'); updateCartBadge(); await loadMe(); await loadProducts(); await loadActivity();
   } catch (e) { alert(e.message); }
 }
-let notifData = [], notifIdx = 0, notifTimer = null;
+const ACT_COLORS = 5;
 function timeAgo(ts) {
   const s = Math.floor((Date.now() - ts) / 1000);
   if (s < 60) return 'vừa xong';
@@ -187,24 +187,19 @@ function timeAgo(ts) {
   const h = Math.floor(m / 60); if (h < 24) return h + ' giờ trước';
   return Math.floor(h / 24) + ' ngày trước';
 }
-function renderNotif() {
-  const list = notifData;
-  $('notifCount').textContent = list.length ? list.length + ' thông báo' : '';
-  if (!list.length) { $('notifFeatured').innerHTML = ''; $('notifList').innerHTML = '<li>Chưa có đơn hàng nào.</li>'; $('notifDots').innerHTML = ''; return; }
-  const cur = notifIdx % list.length;
-  const n = list[cur];
-  $('notifFeatured').innerHTML = `<div class="notif-featured"><span class="notif-avatar">${esc((n.buyer || 'K')[0])}</span><div class="notif-body"><b>${esc(n.buyer)}</b> ${n.status === 'paid' || n.status === 'delivered' ? 'vừa mua' : 'đã mua'} <b>${esc(n.product)}</b><div class="muted small">${timeAgo(n.created_at)} &nbsp;<span class="status-chip status-${n.status}">${statusText(n.status)}</span></div></div></div>`;
-  $('notifList').innerHTML = list.filter((_, i) => i !== cur).slice(0, 3).map(x => `<li><span class="notif-avatar small">${esc((x.buyer || 'K')[0])}</span><span><b>${esc(x.buyer)}</b> đã mua <b>${esc(x.product)}</b> • ${timeAgo(x.created_at)} • <b class="status-${x.status}">${statusText(x.status)}</b></span></li>`).join('');
-  $('notifDots').innerHTML = list.slice(0, 4).map((_, i) => `<i class="${i === cur ? 'on' : ''}" onclick="notifIdx=${i};renderNotif()"></i>`).join('');
-}
-async function loadNotifs() {
+function actColorIdx(a) { let h = 0; const s = (a.name || '') + a.created_at; for (const c of s) h = (h * 31 + c.charCodeAt(0)) % 997; return h % ACT_COLORS; }
+function actInitials(name) { const t = String(name || 'K').replace(/\*+$/, ''); return (t.slice(0, 2) || 'K').toUpperCase(); }
+async function loadActivity() {
   try {
-    const j = await api('/api/notifications');
-    notifData = j.notifications || [];
-    notifIdx = 0; renderNotif();
-    if (notifTimer) clearInterval(notifTimer);
-    if (notifData.length > 1) notifTimer = setInterval(() => { notifIdx = (notifIdx + 1) % notifData.length; renderNotif(); }, 5000);
-  } catch {}
+    const j = await api('/api/activity');
+    const list = j.activity || [];
+    if (!list.length) { $('actList').innerHTML = '<p class="muted">Chưa có hoạt động nào.</p>'; return; }
+    $('actList').innerHTML = list.map(a => {
+      const ci = actColorIdx(a);
+      const amt = a.amount == null ? '' : `<span class="act-amt">${a.amount < 0 ? '-' : ''}${fmt(Math.abs(a.amount))}</span>`;
+      return `<div class="act-row act-c${ci}"><span class="act-avatar">${esc(actInitials(a.name))}</span><div class="act-body"><div class="act-top"><b>${esc(a.name)}</b>${amt}</div><div class="act-desc">${esc(a.desc)}</div><div class="act-time">${timeAgo(a.created_at)}</div></div></div>`;
+    }).join('');
+  } catch { $('actList').innerHTML = '<p class="muted">Không tải được hoạt động.</p>'; }
 }
 function showAllProducts() { if (typeof setFilter === 'function') setFilter('Tất cả'); const g = document.getElementById('productGrid'); if (g) g.scrollIntoView({ behavior: 'smooth' }); }
 

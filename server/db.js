@@ -115,4 +115,22 @@ if (count === 0) {
   for (const p of seed) ins.run(...p, now);
 }
 
+// Seed lịch sử đơn thật của shop (đồng bộ từ shop Muse): chỉ chạy khi bảng orders đang trống.
+// Tên đã che, đúng sản phẩm/giá/trạng thái/thời gian thật — không bịa đơn.
+const orderCount = db.prepare('SELECT COUNT(*) AS c FROM orders').get().c;
+if (orderCount === 0) {
+  const seedOrders = [
+    // [code, buyer (đã che), tên sản phẩm, giá, trạng thái, thời gian thật]
+    ['DH00000001', 'Mi***', 'Facebook Clone US — Avatar đầy đủ, tương tác thật', 35000, 'pending', '2026-11-25T11:24:41.542Z'],
+    ['DH00000002', 'Mi***', 'X (Twitter) Cổ 2018 — Có email gốc, 2FA', 249000, 'paid', '2026-11-25T11:37:51.077Z'],
+    ['DH00000003', 'Mi***', 'Page Facebook 10K Like — Đủ điều kiện bật kiếm tiền', 450000, 'pending', '2026-11-25T12:37:04.927Z'],
+    ['DH00000004', 'Mi***', 'Facebook Clone US — Avatar đầy đủ, tương tác thật', 35000, 'paid', '2026-11-25T12:37:28.786Z'],
+  ];
+  const insO = db.prepare("INSERT INTO orders (code, user_id, buyer_name, contact, items_json, total, pay_method, status, created_at) VALUES (?, NULL, ?, '—', ?, ?, 'wallet', ?, ?)");
+  for (const [code, buyer, name, price, status, iso] of seedOrders) {
+    const p = db.prepare('SELECT id, platform FROM products WHERE name = ?').get(name);
+    insO.run(code, buyer, JSON.stringify([{ product_id: p ? p.id : 0, platform: p ? p.platform : '', name, price, qty: 1 }]), price, status, Date.parse(iso));
+  }
+}
+
 module.exports = { db, setting, setSetting };
