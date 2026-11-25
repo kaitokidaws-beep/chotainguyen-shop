@@ -86,8 +86,11 @@ const PLATFORM_STYLE = {
   X: { c: '#000000', l: 'X' },
   Zalo: { c: '#0068FF', l: 'Z' },
 };
-function showHome() { showTab('shop', 'home'); }
-function showProducts() { showTab('shop', 'products'); setTimeout(() => { const g = document.getElementById('productGrid'); if (g) g.scrollIntoView({ behavior: 'smooth' }); }, 80); }
+function showHome() { if ($('shop').hidden) { setActiveNav('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); return; } showTab('shop', 'home'); }
+function showProducts() {
+  if ($('shop').hidden) { setActiveNav('products'); toggleAuthPanel(true, 'register'); return; }
+  showTab('shop', 'products'); setTimeout(() => { const g = document.getElementById('productGrid'); if (g) g.scrollIntoView({ behavior: 'smooth' }); }, 80);
+}
 async function loadProducts() {
   const j = await api('/api/products'); products = j.products;
   const stats = await api('/api/stats');
@@ -259,6 +262,13 @@ function setActiveNav(key) {
   document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.toggle('active', key ? b.dataset.nav === key : false));
 }
 function showTab(tab, navKey) {
+  // Chưa đăng nhập: các tab trong shop đều nằm sau cổng đăng ký — mở khung đăng ký/đăng nhập thay vì im lặng không làm gì.
+  if ($('shop').hidden) {
+    if (tab === 'shop' && navKey === 'home') { setActiveNav('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    setActiveNav(navKey || null);
+    toggleAuthPanel(true, 'register');
+    return;
+  }
   document.querySelectorAll('.tab').forEach(t => t.hidden = true);
   const map = { shop: 'tab-shop', wallet: 'tab-wallet', leaderboard: 'tab-leaderboard', lookup: 'tab-lookup', account: 'tab-account', cart: 'tab-cart', admin: 'tab-admin', orders: 'tab-account' };
   const id = map[tab] || 'tab-shop';
