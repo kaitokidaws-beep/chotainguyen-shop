@@ -12,13 +12,14 @@
     <div class="header-row">
       <div class="brand">
         <svg class="brand-logo" viewBox="0 0 400 96" aria-label="Chợ Tài Nguyên Mmo" role="img">
-          <defs><linearGradient id="shg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2ee6a8"/><stop offset="1" stop-color="#0b7a52"/></linearGradient></defs>
+          <defs><linearGradient id="shg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2ee6a8"/><stop offset="1" stop-color="#0b7a52"/></linearGradient><linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe98a"/><stop offset=".5" stop-color="#f5c542"/><stop offset="1" stop-color="#c98a12"/></linearGradient></defs>
           <path d="M48 6 L86 18 V52 C86 74 68 88 48 94 C28 88 10 74 10 52 V18 Z" fill="url(#shg)" stroke="#f5c542" stroke-width="3"/>
-          <g fill="#f5c542"><circle cx="48" cy="38" r="4"/><circle cx="36" cy="46" r="3.4"/><circle cx="60" cy="46" r="3.4"/><circle cx="42" cy="54" r="3"/><circle cx="54" cy="54" r="3"/></g>
-          <path d="M30 58 h36 l-4 12 h-28 Z" fill="none" stroke="#fff3c4" stroke-width="3" stroke-linejoin="round"/>
+          <ellipse cx="30" cy="26" rx="9" ry="15" fill="#fff" opacity=".12"/>
+          <g fill="#f5c542"><circle cx="48" cy="38" r="4"/><circle cx="36" cy="46" r="3.4"/><circle cx="60" cy="46" r="3.4"/><circle cx="42" cy="54" r="3"/><circle cx="54" cy="54" r="3"/><circle cx="48" cy="30" r="3"/><circle cx="30" cy="52" r="2.6"/><circle cx="66" cy="52" r="2.6"/></g>
+          <path d="M30 58 h36 l-4 12 h-28 Z" fill="none" stroke="#fff3c4" stroke-width="3.5" stroke-linejoin="round"/>
           <circle cx="38" cy="74" r="4" fill="#fff3c4"/><circle cx="58" cy="74" r="4" fill="#fff3c4"/>
-          <text x="100" y="48" font-family="Arial, sans-serif" font-size="30" font-weight="900" fill="#f5c542" stroke="#7c4a03" stroke-width="1.5" paint-order="stroke">CHỢ TÀI NGUYÊN</text>
-          <text x="100" y="82" font-family="Arial, sans-serif" font-size="28" font-weight="900" fill="#2ee6a8" stroke="#04402c" stroke-width="1.5" paint-order="stroke">MMO</text>
+          <text x="100" y="48" font-family="Arial, sans-serif" font-size="30" font-weight="900" fill="url(#gold)" stroke="#6b3f00" stroke-width="2" paint-order="stroke" style="filter:drop-shadow(2px 3px 0 rgba(0,0,0,.45))">CHỢ TÀI NGUYÊN</text>
+          <text x="100" y="82" font-family="Arial, sans-serif" font-size="28" font-weight="900" fill="#2ee6a8" stroke="#04402c" stroke-width="1.5" paint-order="stroke" style="filter:drop-shadow(2px 3px 0 rgba(0,0,0,.45))">MMO</text>
         </svg>
       </div>
       <div class="header-actions">
@@ -199,7 +200,8 @@
   </footer>
 
   <nav class="bottom-nav">
-    <button onclick="showTab('shop')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1" fill="currentColor" stroke="none"/></svg><span>Sản phẩm</span></button>
+    <button onclick="showHome()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/></svg><span>Trang chủ</span></button>
+    <button onclick="showProducts()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1" fill="currentColor" stroke="none"/></svg><span>Sản phẩm</span></button>
     <button onclick="showTab('wallet')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-6 9 6"/><path d="M4 9v11M20 9v11M8 12v6M12 12v6M16 12v6M2 21h20"/></svg><span>Nạp tiền</span></button>
     <button onclick="showTab('orders')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.5a1 1 0 0 0 1 .5h9.9a1 1 0 0 0 1-.8L20 8H6"/><circle cx="9.5" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg><span>Đơn hàng</span></button>
     <button onclick="showTab('account')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.2-3.8 4.4-5.5 8-5.5s6.8 1.7 8 5.5"/></svg><span>Tài khoản</span></button>

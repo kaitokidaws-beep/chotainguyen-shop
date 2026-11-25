@@ -76,6 +76,18 @@ async function loadMe() {
 function statusText(s) { return { pending: 'Chờ xử lý', paid: 'Đã thanh toán', delivered: 'Đã giao', cancelled: 'Đã hủy', verified: 'Đã xác minh' }[s] || s; }
 
 // ---------- sản phẩm ----------
+const PLATFORM_STYLE = {
+  Facebook: { c: '#1877F2', l: 'f' },
+  TikTok: { c: '#111111', l: '♪' },
+  Instagram: { c: '#cc2366', l: '◎' },
+  YouTube: { c: '#FF0000', l: '▶' },
+  Telegram: { c: '#229ED9', l: '✈' },
+  Gmail: { c: '#EA4335', l: '✉' },
+  X: { c: '#000000', l: 'X' },
+  Zalo: { c: '#0068FF', l: 'Z' },
+};
+function showHome() { showTab('shop'); }
+function showProducts() { showTab('shop'); setTimeout(() => { const g = document.getElementById('productGrid'); if (g) g.scrollIntoView({ behavior: 'smooth' }); }, 80); }
 async function loadProducts() {
   const j = await api('/api/products'); products = j.products;
   const stats = await api('/api/stats');
@@ -84,17 +96,29 @@ async function loadProducts() {
   $('platformFilters').innerHTML = platforms.map(p => `<button class="${p === platformFilter ? 'active' : ''}" onclick="setFilter('${p}')">${p === 'Tất cả' ? '⭐ Tất cả' : p} ${p === 'Tất cả' ? products.length : products.filter(x => x.platform === p).length}</button>`).join('');
   const list = products.filter(p => platformFilter === 'Tất cả' || p.platform === platformFilter);
   $('emptyProducts').hidden = list.length > 0;
-  $('productGrid').innerHTML = list.map(p => `
-    <div class="product-card">
-      <span class="platform-tag">${esc(p.platform)}</span>
-      <b>${esc(p.name)}</b>
-      <span class="muted small">${esc(p.description)}</span>
-      <span class="price">${fmt(p.price)}</span>
-      <span class="stock">Còn ${p.stock} tài khoản</span>
-      <span class="warranty">🛡️ ${esc(p.warranty)}</span>
-      <button class="btn-ghost" onclick="openProduct(${p.id})">Xem chi tiết</button>
-      <button class="btn-primary" onclick="buyNow(${p.id})">Mua ngay</button>
-    </div>`).join('');
+  const order = [];
+  list.forEach(p => { if (!order.includes(p.platform)) order.push(p.platform); });
+  $('productGrid').innerHTML = order.map(pl => {
+    const items = list.filter(p => p.platform === pl);
+    const st = PLATFORM_STYLE[pl] || { c: '#0b7a52', l: pl[0] };
+    return `<div class="platform-panel">
+      <div class="panel-head"><span class="panel-logo" style="background:${st.c}">${st.l}</span><b>${esc(pl)}</b><span class="muted small">${items.length} sản phẩm</span></div>
+      <div class="platform-grid">${items.map(p => `
+        <div class="product-card compact" onclick="openProduct(${p.id})">
+          <div class="p-banner" style="background:${st.c}"><span>${esc(pl)}</span><i class="stock-badge ${p.stock > 0 ? 'in' : 'out'}">${p.stock > 0 ? 'Còn hàng' : 'Hết hàng'}</i></div>
+          <div class="p-body">
+            <b class="p-name">${esc(p.name)}</b>
+            <span class="warranty-chip">🛡️ ${esc(p.warranty)}</span>
+            <span class="price">${fmt(p.price)}</span>
+            <span class="muted small">Còn ${p.stock} tài khoản</span>
+            <div class="p-actions">
+              <button class="btn-primary" onclick="event.stopPropagation();buyNow(${p.id})">Mua ngay</button>
+              <button class="btn-ghost add-cart" onclick="event.stopPropagation();addToCart(${p.id})">+ Giỏ</button>
+            </div>
+          </div>
+        </div>`).join('')}</div>
+    </div>`;
+  }).join('');
   updateCartBadge();
 }
 function setFilter(p) { platformFilter = p; loadProducts(); }
