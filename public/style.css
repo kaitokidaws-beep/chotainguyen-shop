@@ -64,7 +64,9 @@ h3 { font-size: 16px; margin: 18px 0 8px; }
 .auth-panel form { padding: 18px; }
 
 .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
-.filters button { background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 999px; padding: 10px 16px; font-weight: 600; }
+.filters button { display: inline-flex; align-items: center; gap: 8px; background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 999px; padding: 8px 16px 8px 10px; font-weight: 600; }
+.filter-logo { flex: none; width: 24px; height: 24px; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; }
+.filter-logo svg { width: 18px; height: 18px; display: block; }
 .filters button.active { background: var(--pine); color: #fff; border-color: var(--pine); box-shadow: 0 3px 0 var(--pine-deep), 0 8px 16px rgba(34,197,138,.30); }
 .product-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
 @media (min-width: 640px) { .product-grid { grid-template-columns: 1fr 1fr; } }

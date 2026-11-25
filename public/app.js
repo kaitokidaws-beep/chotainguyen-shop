@@ -96,7 +96,11 @@ async function loadProducts() {
   const stats = await api('/api/stats');
   $('statSold').textContent = stats.sold_30d; $('statProducts').textContent = stats.total_products;
   const platforms = ['Tất cả', ...new Set(products.map(p => p.platform))];
-  $('platformFilters').innerHTML = platforms.map(p => `<button class="${p === platformFilter ? 'active' : ''}" onclick="setFilter('${p}')">${p === 'Tất cả' ? '⭐ Tất cả' : p} ${p === 'Tất cả' ? products.length : products.filter(x => x.platform === p).length}</button>`).join('');
+  $('platformFilters').innerHTML = platforms.map(p => {
+    const n = p === 'Tất cả' ? products.length : products.filter(x => x.platform === p).length;
+    const st = p === 'Tất cả' ? { c: '#111111', svg: '★' } : (PLATFORM_STYLE[p] || { c: '#0b7a52', svg: '<svg width="22" height="22" viewBox="0 0 24 24"><text x="12" y="17" text-anchor="middle" font-size="14" font-weight="900" fill="#fff">' + p[0] + '</text></svg>' });
+    return `<button class="${p === platformFilter ? 'active' : ''}" onclick="setFilter('${p}')"><span class="filter-logo" style="background:${st.c}">${st.svg}</span>${p} ${n}</button>`;
+  }).join('');
   const list = products.filter(p => platformFilter === 'Tất cả' || p.platform === platformFilter);
   $('emptyProducts').hidden = list.length > 0;
   const order = [];
