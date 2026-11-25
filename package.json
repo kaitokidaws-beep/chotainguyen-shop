@@ -1,0 +1,1 @@
+{"dependencies":{"express":"^4.21.2"},"description":"Chợ Tài Nguyên Mmo — shop bán tài khoản mạng xã hội, fullstack Node.js + SQLite, chạy độc lập không cần dịch vụ trả phí.","engines":{"node":">=22"},"license":"MIT","main":"server/index.js","name":"shop-cho-tai-nguyen-mmo-full-source","scripts":{"dev":"node server/index.js","start":"node server/index.js"},"version":"1.0.0"}

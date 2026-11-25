@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chợ Tài Nguyên Mmo — Shop Tài Khoản Mạng Xã Hội</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header class="site-header">
+    <div class="header-row">
+      <div class="brand">
+        <svg class="brand-logo" viewBox="0 0 320 96" aria-label="Chợ Tài Nguyên Mmo" role="img">
+          <defs><linearGradient id="shg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2ee6a8"/><stop offset="1" stop-color="#0b7a52"/></linearGradient></defs>
+          <path d="M48 6 L86 18 V52 C86 74 68 88 48 94 C28 88 10 74 10 52 V18 Z" fill="url(#shg)" stroke="#f5c542" stroke-width="3"/>
+          <g fill="#f5c542"><circle cx="48" cy="38" r="4"/><circle cx="36" cy="46" r="3.4"/><circle cx="60" cy="46" r="3.4"/><circle cx="42" cy="54" r="3"/><circle cx="54" cy="54" r="3"/></g>
+          <path d="M30 58 h36 l-4 12 h-28 Z" fill="none" stroke="#fff3c4" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="38" cy="74" r="4" fill="#fff3c4"/><circle cx="58" cy="74" r="4" fill="#fff3c4"/>
+          <text x="102" y="48" font-family="Arial, sans-serif" font-size="34" font-weight="900" fill="#f5c542">CHỢ TÀI NGUYÊN</text>
+          <text x="102" y="82" font-family="Arial, sans-serif" font-size="30" font-weight="900" fill="#2ee6a8">MMO</text>
+        </svg>
+      </div>
+      <div class="header-actions">
+        <button id="themeBtn" class="icon-btn" title="Đổi giao diện">🌙</button>
+        <button id="menuBtn" class="icon-btn" title="Menu">☰</button>
+      </div>
+    </div>
+    <div class="header-row wallet-row" id="walletRow" hidden>
+      <button class="wallet-chip" onclick="showTab('wallet')">💰 Số dư ví <b id="walletBalance">0đ</b></button>
+      <button class="avatar-btn" id="avatarBtn" onclick="showTab('account')">M</button>
+      <button class="icon-btn" onclick="showTab('cart')">🛒 <span id="cartCount">0</span></button>
+    </div>
+    <nav id="mainMenu" class="main-menu" hidden>
+      <button onclick="showTab('shop')">🛍️ Sản phẩm</button>
+      <button onclick="showTab('wallet')">💰 Nạp tiền</button>
+      <button onclick="showTab('leaderboard')">🏆 BXH nạp</button>
+      <button onclick="showTab('lookup')">🔍 Tra cứu đơn</button>
+      <button onclick="showTab('account')">👤 Tài khoản</button>
+      <button onclick="showTab('admin')" id="adminMenuBtn" hidden>⚙️ Quản lý shop</button>
+    </nav>
+  </header>
+
+  <section id="gate" class="gate">
+    <div class="gate-hero">
+      <span class="badge"><span class="dot"></span> HỆ THỐNG TỰ ĐỘNG 24/7</span>
+      <h1>Tài Khoản Mạng Xã Hội Chất Lượng Cao</h1>
+      <p class="muted">Facebook, TikTok, Instagram, YouTube… có 2FA, email gốc, bảo hành 1 đổi 1 rõ ràng. Kho tài khoản, giá bán và đặt hàng nằm ở khu vực thành viên bên trong.</p>
+      <button class="btn-primary" onclick="toggleAuthPanel(true)">Bắt đầu ngay — Đăng ký miễn phí</button>
+      <button class="btn-ghost" onclick="toggleAuthPanel(true, 'login')">Đã có tài khoản? Đăng nhập</button>
+    </div>
+    <div class="stats-panel" id="statsPanel">
+      <div class="stat"><b id="statSold">0</b><span>Tài khoản đã bán<br><small>Trong vòng một tháng qua</small></span></div>
+      <div class="stat"><b id="statProducts">0</b><span>Sản phẩm<br><small>Đang bán</small></span></div>
+      <div class="stat"><b>24/7</b><span>Hỗ trợ tự động<br><small>Bot trả lời ngay</small></span></div>
+      <div class="stat"><b>1 đổi 1</b><span>Bảo hành<br><small>Rõ ràng</small></span></div>
+    </div>
+    <div class="feature-cards">
+      <div class="card">🛡️ <b>Bảo hành 1 đổi 1 rõ ràng</b><p class="muted">Lỗi là đổi, đúng thời hạn ghi trên từng sản phẩm.</p></div>
+      <div class="card">💰 <b>Nạp ví 24/7 bằng mã NAP…</b><p class="muted">Chuyển khoản đúng nội dung mã, hệ thống kiểm tra qua API rồi cộng tiền.</p></div>
+    </div>
+    <div id="authPanel" class="auth-panel" hidden>
+      <div class="auth-titlebar"><span class="dots"><i></i><i></i><i></i></span><span class="chip-green" id="authChip">Đăng Ký Miễn Phí</span><button class="x" onclick="toggleAuthPanel(false)">✕</button></div>
+      <form id="authForm" onsubmit="submitAuth(event)">
+        <div id="nameField"><label>Họ tên</label><input id="authName" placeholder="Họ tên của bạn"></div>
+        <label>Tên đăng nhập</label><input id="authUser" placeholder="vidu: minanguyen" required>
+        <label>Mật khẩu</label><input id="authPass" type="password" placeholder="Mật khẩu" required>
+        <button class="btn-primary" type="submit" id="authSubmit">Đăng ký</button>
+        <button class="btn-google" type="button" onclick="googleLogin()">Đăng ký nhanh với Google</button>
+        <p class="muted small" id="authSwitch">Đã có tài khoản? <a href="#" onclick="switchAuthMode(event)">Đăng nhập</a></p>
+        <p class="error" id="authError"></p>
+      </form>
+    </div>
+  </section>
+
+  <main id="shop" hidden>
+    <section id="tab-shop" class="tab">
+      <div class="card notice-card">
+        <b>🔔 Thông báo mua hàng</b> <span class="chip-green">● Mới nhất</span>
+        <ul id="notifList" class="notif-list"></ul>
+      </div>
+      <div class="filters" id="platformFilters"></div>
+      <div id="productGrid" class="product-grid"></div>
+      <p id="emptyProducts" class="muted" hidden>Không có sản phẩm. Thử chọn nền tảng khác.</p>
+    </section>
+
+    <section id="tab-wallet" class="tab" hidden>
+      <div class="card"><h2>💰 Nạp tiền vào ví</h2><p>Số dư hiện tại: <b class="gold" id="walletBalance2">0đ</b></p>
+        <div class="amounts" id="quickAmounts"></div>
+        <label>Số tiền khác (tối thiểu 10.000đ)</label>
+        <input id="customAmount" type="number" min="10000" step="1000" placeholder="Ví dụ: 50000">
+        <label>Phương thức</label>
+        <select id="depositMethod"><option value="bank">Chuyển khoản ngân hàng (VietQR)</option><option value="momo">MoMo</option><option value="zalopay">ZaloPay</option><option value="card">Thẻ cào</option></select>
+        <div id="cardFields" hidden>
+          <label>Nhà mạng</label><select id="cardCarrier"><option>Viettel</option><option>Mobifone</option><option>Vinaphone</option><option>Vietnamobile</option></select>
+          <label>Số serial</label><input id="cardSerial" placeholder="Số serial trên thẻ">
+          <label>Mã thẻ</label><input id="cardCode" placeholder="Mã thẻ cào">
+        </div>
+        <button class="btn-primary" onclick="createDeposit()">Tạo yêu cầu nạp</button>
+        <div id="depositResult"></div>
+        <h3>Lịch sử nạp</h3><ul id="depositHistory" class="list"></ul>
+      </div>
+    </section>
+
+    <section id="tab-leaderboard" class="tab" hidden>
+      <div class="card"><h2>🏆 BXH nạp</h2><p class="muted small">Top 20 theo tổng nạp đã xác minh.</p><ol id="leaderboardList" class="list"></ol><p id="myRank" class="muted"></p></div>
+    </section>
+
+    <section id="tab-lookup" class="tab" hidden>
+      <div class="card"><h2>🔍 Tra cứu đơn hàng</h2>
+        <label>Mã đơn</label><input id="lookupCode" placeholder="VD: DH…">
+        <label>SĐT / Zalo / Telegram lúc đặt hàng</label><input id="lookupContact" placeholder="Thông tin liên hệ lúc đặt hàng">
+        <button class="btn-primary" onclick="lookupOrder()">Tra cứu</button>
+        <div id="lookupResult"></div>
+      </div>
+    </section>
+
+    <section id="tab-account" class="tab" hidden>
+      <div class="card"><h2>👤 Tài khoản</h2><p id="accountInfo"></p>
+        <label>Đổi họ tên</label><input id="newName"><button class="btn-primary" onclick="rename()">Lưu tên mới</button>
+        <h3>Đơn hàng của tôi</h3><ul id="myOrders" class="list"></ul>
+        <button class="btn-ghost" onclick="logout()">Đăng xuất</button>
+      </div>
+    </section>
+
+    <section id="tab-cart" class="tab" hidden>
+      <div class="card"><h2>🛒 Giỏ hàng</h2><ul id="cartList" class="list"></ul>
+        <p>Tổng: <b class="gold" id="cartTotal">0đ</b></p>
+        <label>Họ tên người nhận</label><input id="orderName">
+        <label>SĐT / Zalo / Telegram</label><input id="orderContact" placeholder="Shop giao tài khoản qua thông tin này">
+        <label>Thanh toán</label><select id="payMethod"><option value="wallet">Trừ ví ngay khi bấm nút</option><option value="manual">Đặt trước, thanh toán sau</option></select>
+        <button class="btn-primary" onclick="placeOrder()">Đặt hàng</button>
+        <p class="muted small">Lưu mã đơn để tra cứu.</p>
+        <div id="orderResult"></div>
+      </div>
+    </section>
+
+    <section id="tab-admin" class="tab" hidden>
+      <div class="card"><h2>⚙️ Quản lý shop</h2><p id="adminOverview" class="muted"></p>
+        <div class="admin-block"><h3>Nạp tiền tự động — không cần duyệt</h3><p class="muted small">Tiền chỉ cộng khi kiểm tra qua API SePay/Casso khớp đúng số tiền + mã NAP…. Thẻ cào do chủ shop xác nhận thủ công.</p></div>
+        <div class="admin-block"><h3>Thông tin nhận tiền &amp; mã QR</h3>
+          <label>Ngân hàng</label><input id="sBankName" placeholder="VD: Vietcombank">
+          <label>Mã BIN ngân hàng</label><input id="sBankBin" placeholder="VD: 970436">
+          <label>Số tài khoản</label><input id="sAccNum" placeholder="Số tài khoản nhận tiền">
+          <label>Chủ tài khoản</label><input id="sAccHolder" placeholder="Tên chủ tài khoản">
+          <label>Số MoMo</label><input id="sMomo" placeholder="Số MoMo nhận tiền">
+          <label>Số ZaloPay</label><input id="sZalo" placeholder="Số ZaloPay nhận tiền">
+          <button class="btn-primary" onclick="saveReceiving()">Lưu thông tin nhận tiền</button></div>
+        <div class="admin-block"><h3>API nạp tiền qua QR (SePay / Casso)</h3>
+          <label>Gateway</label><select id="sGateway"><option value="">— Chưa kết nối —</option><option value="sepay">SePay</option><option value="casso">Casso</option></select>
+          <label>API key (chỉ lưu trên máy chủ, không hiển thị lại)</label><input id="sApiKey" type="password" placeholder="Dán API key của SePay/Casso">
+          <button class="btn-primary" onclick="saveApi()">Lưu API</button>
+          <p class="muted small" id="apiStatus"></p></div>
+        <div class="admin-block"><h3>Sản phẩm</h3>
+          <div class="admin-form">
+            <input id="pPlatform" placeholder="Nền tảng (Facebook…)"><input id="pName" placeholder="Tên sản phẩm">
+            <input id="pPrice" type="number" placeholder="Giá (VNĐ)"><input id="pStock" type="number" placeholder="Tồn kho">
+            <input id="pWarranty" placeholder="Bảo hành"><input id="pDesc" placeholder="Mô tả">
+            <button class="btn-primary" onclick="addProduct()">+ Thêm sản phẩm</button>
+          </div>
+          <ul id="adminProducts" class="list"></ul></div>
+        <div class="admin-block"><h3>Đơn hàng</h3><ul id="adminOrders" class="list"></ul></div>
+        <div class="admin-block"><h3>Yêu cầu nạp đang chờ</h3><ul id="adminDeposits" class="list"></ul></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-cols">
+      <div><h3>Liên hệ</h3>
+        <button class="linklike" onclick="openBot()">💬 Hỗ trợ 24/7 — bot trả lời ngay</button>
+        <p class="muted">Liên hệ qua thông tin bạn để lại khi đặt hàng</p>
+        <button class="linklike" onclick="showTab('lookup')">🔍 Tra cứu đơn hàng</button>
+      </div>
+      <div><h3>Liên kết</h3>
+        <button class="linklike" onclick="showPolicy('purchase')">Chính sách mua hàng</button>
+        <button class="linklike" onclick="showPolicy('payment')">Chính sách thanh toán</button>
+        <button class="linklike" onclick="showPolicy('delivery')">Chính sách giao hàng</button>
+        <button class="linklike" onclick="showPolicy('privacy')">Chính sách bảo mật</button>
+        <button class="linklike" onclick="showPolicy('refund')">Hoàn tiền &amp; đổi trả</button>
+        <button class="linklike" onclick="showPolicy('faq')">Câu hỏi thường gặp</button>
+      </div>
+    </div>
+    <div id="policyBox" class="card policy-box" hidden></div>
+    <div class="copyright">© 2026 Chợ Tài Nguyên Mmo — Mọi quyền được bảo lưu.<br><span class="muted">Giá và tồn kho hiển thị trên trang là giá đang bán tại thời điểm bạn xem.</span></div>
+  </footer>
+
+  <nav class="bottom-nav">
+    <button onclick="showTab('shop')">🛍️<span>Sản phẩm</span></button>
+    <button onclick="showTab('wallet')">🏦<span>Nạp tiền</span></button>
+    <button onclick="showTab('orders')">📦<span>Đơn hàng</span></button>
+    <button onclick="showTab('account')">👤<span>Tài khoản</span></button>
+  </nav>
+
+  <button class="bot-fab" onclick="openBot()" title="Hỗ trợ 24/7">💬</button>
+  <div id="botPanel" class="bot-panel" hidden>
+    <div class="bot-head">🤖 Hỗ trợ 24/7 — Chợ Tài Nguyên Mmo <button onclick="openBot()">✕</button></div>
+    <div id="botLog" class="bot-log"><p class="bot-msg">Chào bạn! Mình là bot hỗ trợ của Chợ Tài Nguyên Mmo. Bạn cần hỏi giá, nạp tiền, bảo hành hay tra cứu đơn?</p></div>
+    <div class="bot-input"><input id="botText" placeholder="Nhập câu hỏi…" onkeydown="if(event.key==='Enter')sendBot()"><button onclick="sendBot()">Gửi</button></div>
+  </div>
+
+  <div id="productModal" class="modal" hidden><div class="modal-box card" id="productModalBox"></div></div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
