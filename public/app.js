@@ -60,7 +60,7 @@ async function rename() {
 async function enterShop() {
   $('gate').hidden = true; $('shop').hidden = false; $('walletRow').hidden = false;
   await loadMe(); await loadProducts(); await loadNotifs(); await loadWallet();
-  showTab('shop');
+  showTab('shop', 'home');
 }
 async function loadMe() {
   try {
@@ -86,8 +86,8 @@ const PLATFORM_STYLE = {
   X: { c: '#000000', l: 'X' },
   Zalo: { c: '#0068FF', l: 'Z' },
 };
-function showHome() { showTab('shop'); }
-function showProducts() { showTab('shop'); setTimeout(() => { const g = document.getElementById('productGrid'); if (g) g.scrollIntoView({ behavior: 'smooth' }); }, 80); }
+function showHome() { showTab('shop', 'home'); }
+function showProducts() { showTab('shop', 'products'); setTimeout(() => { const g = document.getElementById('productGrid'); if (g) g.scrollIntoView({ behavior: 'smooth' }); }, 80); }
 async function loadProducts() {
   const j = await api('/api/products'); products = j.products;
   const stats = await api('/api/stats');
@@ -255,13 +255,17 @@ async function loadLeaderboard() {
 }
 
 // ---------- tab / điều hướng ----------
-function showTab(tab) {
+function setActiveNav(key) {
+  document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.toggle('active', key ? b.dataset.nav === key : false));
+}
+function showTab(tab, navKey) {
   document.querySelectorAll('.tab').forEach(t => t.hidden = true);
   const map = { shop: 'tab-shop', wallet: 'tab-wallet', leaderboard: 'tab-leaderboard', lookup: 'tab-lookup', account: 'tab-account', cart: 'tab-cart', admin: 'tab-admin', orders: 'tab-account' };
   const id = map[tab] || 'tab-shop';
   $(id).hidden = false;
   $('mainMenu').hidden = true;
-  document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
+  const navMap = { shop: 'products', wallet: 'wallet', orders: 'orders', account: 'account' };
+  setActiveNav(navKey || navMap[tab] || null);
   if (tab === 'wallet') loadWallet();
   if (tab === 'leaderboard') loadLeaderboard();
   if (tab === 'admin') loadAdmin();

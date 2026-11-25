@@ -136,9 +136,9 @@ footer { margin-top: 28px; }
 @media (min-width: 1024px) { .copyright { margin: 0 -32px; } }
 .copyright .muted { color: #b9d6c8; }
 
-.bottom-nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: grid; grid-template-columns: repeat(4, 1fr); background: var(--bg2); border-top: 1px solid var(--border); padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); }
-.bottom-nav button { background: none; border: none; color: var(--muted); font-size: 20px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
-.bottom-nav button span { font-size: 11px; font-weight: 700; }
+.bottom-nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: grid; grid-template-columns: repeat(5, 1fr); background: var(--bg2); border-top: 1px solid var(--border); padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); }
+.bottom-nav button { background: none; border: none; color: var(--muted); font-size: 20px; display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; padding: 0 2px; }
+.bottom-nav button span { font-size: 10px; font-weight: 700; white-space: nowrap; }
 .bottom-nav button.active { color: var(--pine-soft); }
 .bot-fab { position: fixed; right: 16px; bottom: 96px; width: 56px; height: 56px; border-radius: 50%; background: var(--pine); color: #fff; font-size: 24px; border: none; box-shadow: var(--shadow); z-index: 40; }
 .bot-panel { position: fixed; right: 16px; bottom: 160px; width: min(360px, calc(100vw - 32px)); background: var(--card); border: 1px solid var(--border); border-radius: 28px; box-shadow: var(--shadow); z-index: 41; overflow: hidden; }
