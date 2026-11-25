@@ -18,10 +18,9 @@ const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<'
 function applyTheme() {
   const t = localStorage.getItem('ctn_theme') || 'dark';
   document.documentElement.setAttribute('data-theme', t);
-  $('themeBtn').textContent = t === 'dark' ? '🌙' : '☀️';
 }
 $('themeBtn').onclick = () => { localStorage.setItem('ctn_theme', (localStorage.getItem('ctn_theme') || 'dark') === 'dark' ? 'light' : 'dark'); applyTheme(); };
-$('menuBtn').onclick = () => { $('mainMenu').hidden = !$('mainMenu').hidden; };
+$('menuBtn').onclick = () => { $('mainMenu').hidden = !$('mainMenu').hidden; $('menuBtn').classList.toggle('open', !$('mainMenu').hidden); };
 
 // ---------- gate / auth ----------
 function toggleAuthPanel(show, mode) {
