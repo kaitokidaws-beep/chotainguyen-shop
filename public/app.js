@@ -139,12 +139,34 @@ async function placeOrder() {
     cart = []; localStorage.setItem('ctn_cart', '[]'); updateCartBadge(); await loadMe(); await loadProducts(); await loadNotifs();
   } catch (e) { alert(e.message); }
 }
+let notifData = [], notifIdx = 0, notifTimer = null;
+function timeAgo(ts) {
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 60) return 'vừa xong';
+  const m = Math.floor(s / 60); if (m < 60) return m + ' phút trước';
+  const h = Math.floor(m / 60); if (h < 24) return h + ' giờ trước';
+  return Math.floor(h / 24) + ' ngày trước';
+}
+function renderNotif() {
+  const list = notifData;
+  $('notifCount').textContent = list.length ? list.length + ' thông báo' : '';
+  if (!list.length) { $('notifFeatured').innerHTML = ''; $('notifList').innerHTML = '<li>Chưa có đơn hàng nào.</li>'; $('notifDots').innerHTML = ''; return; }
+  const cur = notifIdx % list.length;
+  const n = list[cur];
+  $('notifFeatured').innerHTML = `<div class="notif-featured"><span class="notif-avatar">${esc((n.buyer || 'K')[0])}</span><div class="notif-body"><b>${esc(n.buyer)}</b> ${n.status === 'paid' || n.status === 'delivered' ? 'vừa mua' : 'đã mua'} <b>${esc(n.product)}</b><div class="muted small">${timeAgo(n.created_at)} &nbsp;<span class="status-chip status-${n.status}">${statusText(n.status)}</span></div></div></div>`;
+  $('notifList').innerHTML = list.filter((_, i) => i !== cur).slice(0, 3).map(x => `<li><span class="notif-avatar small">${esc((x.buyer || 'K')[0])}</span><span><b>${esc(x.buyer)}</b> đã mua <b>${esc(x.product)}</b> • ${timeAgo(x.created_at)} • <b class="status-${x.status}">${statusText(x.status)}</b></span></li>`).join('');
+  $('notifDots').innerHTML = list.slice(0, 4).map((_, i) => `<i class="${i === cur ? 'on' : ''}" onclick="notifIdx=${i};renderNotif()"></i>`).join('');
+}
 async function loadNotifs() {
   try {
     const j = await api('/api/notifications');
-    $('notifList').innerHTML = j.notifications.map(n => `<li><b>${esc(n.buyer)}</b> ${n.status === 'paid' || n.status === 'delivered' ? 'vừa mua' : 'đã mua'} <b>${esc(n.product)}</b> • ${new Date(n.created_at).toLocaleString('vi-VN')} • <b class="status-${n.status}">${statusText(n.status)}</b></li>`).join('') || '<li>Chưa có đơn hàng nào.</li>';
+    notifData = j.notifications || [];
+    notifIdx = 0; renderNotif();
+    if (notifTimer) clearInterval(notifTimer);
+    if (notifData.length > 1) notifTimer = setInterval(() => { notifIdx = (notifIdx + 1) % notifData.length; renderNotif(); }, 5000);
   } catch {}
 }
+function showAllProducts() { if (typeof setFilter === 'function') setFilter('Tất cả'); const g = document.getElementById('productGrid'); if (g) g.scrollIntoView({ behavior: 'smooth' }); }
 
 // ---------- ví / nạp tiền ----------
 const QUICK = [20000, 50000, 100000, 200000, 500000, 1000000];
