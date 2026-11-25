@@ -96,7 +96,7 @@ h3 { font-size: 16px; margin: 18px 0 8px; }
 .notif-dots i { width: 10px; height: 22px; border-radius: 999px; background: var(--border); cursor: pointer; }
 .notif-dots i.on { background: var(--pine-soft); }
 .cat-head { margin: 22px 0 6px; }
-.cat-pill { display: inline-flex; align-items: center; gap: 8px; color: #63a4f5; background: rgba(59,130,246,.16); border: 1px solid rgba(59,130,246,.5); border-radius: 999px; padding: 8px 16px; font-weight: 800; font-size: 13px; letter-spacing: 1px; }
+.cat-pill { display: inline-flex; align-items: center; gap: 8px; color: #3fd2f2; background: rgba(63,210,242,.12); border: 1px solid rgba(63,210,242,.45); border-radius: 999px; padding: 8px 16px; font-weight: 800; font-size: 13px; letter-spacing: 1px; }
 .cat-pill svg { width: 15px; height: 15px; display: block; }
 .cat-head h2 { font-size: 26px; margin: 14px 0; }
 .cat-all { width: auto; padding: 13px 26px; }
