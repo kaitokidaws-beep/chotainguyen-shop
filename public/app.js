@@ -16,10 +16,10 @@ const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<'
 
 // ---------- theme ----------
 function applyTheme() {
-  const t = localStorage.getItem('ctn_theme') || 'dark';
+  const t = localStorage.getItem('ctn_theme_v2') || 'light';
   document.documentElement.setAttribute('data-theme', t);
 }
-$('themeBtn').onclick = () => { localStorage.setItem('ctn_theme', (localStorage.getItem('ctn_theme') || 'dark') === 'dark' ? 'light' : 'dark'); applyTheme(); };
+$('themeBtn').onclick = () => { localStorage.setItem('ctn_theme_v2', (localStorage.getItem('ctn_theme_v2') || 'light') === 'light' ? 'dark' : 'light'); applyTheme(); };
 $('menuBtn').onclick = () => { $('mainMenu').hidden = !$('mainMenu').hidden; $('menuBtn').classList.toggle('open', !$('mainMenu').hidden); };
 
 // ---------- gate / auth ----------
