@@ -85,6 +85,7 @@
     </section>
 
     <section id="tab-wallet" class="tab" hidden>
+      <button class="btn-back" onclick="showTab('shop')">← Quay về Sản phẩm</button>
       <div class="card"><h2>💰 Nạp tiền vào ví</h2><p>Số dư hiện tại: <b class="gold" id="walletBalance2">0đ</b></p>
         <div class="amounts" id="quickAmounts"></div>
         <label>Số tiền khác (tối thiểu 10.000đ)</label>
@@ -103,10 +104,12 @@
     </section>
 
     <section id="tab-leaderboard" class="tab" hidden>
+      <button class="btn-back" onclick="showTab('shop')">← Quay về Sản phẩm</button>
       <div class="card"><h2>🏆 BXH nạp</h2><p class="muted small">Top 20 theo tổng nạp đã xác minh.</p><ol id="leaderboardList" class="list"></ol><p id="myRank" class="muted"></p></div>
     </section>
 
     <section id="tab-lookup" class="tab" hidden>
+      <button class="btn-back" onclick="showTab('shop')">← Quay về Sản phẩm</button>
       <div class="card"><h2>🔍 Tra cứu đơn hàng</h2>
         <label>Mã đơn</label><input id="lookupCode" placeholder="VD: DH…">
         <label>SĐT / Zalo / Telegram lúc đặt hàng</label><input id="lookupContact" placeholder="Thông tin liên hệ lúc đặt hàng">
@@ -116,6 +119,7 @@
     </section>
 
     <section id="tab-account" class="tab" hidden>
+      <button class="btn-back" onclick="showTab('shop')">← Quay về Sản phẩm</button>
       <div class="card"><h2>👤 Tài khoản</h2><p id="accountInfo"></p>
         <label>Đổi họ tên</label><input id="newName"><button class="btn-primary" onclick="rename()">Lưu tên mới</button>
         <h3>Đơn hàng của tôi</h3><ul id="myOrders" class="list"></ul>
@@ -124,6 +128,7 @@
     </section>
 
     <section id="tab-cart" class="tab" hidden>
+      <button class="btn-back" onclick="showTab('shop')">← Quay về Sản phẩm</button>
       <div class="card"><h2>🛒 Giỏ hàng</h2><ul id="cartList" class="list"></ul>
         <p>Tổng: <b class="gold" id="cartTotal">0đ</b></p>
         <label>Họ tên người nhận</label><input id="orderName">
@@ -136,6 +141,7 @@
     </section>
 
     <section id="tab-admin" class="tab" hidden>
+      <button class="btn-back" onclick="showTab('shop')">← Quay về Sản phẩm</button>
       <div class="card"><h2>⚙️ Quản lý shop</h2><p id="adminOverview" class="muted"></p>
         <div class="admin-block"><h3>Nạp tiền tự động — không cần duyệt</h3><p class="muted small">Tiền chỉ cộng khi kiểm tra qua API SePay/Casso khớp đúng số tiền + mã NAP…. Thẻ cào do chủ shop xác nhận thủ công.</p></div>
         <div class="admin-block"><h3>Thông tin nhận tiền &amp; mã QR</h3>
