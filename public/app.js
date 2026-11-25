@@ -124,10 +124,9 @@ async function loadProducts() {
             <span class="sold-line">Đã bán ${sold} • Còn ${p.stock}</span>
             ${p.is_hot ? '<span class="hot-pill">Hot</span>' : ''}
             <span class="price-row"><span class="price">${fmt(p.price)}</span>${old > p.price ? ` <s class="old-price">${fmt(old)}</s>` : ''}</span>
-            <span class="warranty-chip">🛡️ ${esc(p.warranty)}</span>
             <div class="p-actions">
               <button class="btn-primary" onclick="event.stopPropagation();buyNow(${p.id})">🛒 Mua ngay</button>
-              <button class="btn-ghost add-cart" onclick="event.stopPropagation();addToCart(${p.id})">+ Giỏ</button>
+              <button class="btn-ghost detail-btn" onclick="event.stopPropagation();openProduct(${p.id})">Chi tiết sản phẩm</button>
             </div>
           </div>
         </div>`; }).join('')}</div>
