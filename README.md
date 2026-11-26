@@ -135,8 +135,10 @@ src/
 server-node/           Server Node/Express cũ — chỉ giữ lại để đối chiếu, không chạy nữa
 public/
   index.html           Giao diện: cổng đăng ký, shop, footer, bottom nav 5 mục
-  style.css            "Aurora Premium": cực quang tím–xanh–cyan, thẻ kính, nút gradient
-  app.js               Gọi API, giỏ hàng, VietQR, bot, quản lý shop, dialog + view transition
+  design-sang.css      "Chợ Sáng": xanh nước + trắng, serif tạp chí (mặc định)
+  design-dem.css       "Chợ Đêm": mực tối + aurora (file gốc 4782c33 + lớp ADAPT)
+  design-ruc.css       "Chợ Rực": gradient hoàng hôn cam–hồng–tím, thẻ chunky
+  app.js               Gọi API, giỏ hàng, VietQR, bot, quản lý shop, dialog + view transition, chuyển 3 kiểu giao diện (localStorage ctn_design)
   logo.png             Logo thật của shop (ảnh user gửi)
   mascot.png           Linh vật cáo chín đuôi (ảnh user gửi) — chỉ hiện ở header PC
 shop.db                File dữ liệu (tự tạo khi chạy, không có trong zip)

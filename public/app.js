@@ -28,13 +28,36 @@ function setupDialogLightDismiss() {
   dlg.addEventListener('pointerup', e => { if (e.target === dlg && downY !== null && Math.abs(e.clientY - downY) < 5) closeModal(); downY = null; });
 }
 
-// ---------- theme ----------
-// Chợ Sáng (v37): shop luôn ở theme sáng, tông xanh nước + trắng.
-function applyTheme() {
-  // Dọn khóa theme cũ đã lưu trên máy khách để không bị kẹt ở theme tối.
-  try { localStorage.removeItem('ctn_theme'); localStorage.removeItem('ctn_theme_v2'); } catch (e) {}
-  document.documentElement.setAttribute('data-theme', 'light');
+// ---------- kiểu giao diện: 3 thiết kế trong 1 site ----------
+// Sáng = Chợ Sáng (mặc định), Đêm = Chợ Đêm (file gốc 4782c33), Rực =
+// Chợ Rực (gradient hoàng hôn). Đổi tức thì: chỉ đổi stylesheet đang chạy,
+// không tải lại trang, giỏ/ví/phiên đăng nhập không động tới.
+const DESIGNS = {
+  sang: { css: 'design-sang.css', theme: 'light', color: '#f4f8fc' },
+  dem: { css: 'design-dem.css', theme: 'dark', color: '#0a0d16' },
+  ruc: { css: 'design-ruc.css', theme: 'light', color: '#fff7ed' },
+};
+const DESIGN_KEY = 'ctn_design';
+function currentDesign() {
+  try { const d = localStorage.getItem(DESIGN_KEY); return DESIGNS[d] ? d : 'sang'; } catch (e) { return 'sang'; }
 }
+function applyDesign(name, persist) {
+  if (!DESIGNS[name]) name = 'sang';
+  const d = DESIGNS[name];
+  const link = document.getElementById('designLink');
+  if (link) link.href = d.css + '?v=38';
+  document.documentElement.setAttribute('data-design', name);
+  document.documentElement.setAttribute('data-theme', d.theme);
+  const meta = document.getElementById('themeColorMeta');
+  if (meta) meta.content = d.color;
+  document.querySelectorAll('.design-pills button[data-design]').forEach(b => {
+    const on = b.dataset.design === name;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+  if (persist) { try { localStorage.setItem(DESIGN_KEY, name); } catch (e) {} }
+}
+function setDesign(name) { applyDesign(name, true); }
 $('menuBtn').onclick = () => { $('mainMenu').hidden = !$('mainMenu').hidden; $('menuBtn').classList.toggle('open', !$('mainMenu').hidden); };
 
 // ---------- gate / auth ----------
@@ -588,7 +611,9 @@ function applyLoggedInHeader() {
   const u = document.getElementById('headerUser');
   if (u) u.hidden = false;
 }
-applyTheme();
+// Dọn khóa theme cũ đã lưu trên máy khách để không bị kẹt ở theme tối.
+try { localStorage.removeItem('ctn_theme'); localStorage.removeItem('ctn_theme_v2'); } catch (e) {}
+applyDesign(currentDesign(), false);
 (async () => {
   // Bật header đã đăng nhập NGAY khi có token, trước khi chờ /api/stats — lúc máy
   // Fly đang ngủ thì stats có thể chờ vài giây, header không được kẹt ở dạng khách.

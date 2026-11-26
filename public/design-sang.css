@@ -324,3 +324,13 @@ footer{max-width:1200px;margin:0 auto;padding:40px 16px 10px}
   .steps-list li{flex:none;max-width:none}
   .services-grid{grid-template-columns:repeat(4,1fr)}
 }
+
+/* ---------- Kiểu giao diện: 3 thiết kế trong 1 site (v38) ----------
+   Chỉ Sáng dùng file này. Các phần tử chỉ thuộc về Chợ Đêm (orb, vệt
+   cuộn, cáo) bị ẩn hẳn ở đây — chúng chỉ hiện khi design-dem.css chạy. */
+.orb,.scroll-cue,.cover-mascot{display:none!important}
+.design-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 14px 10px;max-width:1200px;margin:0 auto}
+.design-label{font-size:13px;font-weight:800;color:var(--muted);white-space:nowrap}
+.design-pills{display:flex;gap:6px;flex-wrap:wrap}
+.design-pills button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font-size:13.5px;font-weight:700;color:var(--ink)}
+.design-pills button.active{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(3,105,161,.3)}
