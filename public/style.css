@@ -1,10 +1,10 @@
-/* Chợ Tài Nguyên Mmo v54 — rebuilt from the v53 review round.
-   Look: white header (the real gold-green logo reads naturally on white),
-   emerald as the ONE leading colour, ink prices, orange ONLY on the single
-   best-deal row. Rows are dense (~90px), no platform label, no fake-sale
-   badges anywhere except the deal. No floating FAB — chat lives in the
-   header + footer, so it can never cover a price or buy button.
-   Be Vietnam Pro self-hosted, weights 400/500/700/800/900. */
+/* Chợ Tài Nguyên Mmo v55 — fix round from the v54 review round.
+   v55: step numbers white on emerald (specificity fix), trust chips 1 line,
+   fixed group order FB → TT → IG → Khác, 3-line name clamp + narrower tile
+   (no clipped names), header/search padding restored at ≤639px, default
+   sort "Nổi bật" (deal first, then stock/sold — no fake "Bán chạy"),
+   deal price-line headroom, desktop deal badge + price on one line,
+   HOT badge removed (single-deal-badge discipline), weight 500 used. */
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; }
@@ -132,14 +132,14 @@ img { max-width: 100%; }
 .cat-head .cat-count { font-size: 12px; font-weight: 700; color: #047857; background: #d1fae5; border-radius: 999px; padding: 2px 8px; }
 .rows { display: flex; flex-direction: column; gap: 8px; }
 .prow {
-  display: grid; grid-template-columns: 44px minmax(0, 1fr) 128px; gap: 10px;
+  display: grid; grid-template-columns: 40px minmax(0, 1fr) 148px; gap: 8px;
   padding: 10px 12px; background: #fff; border: 1px solid #e5e9f0; border-radius: 12px;
   cursor: pointer; text-align: left; width: 100%; align-items: start;
   box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
 }
 .prow:hover { border-color: #a7d8c5; }
 .plat-tile {
-  width: 44px; height: 44px; border-radius: 10px; flex: none; margin-top: 1px;
+  width: 40px; height: 40px; border-radius: 10px; flex: none; margin-top: 1px;
   display: inline-flex; align-items: center; justify-content: center;
   color: #fff; font-weight: 800; font-size: 14px; letter-spacing: .3px;
 }
@@ -147,25 +147,26 @@ img { max-width: 100%; }
 .prow-main { min-width: 0; }
 .prow-badges { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 2px; }
 .prow-badges:empty { display: none; }
-.badge-hot { background: #fef3c7; color: #92400e; border-radius: 5px; font-size: 11px; font-weight: 800; padding: 2px 6px; }
 .badge-deal {
   background: #ea580c; color: #fff; border-radius: 5px; font-size: 11px; font-weight: 800;
-  padding: 2px 7px; display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 7px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
 }
 .badge-deal svg { flex: none; }
 .prow-name {
   margin: 0; font-size: 14.5px; line-height: 1.3; font-weight: 700; color: #0f172a;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  /* 3-line clamp: the longest real names need ~2.2 lines at 390px in the
+     widened name column; 2 lines clipped the spec that justifies the price. */
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
 }
-.prow-meta { margin: 3px 0 0; font-size: 12.5px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.prow-meta { margin: 3px 0 0; font-size: 12.5px; font-weight: 500; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .prow-meta b { color: #0f172a; font-weight: 700; }
 .prow-meta .out { color: #dc2626; font-weight: 700; }
 .prow-meta .sold { color: #94a3b8; }
 .prow-side { display: flex; flex-direction: column; align-items: stretch; gap: 4px; min-width: 0; }
 .prow-old { font-size: 12px; color: #94a3b8; text-decoration: line-through; line-height: 1; text-align: right; }
-.prow-price-line { display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+.prow-price-line { display: flex; align-items: center; justify-content: flex-end; gap: 5px; flex-wrap: nowrap; }
 .prow-price { font-size: 19px; font-weight: 800; color: #0f172a; line-height: 1.1; white-space: nowrap; letter-spacing: -.2px; text-align: right; }
-.prow-pct { background: #ea580c; color: #fff; border-radius: 5px; font-size: 12px; font-weight: 800; padding: 2px 6px; }
+.prow-pct { background: #ea580c; color: #fff; border-radius: 5px; font-size: 11px; font-weight: 800; padding: 2px 5px; white-space: nowrap; }
 .prow-save { font-size: 11.5px; color: #ea580c; font-weight: 700; line-height: 1.2; text-align: right; }
 .prow-actions { display: flex; gap: 5px; width: 100%; }
 .btn-buy {
@@ -183,20 +184,21 @@ img { max-width: 100%; }
    Discount lives ON the product line — no banner, no other badges. */
 .prow-deal { background: #fff7ed; border: 2px solid #ea580c; padding: 9px 11px; }
 .prow-deal:hover { border-color: #c2410c; }
-.prow-deal .prow-price { color: #c2410c; font-size: 20px; }
+.prow-deal .prow-price { color: #c2410c; font-size: 19px; }
 
 .empty-state { text-align: center; padding: 28px 12px; color: #64748b; }
 
-/* ---------- trust strip: AFTER the catalog, 3 equal columns, fits one line ---------- */
+/* ---------- trust strip: AFTER the catalog, 3 equal columns, one line each ---------- */
 .trust-strip {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 2px 0 16px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin: 2px 0 16px;
 }
 .trust-item {
-  display: flex; align-items: center; justify-content: center; gap: 5px;
-  background: #fff; border: 1px solid #e5e9f0; border-radius: 10px; padding: 9px 4px;
-  font-size: 12px; font-weight: 700; color: #334155; text-align: center; min-width: 0;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  background: #fff; border: 1px solid #e5e9f0; border-radius: 10px; padding: 8px 2px;
+  font-size: 11px; font-weight: 700; color: #334155; text-align: center; min-width: 0;
+  white-space: nowrap; overflow: hidden;
 }
-.trust-item svg { color: #047857; flex: none; width: 14px; height: 14px; }
+.trust-item svg { color: #047857; flex: none; width: 12px; height: 12px; }
 
 /* ---------- info blocks ---------- */
 .block { background: #fff; border: 1px solid #e5e9f0; border-radius: 14px; padding: 16px 14px; margin-bottom: 14px; box-shadow: 0 1px 2px rgba(15, 23, 42, .04); }
@@ -209,7 +211,10 @@ img { max-width: 100%; }
   font-weight: 800; font-size: 15px; display: inline-flex; align-items: center; justify-content: center;
 }
 .steps li b { display: block; font-size: 15px; color: #0f172a; margin-bottom: 2px; }
-.steps li span { font-size: 13.5px; color: #64748b; line-height: 1.5; }
+.steps li span { font-size: 13.5px; font-weight: 500; color: #64748b; line-height: 1.5; }
+/* .steps li span (0,1,2) beats .step-num (0,1,0), so the numbers inherited
+   the grey body colour — this (0,2,1) restores white 15px on emerald. */
+.steps li .step-num { color: #fff; font-size: 15px; font-weight: 800; line-height: 1; }
 .faq details { border-top: 1px solid #f1f5f9; padding: 11px 0; }
 .faq details:first-child { border-top: 0; }
 .faq summary {
@@ -385,17 +390,25 @@ img { max-width: 100%; }
 
 /* ---------- phone ---------- */
 @media (max-width: 639px) {
-  .wrap { padding: 0 10px; }
+  /* Horizontal padding ONLY: the old `padding: 0 10px` shorthand (same
+     specificity, later in the cascade) reset .head-row / .head-search-row
+     vertical padding to 0 — header 38px, logo 1px from the top, 0 gap. */
+  .wrap { padding-left: 10px; padding-right: 10px; }
+  .head-row { padding-top: 8px; padding-bottom: 8px; }
+  .head-search-row { padding-top: 10px; }
   .brand-logo { height: 34px; }
   .head-actions { gap: 6px; }
   .icon-btn { width: 36px; height: 36px; }
   #authBtn { font-size: 13px; padding: 8px 13px; }
   .wallet-chip { padding: 7px 10px; font-size: 13px; }
   .cat-nav { padding: 10px 10px 0; }
-  .trust-item { font-size: 11px; padding: 8px 3px; }
-  .prow { grid-template-columns: 44px minmax(0, 1fr) 128px; gap: 10px; padding: 10px 11px; }
-  .prow-price { font-size: 18px; }
-  .prow-deal .prow-price { font-size: 19px; }
+  .trust-item { padding: 8px 2px; }
+  .prow { grid-template-columns: 40px minmax(0, 1fr) 148px; gap: 8px; padding: 10px 11px; }
+  /* 17px deal price so the price line keeps ≥8px spare in the 148px
+     column, today ("−42% 35.000đ" ≈ 125px) and for a future 6-digit
+     deal price ("−31% 450.000đ" ≈ 136px). */
+  .prow-price { font-size: 17px; }
+  .prow-deal .prow-price { font-size: 17px; }
 }
 
 /* ---------- desktop: use the width — 1100px, 2-column rows ---------- */
@@ -409,12 +422,15 @@ img { max-width: 100%; }
   .lookup-form { flex-direction: row; }
   .lookup-form input { flex: 1; }
   .lookup-form button { flex: none; }
-  .prow { grid-template-columns: 48px minmax(0, 1fr) 140px; }
+  .prow { grid-template-columns: 48px minmax(0, 1fr) 160px; }
   .plat-tile { width: 48px; height: 48px; font-size: 15px; }
-  .prow-price { font-size: 20px; }
+  .prow-price { font-size: 19px; }
 }
 @media (min-width: 1024px) {
   .rows { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: start; }
   .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
   .steps li { flex-direction: column; gap: 8px; }
+  /* Desktop deal row: price line first in the side column, so it shares
+     the top line with the deal badge (was: old price first, price on line 2). */
+  .prow-deal .prow-price-line { order: -1; }
 }

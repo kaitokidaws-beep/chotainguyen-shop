@@ -1,9 +1,7 @@
-/* Chợ Tài Nguyên Mmo v54 — rebuilt from the v53 review round.
-   White header (real logo on white), emerald as the one leading colour,
-   dense rows, 4 catalog groups max, -% badge + old price ONLY on the single
-   best-deal row, "Đã bán 0" never printed, Activity/Leaderboard/ticker hidden
-   until real data exists, no floating FAB (chat in header), payment methods
-   shown before login. No fake numbers anywhere. */
+/* Chợ Tài Nguyên Mmo v55 — fix round from the v54 review round.
+   Default sort "Nổi bật" (deal first, then sold/stock — no fake "Bán chạy"),
+   fixed group order Facebook → TikTok → Instagram → Nền tảng khác,
+   HOT badge removed (single-deal-badge discipline), full name in title attr. */
 (function () {
   'use strict';
 
@@ -63,7 +61,7 @@
   var cart = loadCart();
   var platformFilter = 'Tất cả';
   var searchQuery = '';
-  var sortMode = 'best';
+  var sortMode = 'featured';
   var filterOpts = { inStock: false, hotOnly: false, min: null, max: null };
   var detailProduct = null;
   var detailQty = 1;
@@ -211,7 +209,7 @@
     $('catNav').innerHTML = html;
   }
   function filterActive() {
-    return searchQuery !== '' || platformFilter !== 'Tất cả' || sortMode !== 'best' ||
+    return searchQuery !== '' || platformFilter !== 'Tất cả' || sortMode !== 'featured' ||
       filterOpts.inStock || filterOpts.hotOnly || filterOpts.min != null || filterOpts.max != null;
   }
   function applyFilters(list) {
@@ -232,7 +230,20 @@
     else if (sortMode === 'high') arr.sort(function (a, b) { return b.price - a.price; });
     else if (sortMode === 'new') arr.sort(function (a, b) { return (b.created_at || 0) - (a.created_at || 0); });
     else if (sortMode === 'discount') arr.sort(function (a, b) { return discount(b) - discount(a) || b.sold - a.sold; });
-    else arr.sort(function (a, b) { return b.sold - a.sold || a.id - b.id; });
+    /* "Nổi bật" (default): the deal first, then by sold, then by stock.
+       Sold counts are 0–2, so a "Bán chạy" default would promise more
+       than the data has — this order is honest about what it is. */
+    else {
+      var deal = bestDeal();
+      arr.sort(function (a, b) {
+        var da = deal && a.id === deal.id ? 0 : 1;
+        var db = deal && b.id === deal.id ? 0 : 1;
+        if (da !== db) return da - db;
+        if (b.sold !== a.sold) return b.sold - a.sold;
+        if (b.stock !== a.stock) return b.stock - a.stock;
+        return a.id - b.id;
+      });
+    }
     return arr;
   }
   function platTile(pl) {
@@ -251,13 +262,12 @@
     var meta = [];
     meta.push(out ? '<span class="out">Tạm hết hàng</span>' : 'Còn <b>' + p.stock + '</b>');
     meta.push(esc(warrantyShort(p.warranty)));
-    var badges = (isDeal ? '<span class="badge-deal">' + FLAME_SVG + 'GIẢM MẠNH NHẤT</span>' : '') +
-      (p.is_hot && !isDeal ? '<span class="badge-hot">HOT</span>' : '');
+    var badges = isDeal ? '<span class="badge-deal">' + FLAME_SVG + 'GIẢM MẠNH NHẤT</span>' : '';
     return '<article class="prow' + (isDeal ? ' prow-deal' : '') + '" data-open-detail="' + p.id + '">' +
       platTile(p.platform) +
       '<div class="prow-main">' +
         (badges ? '<div class="prow-badges">' + badges + '</div>' : '') +
-        '<h3 class="prow-name">' + esc(p.name) + '</h3>' +
+        '<h3 class="prow-name" title="' + esc(p.name) + '">' + esc(p.name) + '</h3>' +
         '<p class="prow-meta">' + meta.join(' · ') + '</p>' +
       '</div>' +
       '<div class="prow-side">' +
@@ -288,19 +298,15 @@
 
     /* Default view: 4 groups max. Single-product platforms merge into
        "Nền tảng khác" (platform stays visible on the row via tile + meta).
-       The deal group goes first; the deal is the FIRST ROW of its group. */
+       Fixed order — Facebook first (it holds the deal), "Nền tảng khác"
+       LAST; never sorted by sold, so the merged group can't jump ahead. */
     var MAJOR = ['Facebook', 'TikTok', 'Instagram'];
     function groupOf(p) { return MAJOR.indexOf(p.platform) !== -1 ? p.platform : 'Nền tảng khác'; }
     var groups = {};
     filtered.forEach(function (p) { var g = groupOf(p); (groups[g] = groups[g] || []).push(p); });
+    var GROUP_ORDER = ['Facebook', 'TikTok', 'Instagram', 'Nền tảng khác'];
     var names = Object.keys(groups).sort(function (a, b) {
-      var ga = deal ? groupOf(deal) : '';
-      if (deal && a === ga && b !== ga) return -1;
-      if (deal && b === ga && a !== ga) return 1;
-      var soldA = groups[a].reduce(function (s, p) { return s + p.sold; }, 0);
-      var soldB = groups[b].reduce(function (s, p) { return s + p.sold; }, 0);
-      if (soldB !== soldA) return soldB - soldA;
-      return groups[b].length - groups[a].length;
+      return GROUP_ORDER.indexOf(a) - GROUP_ORDER.indexOf(b);
     });
     var html = names.map(function (g) {
       var rows = groups[g].slice().sort(function (a, b) {
@@ -337,9 +343,8 @@
     $('productDetail').innerHTML =
       '<div class="detail-head">' + platTile(p.platform) +
         '<div style="min-width:0">' +
-          ((isDeal || p.is_hot) ? '<div class="prow-badges">' +
-            (isDeal ? '<span class="badge-deal">' + FLAME_SVG + 'GIẢM MẠNH NHẤT</span>' : '') +
-            (p.is_hot && !isDeal ? '<span class="badge-hot">HOT</span>' : '') + '</div>' : '') +
+          ((isDeal) ? '<div class="prow-badges">' +
+            '<span class="badge-deal">' + FLAME_SVG + 'GIẢM MẠNH NHẤT</span></div>' : '') +
           '<h3>' + esc(p.name) + '</h3>' +
         '</div>' +
       '</div>' +
@@ -842,7 +847,7 @@
   });
   $('clearFiltersBtn').addEventListener('click', function () {
     searchQuery = ''; $('searchInput').value = ''; $('searchClear').hidden = true;
-    platformFilter = 'Tất cả'; sortMode = 'best'; $('sortSelect').value = 'best';
+    platformFilter = 'Tất cả'; sortMode = 'featured'; $('sortSelect').value = 'featured';
     filterOpts = { inStock: false, hotOnly: false, min: null, max: null };
     renderChips(); renderCatalog();
   });
