@@ -1,7 +1,9 @@
-/* Chợ Tài Nguyên Mmo v53 — premium storefront restyle on the research structure
-   (RESEARCH.md). No hero banner, products first, highlight ON the first product
-   row of the first section (real best-discount product, deduped). Compact row
-   cards with platform monogram tiles; ink-black prices; no emoji in chrome. */
+/* Chợ Tài Nguyên Mmo v54 — rebuilt from the v53 review round.
+   White header (real logo on white), emerald as the one leading colour,
+   dense rows, 4 catalog groups max, -% badge + old price ONLY on the single
+   best-deal row, "Đã bán 0" never printed, Activity/Leaderboard/ticker hidden
+   until real data exists, no floating FAB (chat in header), payment methods
+   shown before login. No fake numbers anywhere. */
 (function () {
   'use strict';
 
@@ -63,10 +65,6 @@
   var searchQuery = '';
   var sortMode = 'best';
   var filterOpts = { inStock: false, hotOnly: false, min: null, max: null };
-  var statsData = null;
-  var notifications = [];
-  var tickerIdx = 0;
-  var tickerTimer = null;
   var detailProduct = null;
   var detailQty = 1;
   var checkoutItems = [];
@@ -171,7 +169,6 @@
     $('authBtn').hidden = logged;
     $('accountWrap').hidden = !logged;
     $('walletChip').hidden = !logged;
-    $('topupBtn').hidden = logged;
     if (logged) {
       $('avatarInitial').textContent = (user.full_name || user.username || '?').trim().charAt(0).toUpperCase();
       $('menuFullName').textContent = user.full_name || user.username;
@@ -189,49 +186,11 @@
     }).catch(function () {
       $('catalog').innerHTML = '<p class="empty-state">Không tải được danh sách sản phẩm. Tải lại trang thử nhé.</p>';
     }).then(function () {
-      api('/api/stats').then(function (s) {
-        statsData = s;
-        $('trustCountText').textContent = (s.total_products || products.length) + ' sản phẩm';
-      }).catch(function () {
-        $('trustCountText').textContent = products.length + ' sản phẩm';
-      });
-      api('/api/notifications').then(function (d) {
-        notifications = d.notifications || [];
-        startTicker();
-      }).catch(function () {});
-      api('/api/activity').then(function (d) { renderActivity(d.activity || []); }).catch(function () {});
-      api('/api/leaderboard').then(function (d) { renderLeaderboard(d.top || []); }).catch(function () {});
-      if (token) {
-        api('/api/leaderboard/mine').then(function (d) {
-          if (d && d.rank) $('myRank').hidden = false, $('myRank').textContent = 'Hạng của bạn: #' + d.rank + ' — tổng nạp ' + fmt(d.total || 0);
-        }).catch(function () {});
-      }
+      /* Trust sections (Activity / Leaderboard / ticker) are hidden until
+         real data exists — the live data is test accounts + one repeating
+         buyer, and showing it advertises an empty shop. Nothing is faked. */
       return refreshMe();
     });
-  }
-  function startTicker() {
-    if (!notifications.length) return;
-    $('ticker').hidden = false;
-    tickerIdx = 0;
-    var show = function () {
-      var n = notifications[tickerIdx % notifications.length];
-      $('tickerText').innerHTML = '<b>' + esc(n.buyer || 'Khách') + '</b> vừa mua ' + esc(n.product || '') + ' · ' + timeAgo(n.created_at);
-      tickerIdx++;
-    };
-    show();
-    clearInterval(tickerTimer);
-    tickerTimer = setInterval(show, 4000);
-  }
-  function renderActivity(list) {
-    $('activityList').innerHTML = list.slice(0, 8).map(function (a) {
-      var amt = a.amount == null ? '' : '<span class="amt ' + (a.amount < 0 ? 'neg' : 'pos') + '">' + (a.amount < 0 ? '−' : '+') + fmt(Math.abs(a.amount)) + '</span>';
-      return '<li><span><b>' + esc(a.name || 'Khách') + '</b> — ' + esc(a.desc || '') + '</span>' + amt + '</li>';
-    }).join('') || '<li>Chưa có hoạt động nào.</li>';
-  }
-  function renderLeaderboard(top) {
-    $('leaderboardList').innerHTML = top.slice(0, 20).map(function (t) {
-      return '<li><span class="rank">' + t.rank + '</span><span class="lb-name">' + esc(t.name) + '</span><span class="lb-total">' + fmt(t.total) + '</span></li>';
-    }).join('') || '<li>Chưa có dữ liệu nạp tiền.</li>';
   }
 
   /* ---------------- catalog ---------------- */
@@ -282,26 +241,28 @@
     var style = pl === 'Instagram' ? '' : ' style="background:' + color + '"';
     return '<span class="' + cls + '"' + style + '>' + esc(PLAT_MONO[pl] || esc(pl.slice(0, 2).toUpperCase())) + '</span>';
   }
-  function rowHtml(p, isDeal) {
-    var d = discount(p);
+  /* One meta line only. The -% badge + struck old price exist ONLY on the
+     single best-deal row; every other row shows just its price. "Đã bán 0"
+     is never printed. Platform identity comes from the tile (and the meta
+     line in merged/flat views) — no blue platform label above the name. */
+  function rowHtml(p, isDeal, showPlatform) {
+    var d = isDeal ? discount(p) : 0;
     var out = p.stock <= 0;
+    var meta = [];
+    meta.push(out ? '<span class="out">Tạm hết hàng</span>' : 'Còn <b>' + p.stock + '</b>');
+    meta.push(esc(warrantyShort(p.warranty)));
+    var badges = (isDeal ? '<span class="badge-deal">' + FLAME_SVG + 'GIẢM MẠNH NHẤT</span>' : '') +
+      (p.is_hot && !isDeal ? '<span class="badge-hot">HOT</span>' : '');
     return '<article class="prow' + (isDeal ? ' prow-deal' : '') + '" data-open-detail="' + p.id + '">' +
       platTile(p.platform) +
       '<div class="prow-main">' +
-        '<div class="prow-top">' +
-          '<span class="plat-tag">' + esc(p.platform) + '</span>' +
-          (isDeal ? '<span class="badge-deal">' + FLAME_SVG + 'GIẢM MẠNH NHẤT</span>' : '') +
-          (p.is_hot && !isDeal ? '<span class="badge-hot">HOT</span>' : '') +
-        '</div>' +
+        (badges ? '<div class="prow-badges">' + badges + '</div>' : '') +
         '<h3 class="prow-name">' + esc(p.name) + '</h3>' +
-        '<p class="prow-meta">' + (out ? '<span class="out">Tạm hết hàng</span>' : 'Còn <b>' + p.stock + '</b>') +
-          ' · Đã bán <b>' + p.sold + '</b> · ' + esc(warrantyShort(p.warranty)) + '</p>' +
+        '<p class="prow-meta">' + meta.join(' · ') + '</p>' +
       '</div>' +
       '<div class="prow-side">' +
-        (d ? '<span class="prow-old">' + fmt(p.old_price) + '</span>' : '') +
-        '<span class="prow-price">' + fmt(p.price) + '</span>' +
-        (d ? '<span class="prow-pct">−' + d + '%</span>' : '') +
-        (isDeal && d ? '<span class="prow-save">Tiết kiệm ' + fmt(p.old_price - p.price) + '</span>' : '') +
+        (isDeal && d ? '<span class="prow-old">' + fmt(p.old_price) + '</span>' : '') +
+        '<span class="prow-price-line">' + (isDeal && d ? '<span class="prow-pct">−' + d + '%</span>' : '') + '<span class="prow-price">' + fmt(p.price) + '</span></span>' +
         '<div class="prow-actions">' +
           '<button type="button" class="btn-buy" data-act="buy" data-id="' + p.id + '"' + (out ? ' disabled' : '') + '>Mua ngay</button>' +
           '<button type="button" class="btn-addcart" data-act="add" data-id="' + p.id + '" aria-label="Thêm vào giỏ"' + (out ? ' disabled' : '') + '>' + PLUS_SVG + '</button>' +
@@ -317,39 +278,40 @@
     $('catalogEmpty').hidden = filtered.length > 0;
     if (!filtered.length) { $('catalog').innerHTML = ''; return; }
 
+    var deal = bestDeal();
     if (flat) {
       var rows = sortRows(filtered);
       $('catalog').innerHTML = '<section class="cat-sec flat"><div class="rows">' +
-        rows.map(function (p) { return rowHtml(p, false); }).join('') + '</div></section>';
+        rows.map(function (p) { return rowHtml(p, deal && p.id === deal.id, true); }).join('') + '</div></section>';
       return;
     }
 
-    /* Default view: category sections (MCV model). First section = the platform
-       of the best-deal product; the deal is the FIRST ROW of that section. */
-    var deal = bestDeal();
+    /* Default view: 4 groups max. Single-product platforms merge into
+       "Nền tảng khác" (platform stays visible on the row via tile + meta).
+       The deal group goes first; the deal is the FIRST ROW of its group. */
+    var MAJOR = ['Facebook', 'TikTok', 'Instagram'];
+    function groupOf(p) { return MAJOR.indexOf(p.platform) !== -1 ? p.platform : 'Nền tảng khác'; }
     var groups = {};
-    filtered.forEach(function (p) { (groups[p.platform] = groups[p.platform] || []).push(p); });
-    var plats = Object.keys(groups).sort(function (a, b) {
-      if (deal && a === deal.platform && b !== deal.platform) return -1;
-      if (deal && b === deal.platform && a !== deal.platform) return 1;
+    filtered.forEach(function (p) { var g = groupOf(p); (groups[g] = groups[g] || []).push(p); });
+    var names = Object.keys(groups).sort(function (a, b) {
+      var ga = deal ? groupOf(deal) : '';
+      if (deal && a === ga && b !== ga) return -1;
+      if (deal && b === ga && a !== ga) return 1;
       var soldA = groups[a].reduce(function (s, p) { return s + p.sold; }, 0);
       var soldB = groups[b].reduce(function (s, p) { return s + p.sold; }, 0);
       if (soldB !== soldA) return soldB - soldA;
-      if (groups[b].length !== groups[a].length) return groups[b].length - groups[a].length;
-      return a.localeCompare(b);
+      return groups[b].length - groups[a].length;
     });
-    var html = plats.map(function (pl) {
-      var rows = groups[pl].slice().sort(function (a, b) {
+    var html = names.map(function (g) {
+      var rows = groups[g].slice().sort(function (a, b) {
         if (deal && a.id === deal.id) return -1;
         if (deal && b.id === deal.id) return 1;
         return b.sold - a.sold || a.id - b.id;
       });
-      var sold = rows.reduce(function (s, p) { return s + p.sold; }, 0);
-      var color = PLAT_COLOR[pl] || '#1d4ed8';
+      var merged = g === 'Nền tảng khác';
       return '<section class="cat-sec">' +
-        '<header class="cat-head" style="border-left-color:' + color + '"><h2>' + esc(pl) + '<span class="cat-count">' + rows.length + ' sản phẩm</span></h2>' +
-        '<span class="cat-sold">Đã bán ' + sold + ' acc</span></header>' +
-        '<div class="rows">' + rows.map(function (p) { return rowHtml(p, deal && p.id === deal.id); }).join('') + '</div>' +
+        '<header class="cat-head"><h2>' + esc(g) + '</h2><span class="cat-count">' + rows.length + ' sản phẩm</span></header>' +
+        '<div class="rows">' + rows.map(function (p) { return rowHtml(p, deal && p.id === deal.id, merged); }).join('') + '</div>' +
       '</section>';
     }).join('');
     $('catalog').innerHTML = html;
@@ -375,17 +337,15 @@
     $('productDetail').innerHTML =
       '<div class="detail-head">' + platTile(p.platform) +
         '<div style="min-width:0">' +
-          '<div class="prow-top">' +
-            '<span class="plat-tag">' + esc(p.platform) + '</span>' +
+          ((isDeal || p.is_hot) ? '<div class="prow-badges">' +
             (isDeal ? '<span class="badge-deal">' + FLAME_SVG + 'GIẢM MẠNH NHẤT</span>' : '') +
-            (p.is_hot ? '<span class="badge-hot">HOT</span>' : '') +
-          '</div>' +
+            (p.is_hot && !isDeal ? '<span class="badge-hot">HOT</span>' : '') + '</div>' : '') +
           '<h3>' + esc(p.name) + '</h3>' +
         '</div>' +
       '</div>' +
-      '<div class="detail-price-row"><span class="detail-price' + (isDeal ? ' deal' : '') + '">' + fmt(p.price) + '</span> ' +
-        (d ? '<span class="detail-old">' + fmt(p.old_price) + '</span> <span class="prow-pct">−' + d + '%</span> <span class="detail-save">Tiết kiệm ' + fmt(p.old_price - p.price) + '</span>' : '') + '</div>' +
-      '<p class="detail-stock">' + (out ? 'Tạm hết hàng' : 'Còn ' + p.stock + ' tài khoản') + ' · Đã bán ' + p.sold + '</p>' +
+      '<div class="detail-price' + (isDeal ? ' deal' : '') + '">' + fmt(p.price) + '</div>' +
+      (isDeal && d ? '<div class="detail-price-sub"><span class="detail-old">' + fmt(p.old_price) + '</span> <span class="prow-pct">−' + d + '%</span> <span class="detail-save">Tiết kiệm ' + fmt(p.old_price - p.price) + '</span></div>' : '') +
+      '<p class="detail-stock">' + (out ? 'Tạm hết hàng' : 'Còn ' + p.stock + ' tài khoản') + (p.sold > 0 ? ' · Đã bán ' + p.sold : '') + '</p>' +
       '<table class="spec-table">' +
         '<tr><td>Nền tảng</td><td><b>' + esc(p.platform) + '</b></td></tr>' +
         '<tr><td>Bảo hành</td><td>' + esc(p.warranty || '—') + '</td></tr>' +
@@ -399,7 +359,7 @@
       '</div>' +
       (same.length ? '<div class="mini-rows"><h3 class="sub-head">Cùng nền tảng ' + esc(p.platform) + '</h3>' +
         same.map(function (x) {
-          return '<button type="button" class="mini-row" data-open-detail="' + x.id + '"><span class="mini-name"><b>' + esc(x.name) + '</b><small>Còn ' + x.stock + ' · Đã bán ' + x.sold + '</small></span><span>' + fmt(x.price) + '</span></button>';
+          return '<button type="button" class="mini-row" data-open-detail="' + x.id + '"><span class="mini-name"><b>' + esc(x.name) + '</b><small>Còn ' + x.stock + (x.sold > 0 ? ' · Đã bán ' + x.sold : '') + '</small></span><span>' + fmt(x.price) + '</span></button>';
         }).join('') + '</div>' : '');
     $('detailMinus').addEventListener('click', function () { if (detailQty > 1) { detailQty--; $('detailQtyNum').textContent = detailQty; } });
     $('detailPlus').addEventListener('click', function () { if (detailQty < p.stock) { detailQty++; $('detailQtyNum').textContent = detailQty; } else toast('Chỉ còn ' + p.stock + ' tài khoản.'); });
@@ -468,8 +428,26 @@
       return s + (p ? p.price * it.qty : 0);
     }, 0);
     $('checkoutSummary').innerHTML = lines + '<div class="sum-total"><span>Tổng thanh toán</span><span>' + fmt(total) + '</span></div>';
+    renderPayPreview();
     openOverlay('checkoutSheet');
     showCheckoutForm();
+  }
+  /* Payment methods visible BEFORE login, from /api/receiving-info —
+     method names only; account details stay behind login. */
+  /* The shop's 4 payment methods (same 4 tabs the wallet offers). Names only
+     here — no account numbers until after login. */
+  var PAY_METHODS = [
+    { id: 'bank', label: 'Ngân hàng' },
+    { id: 'momo', label: 'MoMo' },
+    { id: 'zalopay', label: 'ZaloPay' },
+    { id: 'card', label: 'Thẻ cào' }
+  ];
+  function renderPayPreview() {
+    var box = $('payPreview');
+    box.hidden = false;
+    box.innerHTML = '<strong>Thanh toán bằng</strong><div class="pay-names">' +
+      PAY_METHODS.map(function (m) { return '<span class="pay-name">' + m.label + '</span>'; }).join('') +
+      '</div><span class="pay-note">Chọn sau khi đăng nhập — ví của tôi, hoặc đặt đơn rồi thanh toán thủ công. Chi tiết tài khoản nhận tiền hiện sau khi đăng nhập.</span>';
   }
   function showCheckoutForm() {
     if (!user) {
@@ -782,6 +760,21 @@
     }
   }
 
+  /* ---------------- real contact channels ----------------
+     CONTACTS is intentionally EMPTY: no Zalo / Telegram / phone number has
+     ever been supplied, and inventing one is forbidden. Fill this array
+     with the shop's REAL details (e.g. { label: 'Zalo', href: 'https://zalo.me/0...' })
+     and the footer slot renders; until then it stays hidden. */
+  var CONTACTS = [];
+  function renderContactSlot() {
+    var slot = $('contactSlot');
+    if (!CONTACTS.length) { slot.hidden = true; return; }
+    slot.innerHTML = CONTACTS.map(function (c) {
+      return '<a href="' + esc(c.href) + '" target="_blank" rel="noopener">' + esc(c.label) + '</a>';
+    }).join('');
+    slot.hidden = false;
+  }
+
   /* ---------------- bot ---------------- */
   function botSay(text, who) {
     var box = $('botMessages');
@@ -957,7 +950,6 @@
     startCheckout(cart.map(function (i) { return { product_id: i.id, qty: i.qty }; }));
   });
   $('authBtn').addEventListener('click', function () { setAuthTab('login'); openOverlay('authSheet'); });
-  $('topupBtn').addEventListener('click', renderWallet);
   $('walletChip').addEventListener('click', renderWallet);
   $('accountBtn').addEventListener('click', function () { $('accountMenu').hidden = !$('accountMenu').hidden; });
   $('checkoutTopupBtn').addEventListener('click', function () { closeOverlay('checkoutSheet'); renderWallet(); });
@@ -1008,5 +1000,6 @@
 
   /* ---------------- init ---------------- */
   renderCartBadge();
+  renderContactSlot();
   loadAll();
 })();

@@ -5,7 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Chợ Tài Nguyên Mmo — Tài khoản mạng xã hội giá tốt</title>
 <meta name="description" content="Mua tài khoản Facebook, TikTok, Instagram, YouTube, Telegram, Gmail, X, Zalo. Giao tự động 24/7, bảo hành 1 đổi 1.">
-<link rel="stylesheet" href="style.css?v=46">
+<link rel="preload" href="fonts/be-vn-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/be-vn-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts/be-vn-fonts.css?v=47">
+<link rel="stylesheet" href="style.css?v=47">
 </head>
 <body>
 <header class="site-head">
@@ -14,10 +17,10 @@
       <img src="logo.png" alt="Chợ Tài Nguyên Mmo" class="brand-logo" width="141" height="40">
     </a>
     <div class="head-actions">
+      <button type="button" class="icon-btn" id="botBtn" aria-label="Chat với shop"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 21l2-5.6A8.5 8.5 0 1 1 21 11.5z"/></svg></button>
       <button type="button" class="wallet-chip" id="walletChip" hidden><span>Ví:</span> <b id="walletBalance">0đ</b></button>
       <button type="button" class="icon-btn" id="cartBtn" aria-label="Giỏ hàng"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1.6"/><circle cx="19" cy="21" r="1.6"/><path d="M2.5 3h2l2.6 12.5a2 2 0 0 0 2 1.5h8.8a2 2 0 0 0 2-1.6L21.5 7H6"/></svg><span class="cart-badge" id="cartCount" hidden>0</span></button>
-      <button type="button" class="btn btn-gold-outline" id="topupBtn">+ <span class="topup-full">Nạp tiền</span><span class="topup-short">Nạp</span></button>
-      <button type="button" class="btn btn-gold" id="authBtn">Đăng nhập</button>
+      <button type="button" class="btn btn-primary" id="authBtn">Đăng nhập</button>
       <div class="account-wrap" id="accountWrap" hidden>
         <button type="button" class="avatar-btn" id="accountBtn" aria-label="Tài khoản của tôi"><span class="avatar-circle" id="avatarInitial">?</span></button>
         <div class="account-menu" id="accountMenu" hidden>
@@ -42,13 +45,6 @@
 </div>
 <nav class="wrap cat-nav" id="catNav" aria-label="Danh mục sản phẩm"></nav>
 
-<div class="wrap trust-strip" id="trustStrip">
-  <span class="trust-item"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z"/></svg>Giao tự động 24/7</span>
-  <span class="trust-item"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5.5v5.6c0 5 3.4 8.6 8 10.4 4.6-1.8 8-5.4 8-10.4V5.5L12 2z"/><path d="m8.8 12 2.2 2.2 4.2-4.4"/></svg>Bảo hành 1 đổi 1</span>
-  <span class="trust-item" id="trustCount"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg><span id="trustCountText">12 sản phẩm</span></span>
-</div>
-<div class="wrap ticker-bar" id="ticker" hidden><span class="live-dot" aria-hidden="true"></span><span id="tickerText" class="ticker-text"></span></div>
-
 <main class="wrap">
   <div class="filter-bar">
     <span class="result-count" id="resultCount"></span>
@@ -71,24 +67,19 @@
     <button type="button" class="btn btn-outline" id="clearFiltersBtn">Xóa tìm kiếm &amp; bộ lọc</button>
   </div>
 
+  <div class="trust-strip" id="trustStrip">
+    <span class="trust-item"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z"/></svg>Giao ngay 24/7</span>
+    <span class="trust-item"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5.5v5.6c0 5 3.4 8.6 8 10.4 4.6-1.8 8-5.4 8-10.4V5.5L12 2z"/><path d="m8.8 12 2.2 2.2 4.2-4.4"/></svg>Bảo hành 1 đổi 1</span>
+    <span class="trust-item"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg>Tra cứu mã đơn</span>
+  </div>
+
   <section class="block" id="howtoBlock">
     <h2>Mua như thế nào — 3 bước</h2>
     <ol class="steps">
-      <li><b>1. Chọn tài khoản</b><span>Tìm theo nền tảng, xem giá, tồn kho và bảo hành ngay trên từng dòng.</span></li>
-      <li><b>2. Thanh toán</b><span>Trả bằng ví (nạp trước qua ngân hàng, MoMo, ZaloPay, thẻ cào) hoặc đặt đơn rồi thanh toán thủ công.</span></li>
-      <li><b>3. Nhận tài khoản ngay</b><span>Hệ thống giao tự động 24/7 sau khi thanh toán xong. Lưu mã đơn để tra cứu.</span></li>
+      <li><span class="step-num" aria-hidden="true">1</span><div><b>Chọn tài khoản</b><span>Tìm theo nền tảng, xem giá, tồn kho và bảo hành ngay trên từng dòng.</span></div></li>
+      <li><span class="step-num" aria-hidden="true">2</span><div><b>Thanh toán</b><span>Trả bằng ví (nạp trước qua ngân hàng, MoMo, ZaloPay, thẻ cào) hoặc đặt đơn rồi thanh toán thủ công.</span></div></li>
+      <li><span class="step-num" aria-hidden="true">3</span><div><b>Nhận tài khoản ngay</b><span>Hệ thống giao tự động 24/7 sau khi thanh toán xong. Lưu mã đơn để tra cứu.</span></div></li>
     </ol>
-  </section>
-
-  <section class="block" id="activityBlock">
-    <h2>Hoạt động gần đây</h2>
-    <ul class="activity-list" id="activityList"></ul>
-  </section>
-
-  <section class="block" id="leaderboardBlock">
-    <h2><svg class="h2-icon" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M7 6H4a1 1 0 0 0-1 1c0 2.2 1.8 4 4 4M17 6h3a1 1 0 0 1 1 1c0 2.2-1.8 4-4 4"/></svg>BXH nạp tiền tháng</h2>
-    <ol class="leaderboard-list" id="leaderboardList"></ol>
-    <p class="my-rank" id="myRank" hidden></p>
   </section>
 
   <section class="block" id="faqBlock">
@@ -96,7 +87,7 @@
     <div class="faq" id="faqList">
       <details><summary>Mua hàng có cần đăng nhập trước không?</summary><p>Không. Bạn xem hàng, tìm kiếm và chọn thoải mái. Chỉ khi bấm thanh toán mới cần đăng nhập để đơn lưu vào tài khoản của bạn.</p></details>
       <details><summary>Bảo hành như thế nào?</summary><p>Mỗi sản phẩm ghi rõ bảo hành trên từng dòng (1 đổi 1 trong 7 hoặc 30 ngày). Tài khoản lỗi trong thời gian bảo hành được đổi mới hoặc hoàn tiền.</p></details>
-      <details><summary>Nạp tiền vào ví bằng cách nào?</summary><p>Bấm "+ Nạp tiền", chọn ngân hàng, MoMo, ZaloPay hoặc thẻ cào, chuyển đúng số tiền và nội dung mã NAP… rồi bấm "Kiểm tra giao dịch". Hệ thống tự khớp và cộng tiền.</p></details>
+      <details><summary>Nạp tiền vào ví bằng cách nào?</summary><p>Bấm vào Ví của tôi (sau khi đăng nhập), chọn ngân hàng, MoMo, ZaloPay hoặc thẻ cào, chuyển đúng số tiền và nội dung mã NAP… rồi bấm "Kiểm tra giao dịch". Hệ thống tự khớp và cộng tiền.</p></details>
       <details><summary>Tra cứu đơn hàng ở đâu?</summary><p>Nhập mã đơn (VD: DH00000001) và SĐT/email đã đặt hàng ở mục bên dưới. Không cần đăng nhập.</p></details>
     </div>
   </section>
@@ -118,9 +109,10 @@
       <h3>Chợ Tài Nguyên Mmo</h3>
       <p>Tài khoản mạng xã hội giá tốt. Giao tự động 24/7, bảo hành 1 đổi 1.</p>
     </div>
-    <div>
+    <div id="contactBlock">
       <h3>Liên hệ</h3>
-      <p>Chat với shop bằng nút chat góc phải (bot 24/7).<br>Tra cứu đơn bằng mã đơn ở mục trên.</p>
+      <p id="contactSlot" hidden></p>
+      <p class="foot-note">Chat với bot hỗ trợ 24/7 bằng nút chat ở đầu trang. Tra cứu đơn bằng mã đơn ở mục trên.</p>
     </div>
     <div>
       <h3>Liên kết</h3>
@@ -130,7 +122,6 @@
   <div class="copyright">© 2026 Chợ Tài Nguyên Mmo — Tài khoản mạng xã hội giá tốt.</div>
 </footer>
 
-<button type="button" class="bot-fab" id="botBtn" aria-label="Chat với shop"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 21l2-5.6A8.5 8.5 0 1 1 21 11.5z"/></svg></button>
 <div class="bot-panel" id="botPanel" hidden role="dialog" aria-label="Chat với shop">
   <div class="bot-head"><strong>Chat với shop — 24/7</strong><button type="button" class="bot-close" id="botClose" aria-label="Đóng chat">×</button></div>
   <div class="bot-messages" id="botMessages"></div>
@@ -165,6 +156,7 @@
     <div class="sheet-head"><strong>Thanh toán</strong><button type="button" class="sheet-close" data-close aria-label="Đóng">×</button></div>
     <div class="sheet-body">
       <div class="checkout-summary" id="checkoutSummary"></div>
+      <div class="pay-preview" id="payPreview" hidden></div>
       <div id="checkoutAuth" hidden>
         <p class="checkout-login-note">Đăng nhập để đặt hàng — đơn sẽ lưu vào tài khoản của bạn.</p>
         <div class="auth-tabs">
@@ -298,6 +290,6 @@
 </div>
 
 <div class="toast" id="toast" hidden></div>
-<script src="app.js?v=46"></script>
+<script src="app.js?v=47"></script>
 </body>
 </html>
