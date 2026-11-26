@@ -5,79 +5,79 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#f4f8fc" id="themeColorMeta">
 <title>Chợ Tài Nguyên Mmo — Shop Tài Khoản Mạng Xã Hội</title>
-<link id="designLink" rel="stylesheet" href="design-sang.css?v=38">
+<link rel="stylesheet" href="style.css?v=39">
 <script>
-/* Kiểu giao diện (3 thiết kế trong 1 site): áp dụng lựa chọn đã lưu TRƯỚC
-   khi trang vẽ, để không chớp sai thiết kế lúc tải. */
-(function(){try{var d=localStorage.getItem('ctn_design');var ok={sang:1,dem:1,ruc:1};
-if(ok[d]){var f={sang:'design-sang.css',dem:'design-dem.css',ruc:'design-ruc.css'}[d];
-var t={sang:'light',dem:'dark',ruc:'light'}[d];
-var c={sang:'#f4f8fc',dem:'#0a0d16',ruc:'#fff7ed'}[d];
-document.getElementById('designLink').href=f+'?v=38';
-document.documentElement.setAttribute('data-design',d);
-document.documentElement.setAttribute('data-theme',t);
-var m=document.getElementById('themeColorMeta');if(m)m.content=c;}}catch(e){}})();
+/* Áp dụng kiểu giao diện đã lưu TRƯỚC khi trang vẽ để không chớp sai thiết kế. */
+(function () {
+  try {
+    var d = localStorage.getItem('ctn_design');
+    var ok = { sang: 1, dem: 1, ruc: 1 };
+    if (ok[d]) {
+      var t = { sang: 'light', dem: 'dark', ruc: 'light' }[d];
+      var c = { sang: '#f4f8fc', dem: '#0a0d16', ruc: '#fff7ed' }[d];
+      document.documentElement.setAttribute('data-design', d);
+      document.documentElement.setAttribute('data-theme', t);
+      var m = document.getElementById('themeColorMeta');
+      if (m) m.content = c;
+    }
+  } catch (e) {}
+})();
 </script>
 </head>
 <body>
 <div id="app">
-  <!-- ===== Top bar dính, mảnh, trắng: logo + TÌM KIẾM NGAY TRONG BAR + ví + avatar + giỏ + menu ===== -->
+
   <header class="site-header" id="siteHeader">
     <div class="scroll-progress" aria-hidden="true"></div>
-    <div class="header-row header-main">
-      <div class="brand">
+    <div class="header-main">
+      <a class="brand" href="#" id="brandHome" aria-label="Chợ Tài Nguyên Mmo — về trang chủ">
         <img class="brand-logo" src="logo.png" alt="Chợ Tài Nguyên Mmo" width="280" height="79">
-      </div>
-      <search class="top-search">
-        <form class="top-search-form" role="search" onsubmit="onSearch(true); return false;">
-          <input id="searchInput" type="search" name="q" placeholder="Tìm tài khoản…" oninput="onSearch()" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="search" aria-label="Tìm tài khoản">
-          <button class="search-btn" type="submit" aria-label="Tìm kiếm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg></button>
-        </form>
-      </search>
+      </a>
+      <form class="top-search" id="topSearchForm" role="search">
+        <input id="searchInput" type="search" name="q" placeholder="Tìm tài khoản…" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="search" aria-label="Tìm tài khoản">
+        <button class="search-btn" type="submit" aria-label="Tìm kiếm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg></button>
+      </form>
       <div class="header-user" id="headerUser" hidden>
-        <button class="avatar-btn" id="avatarBtn" onclick="showTab('account')">M</button>
-        <button class="icon-btn" onclick="showTab('cart')">🛒 <span id="cartCount">0</span></button>
+        <button class="avatar-btn" id="avatarBtn" type="button" aria-label="Tài khoản của tôi">M</button>
+        <button class="icon-btn" id="cartBtn" type="button" aria-label="Giỏ hàng">🛒 <span id="cartCount">0</span></button>
       </div>
-      <div class="header-actions">
-        <button id="menuBtn" class="menu-btn" title="Menu" aria-label="Mở menu"><span></span><span></span><span></span></button>
-      </div>
+      <button id="menuBtn" class="menu-btn" type="button" title="Menu" aria-label="Mở menu" aria-expanded="false"><span></span><span></span><span></span></button>
     </div>
-    <div class="header-row wallet-row" id="walletRow" hidden>
-      <button class="wallet-chip" onclick="showTab('wallet')"><span class="wallet-label">💰 Ví của bạn</span><b>Số dư ví: <span id="walletBalance">0đ</span></b></button>
-      <button class="wallet-topup" onclick="showTab('wallet')">+ Nạp tiền</button>
+    <div class="wallet-row" id="walletRow" hidden>
+      <button class="wallet-chip" id="walletChip" type="button"><span>💰 Ví của bạn</span><b>Số dư ví: <span id="walletBalance">0đ</span></b></button>
+      <button class="wallet-topup" id="walletTopupBtn" type="button">+ Nạp tiền</button>
     </div>
-    <!-- ===== Chọn kiểu giao diện: 3 thiết kế trong 1 site, đổi tức thì ===== -->
-    <div class="design-bar" id="designBar">
+    <div class="design-bar">
       <span class="design-label">Kiểu giao diện:</span>
       <div class="design-pills" role="group" aria-label="Chọn kiểu giao diện">
-        <button type="button" data-design="sang" class="active" onclick="setDesign('sang')" aria-pressed="true">☀️ Sáng</button>
-        <button type="button" data-design="dem" onclick="setDesign('dem')" aria-pressed="false">🌙 Đêm</button>
-        <button type="button" data-design="ruc" onclick="setDesign('ruc')" aria-pressed="false">🌇 Rực</button>
+        <button type="button" data-design="sang" class="active" aria-pressed="true">☀️ Sáng</button>
+        <button type="button" data-design="dem" aria-pressed="false">🌙 Đêm</button>
+        <button type="button" data-design="ruc" aria-pressed="false">🌇 Rực</button>
       </div>
     </div>
     <nav id="mainMenu" class="main-menu" hidden>
-      <button onclick="showTab('account')">👤 Tài khoản</button>
-      <button onclick="showTab('leaderboard')">🏆 BXH nạp</button>
-      <button onclick="showTab('lookup')">🔍 Tra cứu đơn</button>
-      <button onclick="showTab('admin')" id="adminMenuBtn" hidden>⚙️ Quản lý shop</button>
+      <button type="button" data-goto="account">👤 Tài khoản</button>
+      <button type="button" data-goto="leaderboard">🏆 BXH nạp</button>
+      <button type="button" data-goto="lookup">🔍 Tra cứu đơn</button>
+      <button type="button" data-goto="admin" id="adminMenuBtn" hidden>⚙️ Quản lý shop</button>
     </nav>
   </header>
 
-  <!-- ===== Cổng đăng ký: trang nhất sáng, chữ serif lớn + thẻ đăng ký trắng ===== -->
+  <!-- Cổng vào: chỉ khách chưa đăng nhập mới thấy -->
   <section id="gate" class="gate">
-    <div class="frontpage cover" id="gateCover">
+    <div class="hero">
       <div class="orb orb-a" aria-hidden="true"></div>
       <div class="orb orb-b" aria-hidden="true"></div>
-      <div class="fp-grid cover-inner">
-        <div class="fp-main">
-          <p class="eyebrow cover-kicker"><span class="pulse-dot"></span>Chợ Tài Nguyên Mmo · Hệ thống tự động 24/7</p>
-          <h1 class="fp-title cover-title">Tài khoản<br>mạng xã hội<br><em class="grad">chất lượng cao.</em></h1>
-          <p class="fp-standfirst cover-sub">Facebook, TikTok, Instagram, YouTube… có 2FA, email gốc, bảo hành 1 đổi 1 rõ ràng. Kho tài khoản, giá bán và đặt hàng nằm ở khu vực thành viên bên trong.</p>
-          <div class="fp-cta cover-cta">
-            <button class="btn-primary" onclick="toggleAuthPanel(true)">Bắt đầu ngay — Đăng ký miễn phí</button>
-            <button class="btn-ghost" onclick="toggleAuthPanel(true, 'login')">Đã có tài khoản? Đăng nhập</button>
+      <div class="hero-inner">
+        <div class="hero-text">
+          <p class="eyebrow"><span class="pulse-dot"></span>Chợ Tài Nguyên Mmo · Hệ thống tự động 24/7</p>
+          <h1 class="hero-title">Tài khoản<br>mạng xã hội<br><em>chất lượng cao.</em></h1>
+          <p class="hero-sub">Facebook, TikTok, Instagram, YouTube… có 2FA, email gốc, bảo hành 1 đổi 1 rõ ràng. Kho tài khoản, giá bán và đặt hàng nằm ở khu vực thành viên bên trong.</p>
+          <div class="hero-cta">
+            <button class="btn-primary" id="gateRegisterBtn" type="button">Bắt đầu ngay — Đăng ký miễn phí</button>
+            <button class="btn-ghost" id="gateLoginBtn" type="button">Đã có tài khoản? Đăng nhập</button>
           </div>
-          <div class="fp-stats cover-stats">
+          <div class="hero-stats">
             <div><b id="statProducts">…</b><span>sản phẩm đang bán</span></div>
             <div><b id="statSold">…</b><span>đã bán · 30 ngày</span></div>
             <div><b>24/7</b><span>giao tự động</span></div>
@@ -87,14 +87,14 @@ var m=document.getElementById('themeColorMeta');if(m)m.content=c;}}catch(e){}})(
       <div class="scroll-cue" aria-hidden="true">Vuốt xuống <span>↓</span></div>
     </div>
     <div id="authPanel" class="auth-panel" hidden>
-      <div class="auth-titlebar"><span class="dots"><i></i><i></i><i></i></span><span class="chip-green" id="authChip">Đăng Ký Miễn Phí</span><button class="x" onclick="toggleAuthPanel(false)">✕</button></div>
-      <form id="authForm" onsubmit="submitAuth(event)">
+      <div class="auth-titlebar"><span class="dots"><i></i><i></i><i></i></span><span class="chip-green" id="authChip">Đăng Ký Miễn Phí</span><button class="auth-close" id="authCloseBtn" type="button" aria-label="Đóng">✕</button></div>
+      <form id="authForm">
         <div id="nameField"><label for="authName">Họ tên</label><input id="authName" name="full_name" autocomplete="name" placeholder="Họ tên của bạn"></div>
         <label for="authUser">Tên đăng nhập</label><input id="authUser" name="username" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="vidu: minanguyen" required>
         <label for="authPass">Mật khẩu</label><input id="authPass" name="password" type="password" autocomplete="new-password" minlength="4" placeholder="Mật khẩu (ít nhất 4 ký tự)" required>
         <button class="btn-primary" type="submit" id="authSubmit">Đăng ký</button>
-        <button class="btn-google" type="button" onclick="googleLogin()">Đăng ký nhanh với Google</button>
-        <p class="muted small" id="authSwitch">Đã có tài khoản? <a href="#" onclick="switchAuthMode(event)">Đăng nhập</a></p>
+        <button class="btn-google" type="button" id="googleBtn">Đăng ký nhanh với Google</button>
+        <p class="muted small" id="authSwitch">Đã có tài khoản? <a href="#" id="authSwitchLink">Đăng nhập</a></p>
         <p class="error" id="authError" role="status" aria-live="polite"></p>
       </form>
     </div>
@@ -102,38 +102,37 @@ var m=document.getElementById('themeColorMeta');if(m)m.content=c;}}catch(e){}})(
 
   <main id="shop" hidden>
     <section id="tab-shop" class="tab">
-      <!-- ===== Trang nhất: tiêu đề serif lớn + bài cover là 1 sản phẩm thật ===== -->
-      <div class="frontpage cover cover-shop" id="heroCover">
+      <div class="hero hero-shop">
         <div class="orb orb-a" aria-hidden="true"></div>
         <div class="orb orb-b" aria-hidden="true"></div>
-        <div class="cover-mascot" aria-hidden="true" hidden><img src="mascot.png" alt="" width="150" height="296"></div>
-        <div class="fp-grid cover-inner">
-          <div class="fp-main">
-            <p class="eyebrow cover-kicker"><span class="pulse-dot"></span>Chợ Tài Nguyên Mmo · Hệ thống tự động 24/7</p>
-            <h1 class="fp-title cover-title">Tài khoản<br>mạng xã hội<br><em class="grad">chất lượng cao.</em></h1>
-            <p class="fp-standfirst cover-sub">Facebook, TikTok, Instagram, YouTube… có 2FA, email gốc, bảo hành 1 đổi 1 rõ ràng.</p>
-            <div class="fp-stats cover-stats">
+        <div class="hero-mascot" aria-hidden="true"><img src="mascot.png" alt="" width="150" height="296"></div>
+        <div class="hero-inner">
+          <div class="hero-text">
+            <p class="eyebrow"><span class="pulse-dot"></span>Chợ Tài Nguyên Mmo · Hệ thống tự động 24/7</p>
+            <h1 class="hero-title">Tài khoản<br>mạng xã hội<br><em>chất lượng cao.</em></h1>
+            <p class="hero-sub">Facebook, TikTok, Instagram, YouTube… có 2FA, email gốc, bảo hành 1 đổi 1 rõ ràng.</p>
+            <div class="hero-stats">
               <div><b id="heroProducts">…</b><span>sản phẩm đang bán</span></div>
               <div><b id="heroSold">…</b><span>đã bán · 30 ngày</span></div>
               <div><b>24/7</b><span>giao tự động</span></div>
             </div>
           </div>
-          <article class="fp-story" id="coverStory" aria-label="Sản phẩm nổi bật"></article>
+          <article class="cover-story" id="coverStory" aria-label="Sản phẩm nổi bật"></article>
         </div>
         <div class="scroll-cue" aria-hidden="true">Vuốt xuống <span>↓</span></div>
       </div>
 
-      <!-- ===== Danh mục: rail ô hình lớn, mỗi ô 1 nền tảng ===== -->
+      <div class="buys-ticker" id="buysTicker" hidden><span class="buys-dot"></span><span id="buysLine"></span></div>
+
       <section class="catsec">
-        <div class="sec-head">
+        <div class="section-head">
           <div><p class="kicker">Chọn theo nền tảng</p><h2>Danh mục</h2></div>
         </div>
-        <div class="cat-rail hero-chips" id="platformFilters"></div>
+        <div class="cat-rail" id="platformFilters"></div>
       </section>
 
-      <!-- ===== Nổi bật: carousel MWG, thẻ dọc ảnh là chính, giá nằm trên ảnh ===== -->
-      <section class="feat" aria-roledescription="carousel" aria-label="Sản phẩm nổi bật">
-        <div class="sec-head">
+      <section class="featured" aria-roledescription="carousel" aria-label="Sản phẩm nổi bật">
+        <div class="section-head">
           <div><p class="kicker">Tuyển chọn</p><h2>Nổi bật hôm nay</h2></div>
           <div class="feat-nav">
             <button type="button" id="featPrev" aria-label="Sản phẩm nổi bật trước">←</button>
@@ -145,28 +144,26 @@ var m=document.getElementById('themeColorMeta');if(m)m.content=c;}}catch(e){}})(
         <p class="visually-hidden" id="featStatus" role="status" aria-live="polite"></p>
       </section>
 
-      <!-- ===== Khám phá: thanh lọc dính + lưới 2 cột (thẻ đầu là bài feature ngang) ===== -->
-      <div class="toolbar" id="catSec">
+      <div class="toolbar" id="toolbar">
         <div class="sort-pills" id="sortPills">
-          <button data-sort="foryou" class="active" onclick="setSort('foryou')">Dành cho bạn</button>
-          <button data-sort="popular" onclick="setSort('popular')">Phổ biến</button>
-          <button data-sort="newest" onclick="setSort('newest')">Mới nhất</button>
-          <button data-sort="price-low" onclick="setSort('price-low')">Giá thấp</button>
-          <button data-sort="price-high" onclick="setSort('price-high')">Giá cao</button>
+          <button type="button" data-sort="foryou" class="active">Dành cho bạn</button>
+          <button type="button" data-sort="popular">Phổ biến</button>
+          <button type="button" data-sort="newest">Mới nhất</button>
+          <button type="button" data-sort="price-low">Giá thấp</button>
+          <button type="button" data-sort="price-high">Giá cao</button>
         </div>
         <div class="toolbar-row">
-          <span class="sec-count" id="productCount">Có 12 sản phẩm</span>
+          <span class="section-count" id="productCount">Có 12 sản phẩm</span>
           <span class="view-toggle">
-            <button id="viewGridBtn" class="active" onclick="setView('grid')" title="Xem dạng lưới" aria-label="Xem dạng lưới"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg></button>
-            <button id="viewListBtn" onclick="setView('list')" title="Xem dạng danh sách" aria-label="Xem dạng danh sách"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+            <button type="button" id="viewGridBtn" class="active" title="Xem dạng lưới" aria-label="Xem dạng lưới"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg></button>
+            <button type="button" id="viewListBtn" title="Xem dạng danh sách" aria-label="Xem dạng danh sách"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
           </span>
         </div>
       </div>
 
-      <div id="productGrid" class="product-grid grid"></div>
+      <div id="productGrid" class="product-grid" data-view="grid"></div>
       <p id="emptyProducts" class="muted" hidden>Không có sản phẩm. Thử chọn nền tảng khác.</p>
 
-      <!-- ===== Tin cậy: 4 ô trắng (trong #tab-shop, sau đăng nhập vẫn hiện) ===== -->
       <section class="trust">
         <div class="trust-item">🛡️<div><b>Bảo hành 1 đổi 1</b><span>Lỗi là đổi, đúng hạn ghi trên sản phẩm</span></div></div>
         <div class="trust-item">⚡<div><b>Giao tự động 24/7</b><span>Thanh toán xong là nhận ngay</span></div></div>
@@ -174,9 +171,8 @@ var m=document.getElementById('themeColorMeta');if(m)m.content=c;}}catch(e){}})(
         <div class="trust-item">💬<div><b>Hỗ trợ 24/7</b><span>Bot trả lời ngay, mọi lúc</span></div></div>
       </section>
 
-      <!-- ===== Mua hàng 3 bước: 3 thẻ ngang ===== -->
       <section class="steps">
-        <div class="sec-head">
+        <div class="section-head">
           <div><p class="kicker">Nhanh trong 3 phút</p><h2>Mua hàng như thế nào?</h2></div>
         </div>
         <ol class="steps-list">
@@ -186,116 +182,114 @@ var m=document.getElementById('themeColorMeta');if(m)m.content=c;}}catch(e){}})(
         </ol>
       </section>
 
-      <!-- ===== Hoạt động gần đây ===== -->
       <section class="ledger">
-        <div class="sec-head">
+        <div class="section-head">
           <div><p class="kicker">Mới nhất từ hệ thống</p><h2>Hoạt động gần đây</h2></div>
           <span class="live-pill"><span class="live-dot"></span>Live</span>
         </div>
         <div id="actList"></div>
-        <button class="act-more" id="actMoreBtn" onclick="toggleActivity()">Xem thêm hoạt động →</button>
+        <button class="act-more" id="actMoreBtn" type="button">Xem thêm hoạt động →</button>
       </section>
 
-      <!-- ===== Dịch vụ nổi bật: lưới ô vuông ===== -->
       <section class="services">
-        <div class="sec-head">
+        <div class="section-head">
           <div><p class="kicker">Nhanh gọn</p><h2>Dịch vụ nổi bật</h2></div>
         </div>
-        <div class="services-grid services-rail">
-          <button class="service-tile" onclick="goFeatured('fb')"><span class="service-logo" style="background:#1877F2"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></span><span class="service-name">Tài khoản FB</span><span class="service-sub">Clone US · Cổ · Page</span></button>
-          <button class="service-tile" onclick="goFeatured('pagelike')"><span class="service-logo" style="background:#0e7c6b"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg></span><span class="service-name">Page Like</span><span class="service-sub">10K Like · Bật kiếm tiền</span></button>
-          <button class="service-tile" onclick="goFeatured('x')"><span class="service-logo" style="background:#000000"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></span><span class="service-name">Tài khoản X</span><span class="service-sub">Cổ 2018 · Có mail gốc</span></button>
-          <button class="service-tile" onclick="goFeatured('all')"><span class="service-logo" style="background:#0369a1"><svg width="26" height="26" viewBox="0 0 16 16" fill="#fff"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg></span><span class="service-name">Dịch vụ MMO</span><span class="service-sub">Xem toàn bộ 12 sản phẩm</span></button>
+        <div class="services-grid">
+          <button class="service-tile" type="button" data-service="fb"><span class="service-logo" style="background:#1877F2"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></span><span class="service-name">Tài khoản FB</span><span class="service-sub">Clone US · Cổ · Page</span></button>
+          <button class="service-tile" type="button" data-service="pagelike"><span class="service-logo" style="background:#0e7c6b"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg></span><span class="service-name">Page Like</span><span class="service-sub">10K Like · Bật kiếm tiền</span></button>
+          <button class="service-tile" type="button" data-service="x"><span class="service-logo" style="background:#000000"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></span><span class="service-name">Tài khoản X</span><span class="service-sub">Cổ 2018 · Có mail gốc</span></button>
+          <button class="service-tile" type="button" data-service="all"><span class="service-logo" style="background:#0369a1"><svg width="26" height="26" viewBox="0 0 16 16" fill="#fff"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg></span><span class="service-name">Dịch vụ MMO</span><span class="service-sub">Xem toàn bộ 12 sản phẩm</span></button>
         </div>
       </section>
     </section>
 
     <section id="tab-wallet" class="tab" hidden>
-      <button class="btn-back" onclick="showTab('shop')">← Quay về Sản phẩm</button>
+      <button class="btn-back" type="button" data-back>← Quay về Sản phẩm</button>
       <div class="card"><h2>💰 Nạp tiền vào ví</h2><p>Số dư hiện tại: <b class="gold" id="walletBalance2">0đ</b></p>
         <div class="amounts" id="quickAmounts"></div>
-        <label>Số tiền khác (tối thiểu 10.000đ)</label>
+        <label for="customAmount">Số tiền khác (tối thiểu 10.000đ)</label>
         <input id="customAmount" type="number" min="10000" step="1000" inputmode="numeric" placeholder="Ví dụ: 50000">
-        <label>Phương thức</label>
+        <label for="depositMethod">Phương thức</label>
         <select id="depositMethod"><option value="bank">Chuyển khoản ngân hàng (VietQR)</option><option value="momo">MoMo</option><option value="zalopay">ZaloPay</option><option value="card">Thẻ cào</option></select>
         <div id="cardFields" hidden>
-          <label>Nhà mạng</label><select id="cardCarrier"><option>Viettel</option><option>Mobifone</option><option>Vinaphone</option><option>Vietnamobile</option></select>
-          <label>Số serial</label><input id="cardSerial" placeholder="Số serial trên thẻ">
-          <label>Mã thẻ</label><input id="cardCode" placeholder="Mã thẻ cào">
+          <label for="cardCarrier">Nhà mạng</label><select id="cardCarrier"><option>Viettel</option><option>Mobifone</option><option>Vinaphone</option><option>Vietnamobile</option></select>
+          <label for="cardSerial">Số serial</label><input id="cardSerial" placeholder="Số serial trên thẻ">
+          <label for="cardCode">Mã thẻ</label><input id="cardCode" placeholder="Mã thẻ cào">
         </div>
-        <button class="btn-primary" onclick="createDeposit()">Tạo yêu cầu nạp</button>
+        <button class="btn-primary" id="createDepositBtn" type="button">Tạo yêu cầu nạp</button>
         <div id="depositResult"></div>
         <h3>Lịch sử nạp</h3><ul id="depositHistory" class="list"></ul>
       </div>
     </section>
 
     <section id="tab-leaderboard" class="tab" hidden>
-      <button class="btn-back" onclick="showTab('shop')">← Quay về Sản phẩm</button>
+      <button class="btn-back" type="button" data-back>← Quay về Sản phẩm</button>
       <div class="card"><h2>🏆 BXH nạp</h2><p class="muted small">Top 20 theo tổng nạp đã xác minh.</p><ol id="leaderboardList" class="list"></ol><p id="myRank" class="muted"></p></div>
     </section>
 
     <section id="tab-lookup" class="tab" hidden>
-      <button class="btn-back" onclick="showTab('shop')">← Quay về Sản phẩm</button>
+      <button class="btn-back" type="button" data-back>← Quay về Sản phẩm</button>
       <div class="card"><h2>🔍 Tra cứu đơn hàng</h2>
-        <label>Mã đơn</label><input id="lookupCode" placeholder="VD: DH…">
-        <label>SĐT / Zalo / Telegram lúc đặt hàng</label><input id="lookupContact" placeholder="Thông tin liên hệ lúc đặt hàng">
-        <button class="btn-primary" onclick="lookupOrder()">Tra cứu</button>
+        <label for="lookupCode">Mã đơn</label><input id="lookupCode" placeholder="VD: DH…">
+        <label for="lookupContact">SĐT / Zalo / Telegram lúc đặt hàng</label><input id="lookupContact" placeholder="Thông tin liên hệ lúc đặt hàng">
+        <button class="btn-primary" id="lookupBtn" type="button">Tra cứu</button>
         <div id="lookupResult"></div>
       </div>
     </section>
 
     <section id="tab-account" class="tab" hidden>
-      <button class="btn-back" onclick="showTab('shop')">← Quay về Sản phẩm</button>
+      <button class="btn-back" type="button" data-back>← Quay về Sản phẩm</button>
       <div class="card"><h2>👤 Tài khoản</h2><p id="accountInfo"></p>
         <h3>🎨 Kiểu giao diện</h3>
         <p class="muted small">Đổi tức thì, không cần tải lại trang — lựa chọn được nhớ trên máy này.</p>
         <div class="design-pills" role="group" aria-label="Chọn kiểu giao diện">
-          <button type="button" data-design="sang" class="active" onclick="setDesign('sang')" aria-pressed="true">☀️ Sáng</button>
-          <button type="button" data-design="dem" onclick="setDesign('dem')" aria-pressed="false">🌙 Đêm</button>
-          <button type="button" data-design="ruc" onclick="setDesign('ruc')" aria-pressed="false">🌇 Rực</button>
+          <button type="button" data-design="sang" class="active" aria-pressed="true">☀️ Sáng</button>
+          <button type="button" data-design="dem" aria-pressed="false">🌙 Đêm</button>
+          <button type="button" data-design="ruc" aria-pressed="false">🌇 Rực</button>
         </div>
-        <label>Đổi họ tên</label><input id="newName"><button class="btn-primary" onclick="rename()">Lưu tên mới</button>
+        <label for="newName">Đổi họ tên</label><input id="newName"><button class="btn-primary" id="renameBtn" type="button">Lưu tên mới</button>
         <h3>Đơn hàng của tôi</h3><ul id="myOrders" class="list"></ul>
-        <button class="btn-ghost" onclick="logout()">Đăng xuất</button>
+        <button class="btn-ghost" id="logoutBtn" type="button">Đăng xuất</button>
       </div>
     </section>
 
     <section id="tab-cart" class="tab" hidden>
-      <button class="btn-back" onclick="showTab('shop')">← Quay về Sản phẩm</button>
+      <button class="btn-back" type="button" data-back>← Quay về Sản phẩm</button>
       <div class="card"><h2>🛒 Giỏ hàng</h2><ul id="cartList" class="list"></ul>
         <p>Tổng: <b class="gold" id="cartTotal">0đ</b></p>
-        <label>Họ tên người nhận</label><input id="orderName">
-        <label>SĐT / Zalo / Telegram</label><input id="orderContact" placeholder="Shop giao tài khoản qua thông tin này">
-        <label>Thanh toán</label><select id="payMethod"><option value="wallet">Trừ ví ngay khi bấm nút</option><option value="manual">Đặt trước, thanh toán sau</option></select>
-        <button class="btn-primary" onclick="placeOrder()">Đặt hàng</button>
+        <label for="orderName">Họ tên người nhận</label><input id="orderName">
+        <label for="orderContact">SĐT / Zalo / Telegram</label><input id="orderContact" placeholder="Shop giao tài khoản qua thông tin này">
+        <label for="payMethod">Thanh toán</label><select id="payMethod"><option value="wallet">Trừ ví ngay khi bấm nút</option><option value="manual">Đặt trước, thanh toán sau</option></select>
+        <button class="btn-primary" id="placeOrderBtn" type="button">Đặt hàng</button>
         <p class="muted small">Lưu mã đơn để tra cứu.</p>
         <div id="orderResult"></div>
       </div>
     </section>
 
     <section id="tab-admin" class="tab" hidden>
-      <button class="btn-back" onclick="showTab('shop')">← Quay về Sản phẩm</button>
+      <button class="btn-back" type="button" data-back>← Quay về Sản phẩm</button>
       <div class="card"><h2>⚙️ Quản lý shop</h2><p id="adminOverview" class="muted"></p>
         <div class="admin-block"><h3>Nạp tiền tự động — không cần duyệt</h3><p class="muted small">Tiền chỉ cộng khi kiểm tra qua API SePay/Casso khớp đúng số tiền + mã NAP…. Thẻ cào do chủ shop xác nhận thủ công.</p></div>
         <div class="admin-block"><h3>Thông tin nhận tiền &amp; mã QR</h3>
-          <label>Ngân hàng</label><input id="sBankName" placeholder="VD: Vietcombank">
-          <label>Mã BIN ngân hàng</label><input id="sBankBin" placeholder="VD: 970436">
-          <label>Số tài khoản</label><input id="sAccNum" placeholder="Số tài khoản nhận tiền">
-          <label>Chủ tài khoản</label><input id="sAccHolder" placeholder="Tên chủ tài khoản">
-          <label>Số MoMo</label><input id="sMomo" placeholder="Số MoMo nhận tiền">
-          <label>Số ZaloPay</label><input id="sZalo" placeholder="Số ZaloPay nhận tiền">
-          <button class="btn-primary" onclick="saveReceiving()">Lưu thông tin nhận tiền</button></div>
+          <label for="sBankName">Ngân hàng</label><input id="sBankName" placeholder="VD: Vietcombank">
+          <label for="sBankBin">Mã BIN ngân hàng</label><input id="sBankBin" placeholder="VD: 970436">
+          <label for="sAccNum">Số tài khoản</label><input id="sAccNum" placeholder="Số tài khoản nhận tiền">
+          <label for="sAccHolder">Chủ tài khoản</label><input id="sAccHolder" placeholder="Tên chủ tài khoản">
+          <label for="sMomo">Số MoMo</label><input id="sMomo" placeholder="Số MoMo nhận tiền">
+          <label for="sZalo">Số ZaloPay</label><input id="sZalo" placeholder="Số ZaloPay nhận tiền">
+          <button class="btn-primary" id="saveReceivingBtn" type="button">Lưu thông tin nhận tiền</button></div>
         <div class="admin-block"><h3>API nạp tiền qua QR (SePay / Casso)</h3>
-          <label>Gateway</label><select id="sGateway"><option value="">— Chưa kết nối —</option><option value="sepay">SePay</option><option value="casso">Casso</option></select>
-          <label>API key (chỉ lưu trên máy chủ, không hiển thị lại)</label><input id="sApiKey" type="password" placeholder="Dán API key của SePay/Casso">
-          <button class="btn-primary" onclick="saveApi()">Lưu API</button>
+          <label for="sGateway">Gateway</label><select id="sGateway"><option value="">— Chưa kết nối —</option><option value="sepay">SePay</option><option value="casso">Casso</option></select>
+          <label for="sApiKey">API key (chỉ lưu trên máy chủ, không hiển thị lại)</label><input id="sApiKey" type="password" placeholder="Dán API key của SePay/Casso">
+          <button class="btn-primary" id="saveApiBtn" type="button">Lưu API</button>
           <p class="muted small" id="apiStatus"></p></div>
         <div class="admin-block"><h3>Sản phẩm</h3>
           <div class="admin-form">
             <input id="pPlatform" placeholder="Nền tảng (Facebook…)"><input id="pName" placeholder="Tên sản phẩm">
             <input id="pPrice" type="number" placeholder="Giá (VNĐ)"><input id="pStock" type="number" placeholder="Tồn kho">
             <input id="pWarranty" placeholder="Bảo hành"><input id="pDesc" placeholder="Mô tả">
-            <button class="btn-primary" onclick="addProduct()">+ Thêm sản phẩm</button>
+            <button class="btn-primary" id="addProductBtn" type="button">+ Thêm sản phẩm</button>
           </div>
           <ul id="adminProducts" class="list"></ul></div>
         <div class="admin-block"><h3>Đơn hàng</h3><ul id="adminOrders" class="list"></ul></div>
@@ -304,46 +298,43 @@ var m=document.getElementById('themeColorMeta');if(m)m.content=c;}}catch(e){}})(
     </section>
   </main>
 
-  <!-- ===== Footer sáng + dải bản quyền navy ===== -->
   <footer>
-    <div class="footer-brand"><img class="brand-logo" src="logo.png" alt="Chợ Tài Nguyên Mmo" width="280" height="79"></div>
     <div class="footer-cols">
       <div><h3>Liên hệ</h3>
-        <button class="linklike" onclick="openBot()">💬 Hỗ trợ 24/7 — bot trả lời ngay</button>
+        <button class="linklike" id="footerBotBtn" type="button">💬 Hỗ trợ 24/7 — bot trả lời ngay</button>
         <p class="muted">Liên hệ qua thông tin bạn để lại khi đặt hàng</p>
-        <button class="linklike" onclick="showTab('lookup')">🔍 Tra cứu đơn hàng</button>
+        <button class="linklike" id="footerLookupBtn" type="button">🔍 Tra cứu đơn hàng</button>
       </div>
       <div><h3>Liên kết</h3>
-        <button class="linklike" onclick="showPolicy('purchase')">Chính sách mua hàng</button>
-        <button class="linklike" onclick="showPolicy('payment')">Chính sách thanh toán</button>
-        <button class="linklike" onclick="showPolicy('delivery')">Chính sách giao hàng</button>
-        <button class="linklike" onclick="showPolicy('privacy')">Chính sách bảo mật</button>
-        <button class="linklike" onclick="showPolicy('refund')">Hoàn tiền &amp; đổi trả</button>
-        <button class="linklike" onclick="showPolicy('faq')">Câu hỏi thường gặp</button>
+        <button class="linklike" type="button" data-policy="purchase">Chính sách mua hàng</button>
+        <button class="linklike" type="button" data-policy="payment">Chính sách thanh toán</button>
+        <button class="linklike" type="button" data-policy="delivery">Chính sách giao hàng</button>
+        <button class="linklike" type="button" data-policy="privacy">Chính sách bảo mật</button>
+        <button class="linklike" type="button" data-policy="refund">Hoàn tiền &amp; đổi trả</button>
+        <button class="linklike" type="button" data-policy="faq">Câu hỏi thường gặp</button>
       </div>
     </div>
     <div id="policyBox" class="card policy-box" hidden></div>
     <div class="copyright">© 2026 Chợ Tài Nguyên Mmo — Mọi quyền được bảo lưu.<br><span>Giá và tồn kho hiển thị trên trang là giá đang bán tại thời điểm bạn xem.</span></div>
   </footer>
 
-  <!-- ===== Thanh điều hướng dưới: phẳng, trắng, full chiều rộng — không còn dock viên thuốc ===== -->
   <nav class="bottom-nav">
-    <button data-nav="home" onclick="showHome()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/></svg><span>Trang chủ</span></button>
-    <button data-nav="products" onclick="showProducts()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1" fill="currentColor" stroke="none"/></svg><span>Sản phẩm</span></button>
-    <button data-nav="wallet" class="nav-topup nav-fab" onclick="showTab('wallet')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-6 9 6"/><path d="M4 9v11M20 9v11M8 12v6M12 12v6M16 12v6M2 21h20"/></svg><span>Nạp tiền</span></button>
-    <button data-nav="orders" onclick="showTab('orders')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.5a1 1 0 0 0 1 .5h9.9a1 1 0 0 0 1-.8L20 8H6"/><circle cx="9.5" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg><span>Đơn hàng</span></button>
-    <button data-nav="account" onclick="showTab('account')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.2-3.8 4.4-5.5 8-5.5s6.8 1.7 8 5.5"/></svg><span>Tài khoản</span></button>
+    <button type="button" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/></svg><span>Trang chủ</span></button>
+    <button type="button" data-nav="products"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1" fill="currentColor" stroke="none"/></svg><span>Sản phẩm</span></button>
+    <button type="button" data-nav="wallet" class="nav-topup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-6 9 6"/><path d="M4 9v11M20 9v11M8 12v6M12 12v6M16 12v6M2 21h20"/></svg><span>Nạp tiền</span></button>
+    <button type="button" data-nav="orders"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.5a1 1 0 0 0 1 .5h9.9a1 1 0 0 0 1-.8L20 8H6"/><circle cx="9.5" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg><span>Đơn hàng</span></button>
+    <button type="button" data-nav="account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.2-3.8 4.4-5.5 8-5.5s6.8 1.7 8 5.5"/></svg><span>Tài khoản</span></button>
   </nav>
 
-  <button class="bot-fab" onclick="openBot()" title="Hỗ trợ 24/7">💬</button>
+  <button class="bot-fab" id="botFab" type="button" title="Hỗ trợ 24/7">💬</button>
   <div id="botPanel" class="bot-panel" hidden>
-    <div class="bot-head">🤖 Hỗ trợ 24/7 — Chợ Tài Nguyên Mmo <button onclick="openBot()">✕</button></div>
+    <div class="bot-head">🤖 Hỗ trợ 24/7 — Chợ Tài Nguyên Mmo <button id="botCloseBtn" type="button" aria-label="Đóng">✕</button></div>
     <div id="botLog" class="bot-log"><p class="bot-msg">Chào bạn! Mình là bot hỗ trợ của Chợ Tài Nguyên Mmo. Bạn cần hỏi giá, nạp tiền, bảo hành hay tra cứu đơn?</p></div>
-    <div class="bot-input"><input id="botText" placeholder="Nhập câu hỏi…" onkeydown="if(event.key==='Enter')sendBot()"><button onclick="sendBot()">Gửi</button></div>
+    <div class="bot-input"><input id="botText" placeholder="Nhập câu hỏi…"><button id="botSendBtn" type="button">Gửi</button></div>
   </div>
 
   <dialog id="productModal" class="modal-dialog" closedby="any" aria-labelledby="productModalTitle"><div class="modal-box" id="productModalBox"></div></dialog>
 </div>
-<script src="app.js?v=38"></script>
+<script src="app.js?v=39"></script>
 </body>
 </html>
