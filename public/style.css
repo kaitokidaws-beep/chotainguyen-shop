@@ -48,6 +48,8 @@ h3 { font-size: 16px; margin: 18px 0 8px; }
    (tỉ lệ ảnh 819/232 = 3,53:1). KHÔNG thu nhỏ nữa — lần thu nhỏ trước để lại
    khoảng trống lớn bên phải header, đó đúng là chỗ user chửi. */
 .brand-logo { display: block; width: 280px; height: 79px; max-width: 72vw; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(15,23,42,.18)); }
+/* Linh vat Fox cua shop — chi hien o giua header tren PC, dien thoai header da day nen an di */
+.header-mascot { display: none; }
 .header-actions { display: flex; gap: 8px; margin-left: auto; }
 .icon-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 18px; }
 .menu-btn { position: relative; width: 46px; height: 36px; flex: none; border-radius: 999px; border: 1px solid #a7f3d0; background: #d1fae5; cursor: pointer; padding: 0; box-shadow: 0 2px 8px rgba(15,23,42,.10); transition: transform .12s ease, border-color .2s ease; }
@@ -73,7 +75,7 @@ h3 { font-size: 16px; margin: 18px 0 8px; }
 .gate, main, footer { width: 100%; padding: 0 16px; }
 /* PC: gom trang vào cột giữa 1200px — không còn khoảng trống ~1500px giữa logo
    và nút menu, footer/nav không bị kéo giãn hết 1919px. Điện thoại giữ tràn hết bề ngang. */
-@media (min-width: 1024px) { .site-header { padding: 8px 0; } .header-row { max-width: 1200px; margin: 0 auto; padding: 0 32px; } .main-menu { right: max(32px, calc((100vw - 1200px) / 2 + 32px)); } .gate, main { max-width: 1200px; margin: 0 auto; padding: 0 32px; } .gate-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center; } .brand-logo { width: 340px; height: 96px; max-width: 340px; } .copyright { max-width: 1200px; margin: 0 auto; } .bottom-nav { left: 50%; right: auto; width: 1200px; max-width: 100%; transform: translateX(-50%) translateZ(0); border-left: 1px solid var(--border); border-right: 1px solid var(--border); } }
+@media (min-width: 1024px) { .site-header { padding: 8px 0; } .header-row { max-width: 1200px; margin: 0 auto; padding: 0 32px; } .main-menu { right: max(32px, calc((100vw - 1200px) / 2 + 32px)); } .gate, main { max-width: 1200px; margin: 0 auto; padding: 0 32px; } .gate-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center; } .brand-logo { width: 340px; height: 96px; max-width: 340px; } .header-mascot { display: block; height: 84px; width: auto; margin: 0 auto; flex: none; } .copyright { max-width: 1200px; margin: 0 auto; } .bottom-nav { left: 50%; right: auto; width: 1200px; max-width: 100%; transform: translateX(-50%) translateZ(0); border-left: 1px solid var(--border); border-right: 1px solid var(--border); } }
 .gate-hero { padding: 24px 0 8px; }
 .stats-panel { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 16px 0; }
 @media (min-width: 1024px) { .stats-panel { grid-template-columns: repeat(4, 1fr); } }
