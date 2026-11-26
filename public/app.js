@@ -36,11 +36,14 @@ async function api(path, opts = {}) {
 }
 
 // ---------------------------------------------------------------------------
-// Kiểu giao diện: 3 thiết kế trong 1 site, chung 1 stylesheet.
+// Kiểu giao diện: 4 thiết kế trong 1 site, chung 1 stylesheet.
 // Chỉ đổi body[data-design] — CSS lo phần còn lại. Đổi tức thì, không tải
 // lại trang, giỏ / ví / phiên đăng nhập không động tới.
+// Mặc định cho khách mới là "net" (neo-brutalist); localStorage đã chọn
+// kiểu nào thì vẫn giữ kiểu đó.
 // ---------------------------------------------------------------------------
 const DESIGNS = {
+  net: { theme: 'light', color: '#fdf6e3' },
   sang: { theme: 'light', color: '#f4f8fc' },
   dem: { theme: 'dark', color: '#0a0d16' },
   ruc: { theme: 'light', color: '#fff7ed' },
@@ -49,11 +52,11 @@ const DESIGN_KEY = 'ctn_design';
 function currentDesign() {
   try {
     const d = localStorage.getItem(DESIGN_KEY);
-    return DESIGNS[d] ? d : 'sang';
-  } catch (e) { return 'sang'; }
+    return DESIGNS[d] ? d : 'net';
+  } catch (e) { return 'net'; }
 }
 function applyDesign(name, persist) {
-  if (!DESIGNS[name]) name = 'sang';
+  if (!DESIGNS[name]) name = 'net';
   const d = DESIGNS[name];
   document.body.setAttribute('data-design', name);
   document.documentElement.setAttribute('data-design', name);

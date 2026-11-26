@@ -3,4 +3,3 @@ shop.db
 shop.db-journal
 .env
 /target
-server-node/node_modules/

@@ -2,14 +2,13 @@
 
 Shop bán tài khoản mạng xã hội, bản full: đăng ký / đăng nhập, giỏ hàng, đặt hàng,
 ví nạp tiền (VietQR + API SePay/Casso), BXH nạp, bot hỗ trợ 24/7, quản lý shop.
-Server viết bằng **Rust (Axum + SQLite)** — bản viết lại từ server Node/Express cũ,
-cùng API, cùng giao diện, cùng dữ liệu. Mật khẩu cũ (scrypt) vẫn đăng nhập được.
-Server Node cũ vẫn giữ trong thư mục `server-node/` để đối chiếu, không còn chạy nữa.
+Server viết bằng **Rust (Axum + SQLite)**. Mật khẩu cũ (scrypt) vẫn đăng nhập được.
 
-Giao diện mới "Aurora Premium": nền sáng với vệt cực quang tím–xanh dương–cyan,
-thẻ trắng kính, nút gradient cực quang, hero gradient đậm, modal chi tiết dùng
-`<dialog>` native, chuyển cảnh view transition khi mở sản phẩm, form có
-autocomplete + kiểm tra `:user-invalid`, tôn trọng giảm chuyển động.
+Giao diện: **một stylesheet duy nhất** (`public/style.css`) với 4 kiểu giao
+diện trong cùng 1 site — Sáng (tạp chí sáng, serif), Đêm (mực tối + aurora),
+Rực (gradient hoàng hôn), Nét (neo-brutalist: viền đen dày, bóng cứng,
+chữ đen to) — chuyển tức thì bằng biến CSS dưới `body[data-design]`,
+lựa chọn được nhớ trên máy (localStorage `ctn_design`).
 
 ## 1. Chạy trên máy của bạn (thử trước)
 
@@ -78,11 +77,11 @@ Deploy từ GitHub qua dashboard Fly.io; mỗi lần push code mới lên `main`
 thì bấm **Deploy** lại trên dashboard.
 
 Muốn dữ liệu bền qua các lần deploy: tạo Volume 1GB (`fly volumes create
-shop-data -a chotainguyen-shop --region sin --size 1`), thêm vào `fly.toml`:
+shop_data -a chotainguyen-shop --region sin --size 1`), thêm vào `fly.toml`:
 
 ```toml
 [[mounts]]
-  source = "shop-data"
+  source = "shop_data"
   destination = "/data"
 ```
 
@@ -132,15 +131,14 @@ src/
   handlers.rs          Toàn bộ API: auth, sản phẩm, đơn, ví, nạp tiền, API SePay/Casso, bot, quản lý shop
   bank.rs              Đọc giao dịch SePay/Casso, khớp đúng số tiền + mã NAP…
   util.rs              Định dạng tiền, che tên, hash scrypt (tương thích Node), sinh mã DH…/NAP…
-server-node/           Server Node/Express cũ — chỉ giữ lại để đối chiếu, không chạy nữa
 public/
   index.html           Giao diện: cổng đăng ký, shop, footer, bottom nav 5 mục
-  design-sang.css      "Chợ Sáng": xanh nước + trắng, serif tạp chí (mặc định)
-  design-dem.css       "Chợ Đêm": mực tối + aurora (file gốc 4782c33 + lớp ADAPT)
-  design-ruc.css       "Chợ Rực": gradient hoàng hôn cam–hồng–tím, thẻ chunky
-  app.js               Gọi API, giỏ hàng, VietQR, bot, quản lý shop, dialog + view transition, chuyển 3 kiểu giao diện (localStorage ctn_design)
+  style.css            Một stylesheet duy nhất: bố cục dùng chung + 4 kiểu giao diện
+                       (Sáng / Đêm / Rực / Nét) bằng biến CSS dưới body[data-design]
+  app.js               Gọi API, giỏ hàng, VietQR, bot, quản lý shop, dialog, chuyển 4 kiểu
+                       giao diện (localStorage ctn_design, mặc định Nét)
   logo.png             Logo thật của shop (ảnh user gửi)
-  mascot.png           Linh vật cáo chín đuôi (ảnh user gửi) — chỉ hiện ở header PC
+  mascot.png           Linh vật cáo chín đuôi (ảnh user gửi) — chỉ hiện ở kiểu Đêm, PC
 shop.db                File dữ liệu (tự tạo khi chạy, không có trong zip)
 ```
 

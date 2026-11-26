@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="vi" data-theme="light" data-design="sang">
+<html lang="vi" data-theme="light" data-design="net">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#f4f8fc" id="themeColorMeta">
+<meta name="theme-color" content="#fdf6e3" id="themeColorMeta">
 <title>Chợ Tài Nguyên Mmo — Shop Tài Khoản Mạng Xã Hội</title>
-<link rel="stylesheet" href="style.css?v=39">
+<link rel="stylesheet" href="style.css?v=40">
 <script>
 /* Áp dụng kiểu giao diện đã lưu TRƯỚC khi trang vẽ để không chớp sai thiết kế. */
 (function () {
   try {
     var d = localStorage.getItem('ctn_design');
-    var ok = { sang: 1, dem: 1, ruc: 1 };
+    var ok = { net: 1, sang: 1, dem: 1, ruc: 1 };
     if (ok[d]) {
-      var t = { sang: 'light', dem: 'dark', ruc: 'light' }[d];
-      var c = { sang: '#f4f8fc', dem: '#0a0d16', ruc: '#fff7ed' }[d];
+      var t = { net: 'light', sang: 'light', dem: 'dark', ruc: 'light' }[d];
+      var c = { net: '#fdf6e3', sang: '#f4f8fc', dem: '#0a0d16', ruc: '#fff7ed' }[d];
       document.documentElement.setAttribute('data-design', d);
       document.documentElement.setAttribute('data-theme', t);
       var m = document.getElementById('themeColorMeta');
@@ -50,7 +50,8 @@
     <div class="design-bar">
       <span class="design-label">Kiểu giao diện:</span>
       <div class="design-pills" role="group" aria-label="Chọn kiểu giao diện">
-        <button type="button" data-design="sang" class="active" aria-pressed="true">☀️ Sáng</button>
+        <button type="button" data-design="net" class="active" aria-pressed="true">✏️ Nét</button>
+        <button type="button" data-design="sang" aria-pressed="false">☀️ Sáng</button>
         <button type="button" data-design="dem" aria-pressed="false">🌙 Đêm</button>
         <button type="button" data-design="ruc" aria-pressed="false">🌇 Rực</button>
       </div>
@@ -244,7 +245,8 @@
         <h3>🎨 Kiểu giao diện</h3>
         <p class="muted small">Đổi tức thì, không cần tải lại trang — lựa chọn được nhớ trên máy này.</p>
         <div class="design-pills" role="group" aria-label="Chọn kiểu giao diện">
-          <button type="button" data-design="sang" class="active" aria-pressed="true">☀️ Sáng</button>
+          <button type="button" data-design="net" class="active" aria-pressed="true">✏️ Nét</button>
+          <button type="button" data-design="sang" aria-pressed="false">☀️ Sáng</button>
           <button type="button" data-design="dem" aria-pressed="false">🌙 Đêm</button>
           <button type="button" data-design="ruc" aria-pressed="false">🌇 Rực</button>
         </div>
@@ -335,6 +337,6 @@
 
   <dialog id="productModal" class="modal-dialog" closedby="any" aria-labelledby="productModalTitle"><div class="modal-box" id="productModalBox"></div></dialog>
 </div>
-<script src="app.js?v=39"></script>
+<script src="app.js?v=40"></script>
 </body>
 </html>
