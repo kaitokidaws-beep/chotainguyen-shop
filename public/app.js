@@ -14,6 +14,19 @@ async function api(path, opts = {}) {
   return j;
 }
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* MWG dialog: closedby="any" cho light-dismiss trên trình duyệt mới; fallback
+   bằng tay cho trình duyệt cũ chưa hỗ trợ (Safari): bấm ngoài modal-box thì
+   đóng — đo vị trí bấm chuột theo chiều Y như guide (pointerdown/pointerup
+   để kéo chọn chữ trong modal không bị đóng oan). */
+function setupDialogLightDismiss() {
+  const dlg = $('productModal');
+  if (!dlg || 'closedBy' in dlg) return;
+  let downY = null;
+  dlg.addEventListener('pointerdown', e => { if (e.target === dlg) downY = e.clientY; });
+  dlg.addEventListener('pointerup', e => { if (e.target === dlg && downY !== null && Math.abs(e.clientY - downY) < 5) closeModal(); downY = null; });
+}
 
 // ---------- theme ----------
 // Không còn nút chuyển sáng/tối: shop luôn ở theme sáng (trắng) như trước khi có nút chuyển.
@@ -35,6 +48,9 @@ function setAuthMode(mode) {
   $('authChip').textContent = mode === 'register' ? 'Đăng Ký Miễn Phí' : 'Đăng Nhập An Toàn';
   $('authSubmit').textContent = mode === 'register' ? 'Đăng ký' : 'Đăng nhập';
   $('nameField').style.display = mode === 'register' ? '' : 'none';
+  $('authName').required = mode === 'register';
+  // MWG forms: autocomplete đúng nghĩa để trình duyệt tự điền/đề xuất.
+  $('authPass').autocomplete = mode === 'register' ? 'new-password' : 'current-password';
   $('authSwitch').innerHTML = mode === 'register'
     ? 'Đã có tài khoản? <a href="#" onclick="switchAuthMode(event)">Đăng nhập</a>'
     : 'Chưa có tài khoản? <a href="#" onclick="switchAuthMode(event)">Đăng ký</a>';
@@ -164,15 +180,16 @@ function renderProducts() {
   $('productCount').textContent = `Có ${list.length} sản phẩm`;
   $('emptyProducts').hidden = list.length > 0;
   $('emptyProducts').textContent = q ? 'Không tìm thấy sản phẩm nào. Thử từ khóa hoặc nền tảng khác.' : 'Không có sản phẩm. Thử chọn nền tảng khác.';
-  $('productGrid').innerHTML = list.map(p => {
+  $('productGrid').innerHTML = list.map((p, i) => {
     const st = PLATFORM_STYLE[p.platform] || { c: '#0b7a52', svg: '<svg width="22" height="22" viewBox="0 0 24 24"><text x="12" y="17" text-anchor="middle" font-size="14" font-weight="900" fill="#fff">' + p.platform[0] + '</text></svg>' };
     const old = Number(p.old_price || 0);
     const disc = old > p.price ? Math.round((1 - p.price / old) * 100) : 0;
     const bh = (String(p.warranty || '').match(/(\d+)\s*ngày/) || [])[1];
     const sold = Number(p.sold || 0);
+    const delay = (i % 8) * 40; // stagger: thẻ hiện dần từ dưới lên
     return `
-    <div class="product-card compact" onclick="openProduct(${p.id})">
-      <div class="p-banner" style="background:${st.c}">
+    <div class="product-card compact" style="animation-delay:${delay}ms" onclick="openProduct(${p.id})" tabindex="0" onkeydown="if(event.key==='Enter')openProduct(${p.id})">
+      <div class="p-banner" style="background:${st.c}" data-card-banner="${p.id}">
         <span class="p-banner-logo">${st.svg}</span>
         <span class="banner-badges">${p.is_hot ? '<span class="hot-badge">NỔI BẬT</span>' : ''}${disc ? `<span class="disc-badge">-${disc}%</span>` : ''}</span>
         <i class="stock-badge ${p.stock > 0 ? 'in' : 'out'}">${p.stock > 0 ? '● Còn hàng' : 'Hết hàng'}</i>
@@ -191,15 +208,33 @@ function renderProducts() {
 function setFilter(p) { platformFilter = p; renderProducts(); }
 function openProduct(id) {
   const p = products.find(x => x.id === id); if (!p) return;
-  $('productModalBox').innerHTML = `<button class="x" style="float:right;background:none;border:none;font-size:18px" onclick="closeModal()">✕</button>
-    <span class="platform-tag">${esc(p.platform)}</span><h2>${esc(p.name)}</h2>
+  const st = PLATFORM_STYLE[p.platform] || { c: '#0b7a52', svg: '' };
+  const box = $('productModalBox');
+  box.innerHTML = `<button class="x" onclick="closeModal()" aria-label="Đóng">✕</button>
+    <span class="platform-tag">${esc(p.platform)}</span><h2 id="productModalTitle" tabindex="-1">${esc(p.name)}</h2>
+    <div class="p-banner" style="background:${st.c}" data-vt-banner="${p.id}"><span class="p-banner-logo">${st.svg}</span></div>
     <p class="muted">${esc(p.description)}</p><p class="price">${fmt(p.price)}${Number(p.old_price || 0) > p.price ? ` <s class="old-price">${fmt(p.old_price)}</s> <span class="disc-badge">-${Math.round((1 - p.price / p.old_price) * 100)}%</span>` : ''}</p>
     <p class="stock">Đã bán ${Number(p.sold || 0)} • Còn ${p.stock} tài khoản</p><p class="warranty">🛡️ ${esc(p.warranty)}</p>
     <button class="btn-primary" onclick="buyNow(${p.id}); closeModal()">Mua ngay</button>
     <button class="btn-ghost" onclick="addToCart(${p.id}); closeModal()">Thêm vào giỏ</button>`;
-  $('productModal').hidden = false;
+  const dlg = $('productModal');
+  const show = () => { dlg.showModal(); const h = $('productModalTitle'); if (h) h.focus({ preventScroll: true }); };
+  /* View transition (MWG same-document-transitions): banner của thẻ sản phẩm
+     biến hình thành banner trong modal (cùng view-transition-name). Tắt hẳn
+     khi user bật giảm chuyển động hoặc trình duyệt không hỗ trợ. */
+  const cardBanner = document.querySelector(`[data-card-banner="${p.id}"]`);
+  if (!isReducedMotion && document.startViewTransition && cardBanner) {
+    const vtName = 'p-banner-' + p.id;
+    cardBanner.style.viewTransitionName = vtName;
+    const mb = box.querySelector('.p-banner'); if (mb) mb.style.viewTransitionName = vtName;
+    const vt = document.startViewTransition(show);
+    vt.finished.catch(() => {}).finally(() => {
+      cardBanner.style.viewTransitionName = '';
+      const b = box.querySelector('.p-banner'); if (b) b.style.viewTransitionName = '';
+    });
+  } else show();
 }
-function closeModal() { $('productModal').hidden = true; }
+function closeModal() { const m = $('productModal'); if (m && m.open) m.close(); }
 function addToCart(id) {
   const it = cart.find(x => x.product_id === id);
   if (it) it.qty++; else cart.push({ product_id: id, qty: 1 });
@@ -451,4 +486,5 @@ applyTheme();
   if (stats) { $('statSold').textContent = stats.sold_30d; $('statProducts').textContent = stats.total_products; }
   if (token()) { try { await enterShop(); } catch { $('gate').hidden = false; } }
   updateCartBadge();
+  setupDialogLightDismiss();
 })();

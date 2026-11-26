@@ -1,39 +1,31 @@
 # syntax = docker/dockerfile:1
 
-# Adjust NODE_VERSION as desired
-ARG NODE_VERSION=22.21.1
-FROM node:${NODE_VERSION}-slim AS base
+# Chợ Tài Nguyên Mmo — server Rust (Axum + SQLite).
+# Build 2 giai đoạn: biên dịch bằng Rust rồi chạy bằng image Debian mỏng
+# chỉ chứa binary + file tĩnh public/. Nghe trên $PORT (mặc định 8080).
 
-LABEL fly_launch_runtime="Node.js"
-
-# Node.js app lives here
+# --- Builder ---
+FROM rust:1.100-slim-bookworm AS builder
 WORKDIR /app
-
-# Set production environment
-ENV NODE_ENV="production"
-
-
-# Throw-away build stage to reduce size of final image
-FROM base AS build
-
-# Install packages needed to build node modules
+# rusqlite (bundled) biên dịch SQLite từ source nên cần trình biên dịch C.
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
+    apt-get install --no-install-recommends -y build-essential pkg-config && \
+    rm -rf /var/lib/apt/lists/*
+COPY Cargo.toml Cargo.lock ./
+COPY src ./src
+RUN cargo build --release
 
-# Install node modules
-COPY package-lock.json package.json ./
-RUN npm ci
+# --- Runtime ---
+FROM debian:bookworm-slim
+LABEL fly_launch_runtime="Rust"
+WORKDIR /app
+# ca-certificates: reqwest gọi API SePay/Casso qua HTTPS.
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+COPY --from=builder /app/target/release/shop /app/shop
+COPY public ./public
 
-# Copy application code
-COPY . .
-
-
-# Final stage for app image
-FROM base
-
-# Copy built application
-COPY --from=build /app /app
-
-# Start the server by default, this can be overwritten at runtime
-EXPOSE 3000
-CMD [ "npm", "run", "start" ]
+ENV PORT="8080"
+EXPOSE 8080
+CMD ["/app/shop"]

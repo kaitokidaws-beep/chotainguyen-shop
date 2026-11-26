@@ -2,3 +2,4 @@ node_modules/
 shop.db
 shop.db-journal
 .env
+/target
