@@ -163,7 +163,12 @@ main, .gate { width: 100%; }
   main { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
   .brand-logo { width: auto; height: 56px; max-width: 220px; }
   .header-mascot-wrap { display: block; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; }
-  .header-mascot { display: block; height: 140px; width: auto; }
+  /* Mascot CHỈ cao 60px để vừa lọt trong hàng header PC (~56px logo + 8px
+     padding trên/dưới = 72px): bản 140px cũ thò ~42px lên trên che dải
+     top-strip ("Bảo hành 1 đổi 1") và ~42px xuống dưới che dải ví (lỗi v41).
+     Tính: tâm hàng ở 8+28=36px từ đỉnh header → mascot 60px chiếm 6–66px,
+     dải ví bắt đầu ở 70px → hở 4px, không che chữ nào. Vẫn PC-only. */
+  .header-mascot { display: block; height: 60px; width: auto; }
 }
 
 /* ---------- hero gọn 1 thẻ trắng (khommo247 + Fameswap) ---------- */
@@ -267,7 +272,7 @@ main, .gate { width: 100%; }
 .product-grid.list .p-media-logo svg { width: 40px; height: 40px; }
 .product-grid.list .bh-pill { display: none; }
 .product-grid.list .p-body { flex: 1; min-width: 0; }
-#productGrid { min-height: 480px; scroll-margin-top: 150px; }
+#productGrid { scroll-margin-top: 150px; }
 #actList { min-height: 96px; }
 .p-card {
   background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);

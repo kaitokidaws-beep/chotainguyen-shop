@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0284c7">
 <title>Chợ Tài Nguyên Mmo — Shop Tài Khoản Mạng Xã Hội</title>
-<link rel="stylesheet" href="style.css?v=33">
+<link rel="stylesheet" href="style.css?v=34">
 </head>
 <body>
 <div id="app">
@@ -16,7 +16,7 @@
       <div class="brand">
         <img class="brand-logo" src="logo.png" alt="Chợ Tài Nguyên Mmo" width="280" height="79">
       </div>
-      <div class="header-mascot-wrap" aria-hidden="true"><img class="header-mascot" src="mascot.png" alt="" width="71" height="140"></div>
+      <div class="header-mascot-wrap" aria-hidden="true"><img class="header-mascot" src="mascot.png" alt="" width="30" height="60"></div>
       <div class="header-user" id="headerUser" hidden>
         <button class="icon-btn header-search" onclick="focusSearch()" title="Tìm kiếm" aria-label="Tìm kiếm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg></button>
         <button class="avatar-btn" id="avatarBtn" onclick="showTab('account')">M</button>
@@ -65,12 +65,6 @@
         <p class="error" id="authError" role="status" aria-live="polite"></p>
       </form>
     </div>
-    <section class="trust reveal">
-      <div class="trust-item">🛡️<div><b>Bảo hành 1 đổi 1</b><span>Lỗi là đổi, đúng hạn ghi trên sản phẩm</span></div></div>
-      <div class="trust-item">⚡<div><b>Giao tự động 24/7</b><span>Thanh toán xong là nhận ngay</span></div></div>
-      <div class="trust-item">💰<div><b>Nạp ví an toàn</b><span>QR tự động, kiểm tra qua API</span></div></div>
-      <div class="trust-item">💬<div><b>Hỗ trợ 24/7</b><span>Bot trả lời ngay, mọi lúc</span></div></div>
-    </section>
   </section>
 
   <main id="shop" hidden>
@@ -93,6 +87,16 @@
         </div>
         <div class="hero-chips" id="platformFilters"></div>
       </div>
+
+      <!-- ===== Dải tin cậy 2×2 (Accster / Subvip24h) — ĐẶT TRONG #tab-shop,
+           KHÔNG đặt trong #gate: enterShop() giấu cả #gate sau khi đăng nhập,
+           nên để trong cổng là dải này biến mất khỏi bản render cuối (lỗi v41). ===== -->
+      <section class="trust reveal">
+        <div class="trust-item">🛡️<div><b>Bảo hành 1 đổi 1</b><span>Lỗi là đổi, đúng hạn ghi trên sản phẩm</span></div></div>
+        <div class="trust-item">⚡<div><b>Giao tự động 24/7</b><span>Thanh toán xong là nhận ngay</span></div></div>
+        <div class="trust-item">💰<div><b>Nạp ví an toàn</b><span>QR tự động, kiểm tra qua API</span></div></div>
+        <div class="trust-item">💬<div><b>Hỗ trợ 24/7</b><span>Bot trả lời ngay, mọi lúc</span></div></div>
+      </section>
 
       <!-- ===== Sản phẩm nổi bật: dải cuộn ngang, dùng chung 1 loại thẻ (khommo247) ===== -->
       <section class="feat reveal" aria-label="Sản phẩm nổi bật">
@@ -285,6 +289,6 @@
 
   <dialog id="productModal" class="modal-dialog" closedby="any" aria-labelledby="productModalTitle"><div class="modal-box" id="productModalBox"></div></dialog>
 </div>
-<script src="app.js?v=33"></script>
+<script src="app.js?v=34"></script>
 </body>
 </html>
