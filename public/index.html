@@ -2,41 +2,27 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Chợ Tài Nguyên Mmo — Tài khoản mạng xã hội giá tốt</title>
-<meta name="description" content="Chợ Tài Nguyên Mmo — mua tài khoản Facebook, TikTok, Instagram, YouTube, Telegram, Gmail, X, Zalo. Bảo hành 1 đổi 1, giao ngay sau thanh toán.">
-<link rel="stylesheet" href="style.css?v=44">
-<link rel="icon" href="logo.png">
+<meta name="description" content="Mua tài khoản Facebook, TikTok, Instagram, YouTube, Telegram, Gmail, X, Zalo. Giao tự động 24/7, bảo hành 1 đổi 1.">
+<link rel="stylesheet" href="style.css?v=45">
 </head>
 <body>
-
-<header class="site-header">
-  <div class="header-inner">
-    <a class="brand" href="#" id="brandHome" aria-label="Chợ Tài Nguyên Mmo — trang chủ">
-      <img src="logo.png" alt="Chợ Tài Nguyên Mmo" class="brand-logo">
-      <span class="brand-name">Chợ Tài Nguyên <b>Mmo</b></span>
+<header class="site-head">
+  <div class="wrap head-row">
+    <a class="brand" href="#" id="brandHome">
+      <img src="logo.png" alt="Chợ Tài Nguyên Mmo" class="brand-logo" width="40" height="40">
+      <span class="brand-text"><strong>CHỢ TÀI NGUYÊN MMO</strong><small>HỆ THỐNG TỰ ĐỘNG 24/7</small></span>
     </a>
-    <div class="header-search">
-      <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      <input type="search" id="searchInput" placeholder="Tìm tài khoản: gmail, facebook, tiktok…" autocomplete="off" aria-label="Tìm kiếm sản phẩm">
-      <button type="button" class="search-clear" id="searchClear" aria-label="Xóa tìm kiếm" hidden>×</button>
-    </div>
-    <div class="header-actions">
-      <button type="button" class="icon-btn cart-btn" id="cartBtn" aria-label="Giỏ hàng">
-        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 3h2l2.4 12.4A2 2 0 0 0 9.36 17H18a2 2 0 0 0 1.96-1.6L21.5 8H6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="21" r="1.6" fill="currentColor"/><circle cx="18" cy="21" r="1.6" fill="currentColor"/></svg>
-        <span class="cart-badge" id="cartCount" hidden>0</span>
-      </button>
-      <button type="button" class="btn btn-outline" id="topupBtn">Nạp tiền</button>
-      <button type="button" class="btn btn-primary btn-login" id="authBtn">Đăng nhập</button>
+    <div class="head-actions">
+      <button type="button" class="wallet-chip" id="walletChip" hidden><span>Ví:</span> <b id="walletBalance">0đ</b></button>
+      <button type="button" class="icon-btn" id="cartBtn" aria-label="Giỏ hàng">🛒<span class="cart-badge" id="cartCount" hidden>0</span></button>
+      <button type="button" class="btn btn-outline" id="topupBtn">+ <span class="topup-full">Nạp tiền</span><span class="topup-short">Nạp</span></button>
+      <button type="button" class="btn btn-primary" id="authBtn">Đăng nhập</button>
       <div class="account-wrap" id="accountWrap" hidden>
-        <button type="button" class="avatar-btn" id="accountBtn" aria-label="Tài khoản của tôi" aria-haspopup="true">
-          <span class="avatar-circle" id="avatarInitial">?</span>
-        </button>
+        <button type="button" class="avatar-btn" id="accountBtn" aria-label="Tài khoản của tôi"><span class="avatar-circle" id="avatarInitial">?</span></button>
         <div class="account-menu" id="accountMenu" hidden>
-          <div class="account-menu-head">
-            <strong id="menuFullName">—</strong>
-            <span>Số dư: <b class="money" id="menuBalance">0đ</b></span>
-          </div>
+          <div class="account-menu-head"><strong id="menuFullName">—</strong><span>Số dư: <b id="menuBalance">0đ</b></span></div>
           <button type="button" class="menu-item" data-menu="wallet">Ví của tôi</button>
           <button type="button" class="menu-item" data-menu="orders">Đơn của tôi</button>
           <button type="button" class="menu-item" data-menu="rename">Đổi tên</button>
@@ -46,460 +32,270 @@
       </div>
     </div>
   </div>
+  <div class="wrap head-search-row">
+    <div class="search-box">
+      <span class="search-icon" aria-hidden="true">🔍</span>
+      <input type="search" id="searchInput" placeholder="Tìm tài khoản: gmail, facebook, tiktok…" autocomplete="off" aria-label="Tìm kiếm sản phẩm">
+      <button type="button" class="search-clear" id="searchClear" aria-label="Xóa tìm kiếm" hidden>×</button>
+    </div>
+  </div>
+  <nav class="wrap cat-nav" id="catNav" aria-label="Danh mục sản phẩm"></nav>
 </header>
 
-<main>
-  <!-- Platform chip rail -->
-  <nav class="chip-rail" id="chipRail" aria-label="Lọc theo nền tảng"></nav>
+<div class="wrap trust-line">
+  <span id="statsLine">Đang tải…</span>
+  <span class="ticker" id="ticker" hidden>🛒 <span id="tickerText"></span></span>
+</div>
 
-  <!-- Trust strip -->
-  <div class="trust-strip">
-    <span class="trust-main">Bảo hành 1 đổi 1 &middot; Giao ngay sau thanh toán &middot; Nạp QR 24/7</span>
-    <span class="trust-stats" id="statsLine">Đang tải thống kê…</span>
-  </div>
-
-  <!-- Subtle "vừa mua" ticker -->
-  <div class="ticker" id="ticker" hidden>
-    <span class="ticker-label">Vừa mua</span>
-    <span class="ticker-text" id="tickerText"></span>
-  </div>
-
-  <!-- Hero deal banner — điểm nhấn duy nhất của trang (sản phẩm giảm giá mạnh nhất, tính từ dữ liệu thật) -->
-  <section class="deal-banner" id="dealBanner" hidden aria-label="Ưu đãi nổi bật">
-    <div class="deal-banner-inner" id="dealBannerInner"></div>
-  </section>
-
-  <!-- Sticky sort / filter bar -->
+<main class="wrap">
   <div class="filter-bar">
-    <div class="filter-bar-inner">
-      <label class="sort-wrap">
-        <span class="sort-label">Sắp xếp</span>
-        <select id="sortSelect" aria-label="Sắp xếp sản phẩm">
-          <option value="best">Bán chạy</option>
-          <option value="price-asc">Giá thấp</option>
-          <option value="price-desc">Giá cao</option>
-          <option value="newest">Mới nhất</option>
-        </select>
-      </label>
-      <button type="button" class="btn btn-outline btn-filter" id="filterBtn">
-        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 5h16l-6.5 8v5.5L10 21v-8L4 5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
-        Lọc <span class="filter-dot" id="filterDot" hidden></span>
-      </button>
-      <span class="result-count" id="resultCount"></span>
-    </div>
+    <span class="result-count" id="resultCount"></span>
+    <label class="sort-wrap">Sắp xếp
+      <select id="sortSelect" aria-label="Sắp xếp sản phẩm">
+        <option value="best">Bán chạy</option>
+        <option value="discount">Giảm nhiều nhất</option>
+        <option value="low">Giá thấp</option>
+        <option value="high">Giá cao</option>
+        <option value="new">Mới nhất</option>
+      </select>
+    </label>
+    <button type="button" class="btn btn-outline btn-filter" id="filterBtn">Lọc <span class="filter-dot" id="filterDot" hidden></span></button>
   </div>
 
-  <!-- Best sellers -->
-  <section class="section" id="hotSection">
-    <div class="section-head">
-      <h2>Bán chạy</h2>
-      <span class="section-sub">Được mua nhiều nhất tuần này</span>
-    </div>
-    <div class="row-scroll" id="hotRow"></div>
-  </section>
+  <div id="catalog" aria-live="polite"></div>
 
-  <!-- Main catalog -->
-  <section class="section" id="catalogSection">
-    <div class="section-head">
-      <h2>Tất cả sản phẩm</h2>
-      <span class="section-sub" id="catalogSub">Chọn tài khoản phù hợp với bạn</span>
-    </div>
-    <div class="grid" id="catalogGrid"></div>
-    <div class="empty-state" id="catalogEmpty" hidden>
-      <p><strong>Không tìm thấy sản phẩm nào.</strong></p>
-      <p>Thử từ khóa khác hoặc bỏ bộ lọc nhé.</p>
-      <button type="button" class="btn btn-outline" id="clearFiltersBtn">Xóa tìm kiếm &amp; bộ lọc</button>
-    </div>
-    <div class="load-more-wrap">
-      <button type="button" class="btn btn-outline btn-load-more" id="loadMoreBtn" hidden>Xem thêm</button>
-    </div>
-  </section>
+  <div class="empty-state" id="catalogEmpty" hidden>
+    <p>Không tìm thấy sản phẩm phù hợp.</p>
+    <button type="button" class="btn btn-outline" id="clearFiltersBtn">Xóa tìm kiếm &amp; bộ lọc</button>
+  </div>
 
-  <!-- New arrivals -->
-  <section class="section" id="newSection">
-    <div class="section-head">
-      <h2>Mới về</h2>
-      <span class="section-sub">Hàng mới cập nhật</span>
-    </div>
-    <div class="row-scroll" id="newRow"></div>
-  </section>
-
-  <!-- Activity + leaderboard -->
-  <section class="section duo">
-    <div class="duo-col">
-      <h2>Hoạt động gần đây</h2>
-      <ul class="activity-list" id="activityList"></ul>
-    </div>
-    <div class="duo-col">
-      <h2>Top khách tháng</h2>
-      <ol class="leaderboard-list" id="leaderboardList"></ol>
-      <p class="my-rank" id="myRank" hidden></p>
-    </div>
-  </section>
-
-  <!-- How to buy + FAQ -->
-  <section class="section">
+  <section class="block" id="howtoBlock">
     <h2>Mua như thế nào — 3 bước</h2>
     <ol class="steps">
-      <li><span class="step-num">1</span><strong>Chọn tài khoản</strong><span>Tìm đúng loại acc bạn cần, thêm vào giỏ hoặc mua ngay.</span></li>
-      <li><span class="step-num">2</span><strong>Thanh toán</strong><span>Trả bằng ví đã nạp hoặc thanh toán thủ công, nhận mã đơn ngay.</span></li>
-      <li><span class="step-num">3</span><strong>Nhận tài khoản ngay</strong><span>Thông tin đăng nhập được giao ngay sau khi thanh toán xong.</span></li>
+      <li><b>1. Chọn tài khoản</b><span>Tìm theo nền tảng, xem giá, tồn kho và bảo hành ngay trên từng dòng.</span></li>
+      <li><b>2. Thanh toán</b><span>Trả bằng ví (nạp trước qua ngân hàng, MoMo, ZaloPay, thẻ cào) hoặc đặt đơn rồi thanh toán thủ công.</span></li>
+      <li><b>3. Nhận tài khoản ngay</b><span>Hệ thống giao tự động 24/7 sau khi thanh toán xong. Lưu mã đơn để tra cứu.</span></li>
     </ol>
-    <h2 class="faq-title">Câu hỏi thường gặp</h2>
+  </section>
+
+  <section class="block" id="activityBlock">
+    <h2>Hoạt động gần đây</h2>
+    <ul class="activity-list" id="activityList"></ul>
+  </section>
+
+  <section class="block" id="leaderboardBlock">
+    <h2>🏆 BXH nạp tiền tháng</h2>
+    <ol class="leaderboard-list" id="leaderboardList"></ol>
+    <p class="my-rank" id="myRank" hidden></p>
+  </section>
+
+  <section class="block" id="faqBlock">
+    <h2>Câu hỏi thường gặp</h2>
     <div class="faq" id="faqList">
-      <details>
-        <summary>Bảo hành như thế nào?</summary>
-        <p>Bảo hành 1 đổi 1 theo thời gian ghi trên từng sản phẩm. Acc lỗi đăng nhập hoặc bị khóa trong thời gian bảo hành sẽ được đổi acc khác tương đương.</p>
-      </details>
-      <details>
-        <summary>Đổi trả ra sao?</summary>
-        <p>Nếu acc không dùng được ngay từ đầu, bạn được đổi mới trong thời gian bảo hành. Acc đã đổi mật khẩu / đổi thông tin và dùng bình thường thì không áp dụng đổi trả.</p>
-      </details>
-      <details>
-        <summary>Thanh toán bằng cách nào?</summary>
-        <p>Nạp tiền vào ví bằng chuyển khoản ngân hàng, MoMo, ZaloPay hoặc thẻ cào, rồi thanh toán bằng ví. Bạn cũng có thể chọn thanh toán thủ công khi đặt đơn.</p>
-      </details>
-      <details>
-        <summary>Bao lâu thì nhận được tài khoản?</summary>
-        <p>Giao ngay sau khi thanh toán hoàn tất. Với đơn thanh toán thủ công, shop xác nhận rồi giao trong thời gian sớm nhất, bạn tra cứu bằng mã đơn.</p>
-      </details>
+      <details><summary>Mua hàng có cần đăng nhập trước không?</summary><p>Không. Bạn xem hàng, tìm kiếm và chọn thoải mái. Chỉ khi bấm thanh toán mới cần đăng nhập để đơn lưu vào tài khoản của bạn.</p></details>
+      <details><summary>Bảo hành như thế nào?</summary><p>Mỗi sản phẩm ghi rõ bảo hành trên từng dòng (1 đổi 1 trong 7 hoặc 30 ngày). Tài khoản lỗi trong thời gian bảo hành được đổi mới hoặc hoàn tiền.</p></details>
+      <details><summary>Nạp tiền vào ví bằng cách nào?</summary><p>Bấm "+ Nạp tiền", chọn ngân hàng, MoMo, ZaloPay hoặc thẻ cào, chuyển đúng số tiền và nội dung mã NAP… rồi bấm "Kiểm tra giao dịch". Hệ thống tự khớp và cộng tiền.</p></details>
+      <details><summary>Tra cứu đơn hàng ở đâu?</summary><p>Nhập mã đơn (VD: DH00000001) và SĐT/email đã đặt hàng ở mục bên dưới. Không cần đăng nhập.</p></details>
     </div>
   </section>
 
-  <!-- Order lookup -->
-  <section class="section lookup-section">
+  <section class="block" id="lookupBlock">
     <h2>Tra cứu đơn hàng</h2>
-    <p class="section-sub">Nhập mã đơn và thông tin liên hệ bạn đã dùng khi đặt hàng — không cần đăng nhập.</p>
     <form class="lookup-form" id="lookupForm">
-      <input type="text" id="lookupCode" placeholder="Mã đơn, ví dụ: DH123456" autocomplete="off" required>
-      <input type="text" id="lookupContact" placeholder="Số điện thoại / email đã đặt hàng" autocomplete="off" required>
+      <input type="text" id="lookupCode" placeholder="Mã đơn, ví dụ: DH00000001" autocomplete="off" required>
+      <input type="text" id="lookupContact" placeholder="SĐT / email đã đặt hàng" autocomplete="off" required>
       <button type="submit" class="btn btn-primary">Tra cứu</button>
     </form>
     <div class="lookup-result" id="lookupResult" hidden></div>
   </section>
 </main>
 
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-col">
-      <img src="logo.png" alt="Chợ Tài Nguyên Mmo" class="footer-logo">
-      <p>Chợ tài khoản mạng xã hội — bảo hành 1 đổi 1, giao ngay sau thanh toán.</p>
+<footer class="site-foot">
+  <div class="wrap foot-grid">
+    <div>
+      <h3>Chợ Tài Nguyên Mmo</h3>
+      <p>Tài khoản mạng xã hội giá tốt. Giao tự động 24/7, bảo hành 1 đổi 1.</p>
     </div>
-    <div class="footer-col">
-      <h3>Hỗ trợ</h3>
-      <button type="button" class="footer-link" data-footer="lookup">Tra cứu đơn hàng</button>
-      <button type="button" class="footer-link" data-footer="bot">Chat với shop</button>
-      <button type="button" class="footer-link" data-footer="wallet">Nạp tiền vào ví</button>
+    <div>
+      <h3>Liên hệ</h3>
+      <p>Chat với shop bằng nút chat góc phải (bot 24/7).<br>Tra cứu đơn bằng mã đơn ở mục trên.</p>
     </div>
-    <div class="footer-col">
-      <h3>Chính sách</h3>
-      <button type="button" class="footer-link" data-footer="policy-warranty">Chính sách bảo hành</button>
-      <button type="button" class="footer-link" data-footer="policy-refund">Đổi trả</button>
-      <button type="button" class="footer-link" data-footer="policy-privacy">Bảo mật thông tin</button>
+    <div>
+      <h3>Liên kết</h3>
+      <p><a href="#" id="footOrders">Đơn của tôi</a><br><a href="#" id="footWallet">Nạp tiền vào ví</a><br><a href="#" id="footTop">Về đầu trang</a></p>
     </div>
   </div>
-  <p class="footer-note">© 2026 Chợ Tài Nguyên Mmo. Cần hỗ trợ? Bấm nút chat góc phải màn hình.</p>
+  <div class="copyright">© 2026 Chợ Tài Nguyên Mmo — Tài khoản mạng xã hội giá tốt.</div>
 </footer>
 
-<!-- Floating bot button + panel -->
-<button type="button" class="bot-fab" id="botBtn" aria-label="Chat với shop">
-  <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
-</button>
+<button type="button" class="bot-fab" id="botBtn" aria-label="Chat với shop">💬</button>
 <div class="bot-panel" id="botPanel" hidden role="dialog" aria-label="Chat với shop">
-  <div class="bot-head">
-    <strong>Chat với shop</strong>
-    <button type="button" class="sheet-close" data-close="botPanel" aria-label="Đóng chat">×</button>
-  </div>
-  <div class="bot-messages" id="botMessages">
-    <div class="bot-msg bot">Chào bạn! Mình là trợ lý của Chợ Tài Nguyên Mmo. Bạn cần hỏi giá, nạp tiền hay tra cứu đơn?</div>
-  </div>
-  <div class="bot-chips" id="botChips">
-    <button type="button" data-chip="Giá bao nhiêu?">Giá bao nhiêu?</button>
-    <button type="button" data-chip="Nạp tiền">Nạp tiền</button>
-    <button type="button" data-chip="Tra cứu đơn">Tra cứu đơn</button>
-    <button type="button" data-chip="Bảo hành">Bảo hành</button>
-  </div>
+  <div class="bot-head"><strong>Chat với shop — 24/7</strong><button type="button" class="bot-close" id="botClose" aria-label="Đóng chat">×</button></div>
+  <div class="bot-messages" id="botMessages"></div>
+  <div class="bot-chips" id="botChips"></div>
   <form class="bot-input-row" id="botForm">
     <input type="text" id="botInput" placeholder="Nhập câu hỏi…" autocomplete="off" required>
     <button type="submit" class="btn btn-primary">Gửi</button>
   </form>
 </div>
 
-<!-- Product detail modal -->
-<div class="overlay" id="productModal" hidden role="dialog" aria-modal="true" aria-label="Chi tiết sản phẩm">
-  <div class="sheet sheet-modal">
-    <button type="button" class="sheet-close" data-close="productModal" aria-label="Đóng">×</button>
-    <div id="productDetail"></div>
+<div class="overlay" id="productSheet" hidden role="dialog" aria-modal="true" aria-label="Chi tiết sản phẩm">
+  <div class="sheet product-sheet">
+    <div class="sheet-head"><strong>Chi tiết sản phẩm</strong><button type="button" class="sheet-close" data-close aria-label="Đóng">×</button></div>
+    <div class="sheet-body" id="productDetail"></div>
   </div>
 </div>
 
-<!-- Cart drawer -->
-<div class="overlay" id="cartDrawer" hidden role="dialog" aria-modal="true" aria-label="Giỏ hàng">
-  <div class="drawer">
-    <div class="drawer-head">
-      <h2>Giỏ hàng</h2>
-      <button type="button" class="sheet-close" data-close="cartDrawer" aria-label="Đóng giỏ hàng">×</button>
-    </div>
-    <div class="drawer-body" id="cartItems"></div>
+<div class="overlay overlay-right" id="cartDrawer" hidden role="dialog" aria-modal="true" aria-label="Giỏ hàng">
+  <div class="sheet drawer">
+    <div class="sheet-head"><strong>Giỏ hàng</strong><button type="button" class="sheet-close" data-close aria-label="Đóng">×</button></div>
+    <div class="sheet-body drawer-body" id="cartItems"></div>
     <div class="drawer-foot">
       <div class="cart-total-row"><span>Tạm tính</span><strong id="cartSubtotal">0đ</strong></div>
       <button type="button" class="btn btn-primary btn-block" id="checkoutBtn">Thanh toán</button>
-      <button type="button" class="btn btn-outline btn-block" id="continueShoppingBtn">Tiếp tục mua sắm</button>
+      <button type="button" class="btn btn-outline btn-block" data-close>Tiếp tục mua sắm</button>
     </div>
   </div>
 </div>
 
-<!-- Checkout sheet -->
 <div class="overlay" id="checkoutSheet" hidden role="dialog" aria-modal="true" aria-label="Thanh toán">
   <div class="sheet">
-    <button type="button" class="sheet-close" data-close="checkoutSheet" aria-label="Đóng">×</button>
-    <h2>Thanh toán</h2>
-    <div class="checkout-summary" id="checkoutSummary"></div>
-    <div id="checkoutAuth" hidden>
-      <p class="sheet-note">Đăng nhập để đặt hàng — đơn sẽ lưu vào tài khoản của bạn.</p>
-      <div class="auth-tabs" role="tablist">
-        <button type="button" class="auth-tab active" id="tabLogin" data-auth-tab="login">Đăng nhập</button>
-        <button type="button" class="auth-tab" id="tabRegister" data-auth-tab="register">Đăng ký</button>
+    <div class="sheet-head"><strong>Thanh toán</strong><button type="button" class="sheet-close" data-close aria-label="Đóng">×</button></div>
+    <div class="sheet-body">
+      <div class="checkout-summary" id="checkoutSummary"></div>
+      <div id="checkoutAuth" hidden>
+        <p class="checkout-login-note">Đăng nhập để đặt hàng — đơn sẽ lưu vào tài khoản của bạn.</p>
+        <div class="auth-tabs">
+          <button type="button" class="auth-tab active" id="coTabLogin" data-auth-tab="login">Đăng nhập</button>
+          <button type="button" class="auth-tab" id="coTabRegister" data-auth-tab="register">Đăng ký</button>
+        </div>
+        <form id="coLoginForm" class="auth-form">
+          <input type="text" id="coLoginUser" placeholder="Tên đăng nhập" autocomplete="username" required>
+          <input type="password" id="coLoginPass" placeholder="Mật khẩu" autocomplete="current-password" required>
+          <button type="submit" class="btn btn-primary btn-block">Đăng nhập &amp; đặt hàng</button>
+        </form>
+        <form id="coRegisterForm" class="auth-form" hidden>
+          <input type="text" id="coRegName" placeholder="Họ tên" autocomplete="name" required>
+          <input type="text" id="coRegUser" placeholder="Tên đăng nhập (3–40 ký tự: chữ, số, . _ -)" autocomplete="username" required>
+          <input type="password" id="coRegPass" placeholder="Mật khẩu" autocomplete="new-password" required>
+          <button type="submit" class="btn btn-primary btn-block">Đăng ký &amp; đặt hàng</button>
+        </form>
+      </div>
+      <form id="checkoutForm" hidden>
+        <label class="field"><span>Họ tên người mua</span><input type="text" id="buyerName" required></label>
+        <label class="field"><span>Liên hệ (SĐT / email)</span><input type="text" id="buyerContact" placeholder="Để shop gửi tài khoản cho bạn" required></label>
+        <div class="pay-methods" role="radiogroup" aria-label="Phương thức thanh toán">
+          <label class="pay-opt"><input type="radio" name="payMethod" value="wallet" checked> <span>Ví của tôi — số dư: <b id="checkoutBalance">0đ</b></span></label>
+          <label class="pay-opt"><input type="radio" name="payMethod" value="manual"> <span>Đặt đơn rồi thanh toán thủ công</span></label>
+        </div>
+        <p class="wallet-short" id="walletShort" hidden>Số dư không đủ. <button type="button" class="link-btn" id="checkoutTopupBtn">Nạp thêm tiền</button></p>
+        <button type="submit" class="btn btn-primary btn-block" id="placeOrderBtn">Đặt hàng</button>
+      </form>
+      <div id="checkoutDone" hidden></div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="authSheet" hidden role="dialog" aria-modal="true" aria-label="Đăng nhập / Đăng ký">
+  <div class="sheet sheet-narrow">
+    <div class="sheet-head"><strong id="authTitle">Đăng nhập</strong><button type="button" class="sheet-close" data-close aria-label="Đóng">×</button></div>
+    <div class="sheet-body">
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab active" data-auth-tab="login">Đăng nhập</button>
+        <button type="button" class="auth-tab" data-auth-tab="register">Đăng ký</button>
       </div>
       <form id="loginForm" class="auth-form">
-        <input type="text" id="loginUsername" placeholder="Tên đăng nhập" autocomplete="username" required>
-        <input type="password" id="loginPassword" placeholder="Mật khẩu" autocomplete="current-password" required>
+        <input type="text" id="loginUser" placeholder="Tên đăng nhập" autocomplete="username" required>
+        <input type="password" id="loginPass" placeholder="Mật khẩu" autocomplete="current-password" required>
         <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
       </form>
       <form id="registerForm" class="auth-form" hidden>
-        <input type="text" id="regFullName" placeholder="Họ tên" autocomplete="name" required>
-        <input type="text" id="regUsername" placeholder="Tên đăng nhập" autocomplete="username" required>
-        <input type="password" id="regPassword" placeholder="Mật khẩu (tối thiểu 6 ký tự)" autocomplete="new-password" minlength="6" required>
+        <input type="text" id="regName" placeholder="Họ tên" autocomplete="name" required>
+        <input type="text" id="regUser" placeholder="Tên đăng nhập (3–40 ký tự: chữ, số, . _ -)" autocomplete="username" required>
+        <input type="password" id="regPass" placeholder="Mật khẩu" autocomplete="new-password" required>
         <button type="submit" class="btn btn-primary btn-block">Đăng ký</button>
-        <button type="button" class="btn btn-google" id="googleSignupBtn" disabled>Đăng ký nhanh với Google</button>
-        <p class="sheet-note small">Đăng nhập bằng Google chưa được bật — hiện chỉ hỗ trợ tài khoản tên đăng nhập + mật khẩu.</p>
       </form>
-    </div>
-    <div id="checkoutBuyer" hidden>
-      <label class="field-label">Họ tên người mua
-        <input type="text" id="buyerName" autocomplete="name" required>
-      </label>
-      <label class="field-label">Liên hệ (SĐT / email)
-        <input type="text" id="buyerContact" autocomplete="tel" required>
-      </label>
-      <fieldset class="pay-methods">
-        <legend>Phương thức thanh toán</legend>
-        <label class="pay-option">
-          <input type="radio" name="payMethod" value="wallet" checked>
-          <span>Ví của tôi — số dư: <b class="money" id="walletBalanceInCheckout">0đ</b></span>
-        </label>
-        <label class="pay-option">
-          <input type="radio" name="payMethod" value="manual">
-          <span>Thanh toán thủ công — tạo đơn chờ xác nhận</span>
-        </label>
-      </fieldset>
-      <p class="inline-topup" id="insufficientNote" hidden>Số dư không đủ. <button type="button" class="link-btn" id="topupFromCheckout">Nạp thêm</button></p>
-      <button type="button" class="btn btn-primary btn-block" id="placeOrderBtn">Đặt hàng</button>
-    </div>
-    <div id="checkoutSuccess" hidden>
-      <p class="success-title">Đặt hàng thành công!</p>
-      <p>Mã đơn của bạn:</p>
-      <p class="order-code-big" id="successOrderCode">—</p>
-      <p class="sheet-note">Lưu mã đơn để tra cứu. Tài khoản sẽ được giao sau khi thanh toán hoàn tất.</p>
-      <p id="successOrderMsg"></p>
-      <button type="button" class="btn btn-primary btn-block" id="viewMyOrderBtn">Xem đơn của tôi</button>
-      <button type="button" class="btn btn-outline btn-block" id="successContinueBtn">Tiếp tục mua sắm</button>
+      <p class="auth-note">Chưa có tài khoản? Bấm tab "Đăng ký" — chỉ cần họ tên, tên đăng nhập và mật khẩu.</p>
     </div>
   </div>
 </div>
 
-<!-- Standalone auth sheet (header Đăng nhập) -->
-<div class="overlay" id="authSheet" hidden role="dialog" aria-modal="true" aria-label="Đăng nhập hoặc đăng ký">
-  <div class="sheet sheet-narrow">
-    <button type="button" class="sheet-close" data-close="authSheet" aria-label="Đóng">×</button>
-    <h2>Đăng nhập</h2>
-    <div class="auth-tabs" role="tablist">
-      <button type="button" class="auth-tab active" data-auth-tab="login" data-auth-scope="standalone">Đăng nhập</button>
-      <button type="button" class="auth-tab" data-auth-tab="register" data-auth-scope="standalone">Đăng ký</button>
-    </div>
-    <form id="standaloneLoginForm" class="auth-form">
-      <input type="text" id="standaloneLoginUsername" placeholder="Tên đăng nhập" autocomplete="username" required>
-      <input type="password" id="standaloneLoginPassword" placeholder="Mật khẩu" autocomplete="current-password" required>
-      <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
-    </form>
-    <form id="standaloneRegisterForm" class="auth-form" hidden>
-      <input type="text" id="standaloneRegFullName" placeholder="Họ tên" autocomplete="name" required>
-      <input type="text" id="standaloneRegUsername" placeholder="Tên đăng nhập" autocomplete="username" required>
-      <input type="password" id="standaloneRegPassword" placeholder="Mật khẩu (tối thiểu 6 ký tự)" autocomplete="new-password" minlength="6" required>
-      <button type="submit" class="btn btn-primary btn-block">Đăng ký</button>
-      <button type="button" class="btn btn-google" disabled>Đăng ký nhanh với Google</button>
-      <p class="sheet-note small">Đăng nhập bằng Google chưa được bật — hiện chỉ hỗ trợ tài khoản tên đăng nhập + mật khẩu.</p>
-    </form>
-  </div>
-</div>
-
-<!-- Wallet sheet -->
-<div class="overlay" id="walletSheet" hidden role="dialog" aria-modal="true" aria-label="Ví của tôi">
+<div class="overlay" id="walletSheet" hidden role="dialog" aria-modal="true" aria-label="Nạp tiền">
   <div class="sheet">
-    <button type="button" class="sheet-close" data-close="walletSheet" aria-label="Đóng">×</button>
-    <h2>Ví của tôi</h2>
-    <div class="wallet-balance-box">
-      <span>Số dư hiện tại</span>
-      <strong class="money" id="walletBalance">0đ</strong>
-      <span class="api-status" id="apiStatus">Đang kiểm tra cổng nạp…</span>
-    </div>
-    <form id="depositForm">
-      <label class="field-label">Số tiền nạp (tối thiểu 10.000đ)
-        <input type="number" id="depositAmount" min="10000" step="1000" placeholder="Ví dụ: 100000" required>
-      </label>
-      <div class="quick-amounts" id="quickAmounts">
-        <button type="button" data-amount="20000">20.000đ</button>
-        <button type="button" data-amount="50000">50.000đ</button>
-        <button type="button" data-amount="100000">100.000đ</button>
-        <button type="button" data-amount="200000">200.000đ</button>
-        <button type="button" data-amount="500000">500.000đ</button>
-        <button type="button" data-amount="1000000">1.000.000đ</button>
-      </div>
-      <label class="field-label">Phương thức
-        <select id="depositMethod">
-          <option value="bank">Chuyển khoản ngân hàng</option>
-          <option value="momo">MoMo</option>
-          <option value="zalopay">ZaloPay</option>
-          <option value="card">Thẻ cào</option>
-        </select>
-      </label>
-      <div id="cardFields" hidden>
-        <label class="field-label">Nhà mạng
-          <select id="cardCarrier">
-            <option value="Viettel">Viettel</option>
-            <option value="Mobifone">Mobifone</option>
-            <option value="Vinaphone">Vinaphone</option>
-            <option value="Vietnamobile">Vietnamobile</option>
-          </select>
-        </label>
-        <label class="field-label">Số seri thẻ
-          <input type="text" id="cardSerial" autocomplete="off">
-        </label>
-        <label class="field-label">Mã thẻ
-          <input type="text" id="cardCode" autocomplete="off">
-        </label>
-      </div>
-      <button type="submit" class="btn btn-primary btn-block">Tạo lệnh nạp</button>
-    </form>
-    <div id="depositResult" hidden>
-      <p class="success-title">Đã tạo lệnh nạp</p>
-      <p>Mã nạp (NAP): <strong class="order-code-big" id="depositCode">—</strong></p>
-      <p>Số tiền: <strong class="money" id="depositAmountShow">—</strong></p>
+    <div class="sheet-head"><strong>Nạp tiền vào ví</strong><button type="button" class="sheet-close" data-close aria-label="Đóng">×</button></div>
+    <div class="sheet-body">
+      <p class="wallet-balance-line">Số dư ví: <b id="walletSheetBalance">0đ</b></p>
+      <div class="quick-amounts" id="quickAmounts"></div>
+      <div class="method-tabs" id="methodTabs" role="tablist" aria-label="Phương thức nạp"></div>
       <div class="receiving-box" id="receivingBox"></div>
-      <p class="sheet-note">Tiền chỉ được cộng khi chuyển đúng số tiền và ghi đúng mã NAP trong nội dung chuyển khoản.</p>
-      <button type="button" class="btn btn-outline btn-block" id="checkDepositBtn">Kiểm tra giao dịch qua API</button>
-      <p id="checkDepositMsg"></p>
+      <form id="depositForm">
+        <label class="field"><span>Số tiền nạp (tối thiểu 10.000đ)</span><input type="number" id="depositAmount" min="10000" step="1000" placeholder="50.000" required></label>
+        <div id="cardFields" hidden>
+          <label class="field"><span>Nhà mạng</span><select id="cardCarrier"><option>Viettel</option><option>Mobifone</option><option>Vinaphone</option><option>Vietnamobile</option></select></label>
+          <label class="field"><span>Số seri thẻ</span><input type="text" id="cardSerial" placeholder="Số seri trên thẻ cào"></label>
+          <label class="field"><span>Mã thẻ</span><input type="text" id="cardCode" placeholder="Mã thẻ cào"></label>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Tạo yêu cầu nạp</button>
+      </form>
+      <div id="depositResult" hidden></div>
+      <h3 class="sub-head">Lịch sử nạp tiền</h3>
+      <ul class="deposit-list" id="depositList"></ul>
     </div>
-    <h3 class="sub-head">Lịch sử nạp tiền</h3>
-    <ul class="deposit-history" id="depositHistory"></ul>
   </div>
 </div>
 
-<!-- Orders sheet -->
 <div class="overlay" id="ordersSheet" hidden role="dialog" aria-modal="true" aria-label="Đơn của tôi">
   <div class="sheet">
-    <button type="button" class="sheet-close" data-close="ordersSheet" aria-label="Đóng">×</button>
-    <h2>Đơn của tôi</h2>
-    <div id="myOrdersList"></div>
+    <div class="sheet-head"><strong>Đơn của tôi</strong><button type="button" class="sheet-close" data-close aria-label="Đóng">×</button></div>
+    <div class="sheet-body"><ul class="order-list" id="myOrdersList"></ul></div>
   </div>
 </div>
 
-<!-- Rename sheet -->
 <div class="overlay" id="renameSheet" hidden role="dialog" aria-modal="true" aria-label="Đổi tên">
   <div class="sheet sheet-narrow">
-    <button type="button" class="sheet-close" data-close="renameSheet" aria-label="Đóng">×</button>
-    <h2>Đổi tên hiển thị</h2>
-    <form id="renameForm">
-      <label class="field-label">Họ tên mới
-        <input type="text" id="renameInput" required>
-      </label>
-      <button type="submit" class="btn btn-primary btn-block">Lưu tên mới</button>
-    </form>
+    <div class="sheet-head"><strong>Đổi tên hiển thị</strong><button type="button" class="sheet-close" data-close aria-label="Đóng">×</button></div>
+    <div class="sheet-body">
+      <form id="renameForm">
+        <label class="field"><span>Họ tên mới</span><input type="text" id="renameInput" required></label>
+        <button type="submit" class="btn btn-primary btn-block">Lưu</button>
+      </form>
+    </div>
   </div>
 </div>
 
-<!-- Filter bottom sheet -->
 <div class="overlay" id="filterSheet" hidden role="dialog" aria-modal="true" aria-label="Lọc sản phẩm">
   <div class="sheet sheet-narrow">
-    <button type="button" class="sheet-close" data-close="filterSheet" aria-label="Đóng">×</button>
-    <h2>Lọc sản phẩm</h2>
-    <label class="check-row"><input type="checkbox" id="filterInStock"> Chỉ còn hàng</label>
-    <label class="check-row"><input type="checkbox" id="filterHot"> Chỉ hàng hot</label>
-    <div class="price-range">
-      <label class="field-label">Giá từ
-        <input type="number" id="filterMin" min="0" step="1000" placeholder="0">
-      </label>
-      <label class="field-label">Giá đến
-        <input type="number" id="filterMax" min="0" step="1000" placeholder="Không giới hạn">
-      </label>
-    </div>
-    <button type="button" class="btn btn-primary btn-block" id="applyFilterBtn">Áp dụng lọc</button>
-    <button type="button" class="btn btn-outline btn-block" id="resetFilterBtn">Xóa bộ lọc</button>
-  </div>
-</div>
-
-<!-- Policy sheet -->
-<div class="overlay" id="policySheet" hidden role="dialog" aria-modal="true" aria-label="Chính sách">
-  <div class="sheet sheet-narrow">
-    <button type="button" class="sheet-close" data-close="policySheet" aria-label="Đóng">×</button>
-    <h2 id="policyTitle">Chính sách</h2>
-    <div id="policyBody"></div>
-  </div>
-</div>
-
-<!-- Admin panel -->
-<div class="overlay" id="adminPanel" hidden role="dialog" aria-modal="true" aria-label="Quản lý shop">
-  <div class="sheet sheet-wide">
-    <button type="button" class="sheet-close" data-close="adminPanel" aria-label="Đóng">×</button>
-    <h2>Quản lý shop</h2>
-    <div class="admin-stats" id="adminOverview"></div>
-    <div class="admin-tabs">
-      <button type="button" class="admin-tab active" data-admin-tab="products">Sản phẩm</button>
-      <button type="button" class="admin-tab" data-admin-tab="orders">Đơn hàng</button>
-      <button type="button" class="admin-tab" data-admin-tab="deposits">Nạp tiền</button>
-      <button type="button" class="admin-tab" data-admin-tab="settings">Cài đặt</button>
-    </div>
-    <div id="adminTabProducts">
-      <form id="adminProductForm" class="admin-product-form">
-        <input type="hidden" id="adminProductId">
-        <input type="text" id="adminProductPlatform" placeholder="Nền tảng (Facebook, TikTok…)" required>
-        <input type="text" id="adminProductName" placeholder="Tên sản phẩm" required>
-        <input type="number" id="adminProductPrice" placeholder="Giá (đ)" min="0" required>
-        <input type="number" id="adminProductOldPrice" placeholder="Giá cũ (đ, để trống nếu không có)" min="0">
-        <input type="number" id="adminProductStock" placeholder="Tồn kho" min="0" required>
-        <input type="text" id="adminProductWarranty" placeholder="Bảo hành (VD: BH 1 đổi 1 — 30 ngày)">
-        <label class="check-row"><input type="checkbox" id="adminProductHot"> Hàng hot</label>
-        <label class="check-row"><input type="checkbox" id="adminProductActive" checked> Đang bán</label>
-        <input type="text" id="adminProductDesc" placeholder="Mô tả ngắn">
-        <button type="submit" class="btn btn-primary" id="adminProductSubmit">Thêm sản phẩm</button>
-        <button type="button" class="btn btn-outline" id="adminProductCancelEdit" hidden>Hủy sửa</button>
-      </form>
-      <div class="admin-table-wrap"><table class="admin-table" id="adminProductsTable"></table></div>
-    </div>
-    <div id="adminTabOrders" hidden>
-      <div class="admin-table-wrap"><table class="admin-table" id="adminOrdersTable"></table></div>
-    </div>
-    <div id="adminTabDeposits" hidden>
-      <div class="admin-table-wrap"><table class="admin-table" id="adminDepositsTable"></table></div>
-    </div>
-    <div id="adminTabSettings" hidden>
-      <form id="adminSettingsForm">
-        <label class="field-label">Tên ngân hàng <input type="text" id="setBankName"></label>
-        <label class="field-label">Mã BIN ngân hàng <input type="text" id="setBankBin"></label>
-        <label class="field-label">Số tài khoản <input type="text" id="setAccountNumber"></label>
-        <label class="field-label">Chủ tài khoản <input type="text" id="setAccountHolder"></label>
-        <label class="field-label">MoMo <input type="text" id="setMomo"></label>
-        <label class="field-label">ZaloPay <input type="text" id="setZalopay"></label>
-        <label class="field-label">Cổng nạp (SePay / Casso) <input type="text" id="setGateway"></label>
-        <label class="field-label">API key <input type="text" id="setApiKey" autocomplete="off"></label>
-        <button type="submit" class="btn btn-primary btn-block">Lưu cài đặt</button>
-      </form>
+    <div class="sheet-head"><strong>Lọc sản phẩm</strong><button type="button" class="sheet-close" data-close aria-label="Đóng">×</button></div>
+    <div class="sheet-body">
+      <label class="check-row"><input type="checkbox" id="filterInStock"> Chỉ hiện còn hàng</label>
+      <label class="check-row"><input type="checkbox" id="filterHot"> Chỉ hàng HOT</label>
+      <div class="price-range">
+        <label class="field"><span>Giá từ</span><input type="number" id="filterMin" min="0" step="1000" placeholder="0"></label>
+        <label class="field"><span>Giá đến</span><input type="number" id="filterMax" min="0" step="1000" placeholder="500.000"></label>
+      </div>
+      <button type="button" class="btn btn-primary btn-block" id="applyFilterBtn">Áp dụng</button>
+      <button type="button" class="btn btn-outline btn-block" id="resetFilterBtn">Xóa bộ lọc</button>
     </div>
   </div>
 </div>
 
-<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="overlay overlay-full" id="adminPanel" hidden role="dialog" aria-modal="true" aria-label="Quản lý shop">
+  <div class="sheet admin-sheet">
+    <div class="sheet-head"><strong>Quản lý shop</strong><button type="button" class="sheet-close" data-close aria-label="Đóng">×</button></div>
+    <div class="sheet-body">
+      <div class="admin-tabs" id="adminTabs">
+        <button type="button" class="admin-tab active" data-admin-tab="overview">Tổng quan</button>
+        <button type="button" class="admin-tab" data-admin-tab="products">Sản phẩm</button>
+        <button type="button" class="admin-tab" data-admin-tab="orders">Đơn hàng</button>
+        <button type="button" class="admin-tab" data-admin-tab="deposits">Nạp tiền</button>
+        <button type="button" class="admin-tab" data-admin-tab="settings">Cài đặt</button>
+      </div>
+      <div id="adminContent"></div>
+    </div>
+  </div>
+</div>
 
-<script src="app.js?v=44"></script>
+<div class="toast" id="toast" hidden></div>
+<script src="app.js?v=45"></script>
 </body>
 </html>
