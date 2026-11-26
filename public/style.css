@@ -41,14 +41,13 @@ h3 { font-size: 16px; margin: 18px 0 8px; }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--jade); display: inline-block; }
 
 /* header — logo trái, nút phải, tràn hết bề ngang */
-.site-header { position: sticky; top: 0; z-index: 20; background: var(--bg); border-bottom: 1px solid var(--border); padding: 6px 14px; }
+.site-header { position: sticky; top: 0; z-index: 20; background: var(--bg); border-bottom: 1px solid var(--border); padding: 8px 14px; }
 .header-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; }
 .brand { flex: 1; min-width: 0; }
-/* Logo gọn thật trên điện thoại: đặt RÕ width+height trên ảnh (40x141px).
-   Lỗi lần trước: chỉ cap max-width:220px nhưng height:62px × tỉ lệ ảnh 819/232
-   đã cho rộng 219px — cap 220px không bao giờ siết được gì, logo vẫn chiếm ~56%
-   bề ngang điện thoại. Giờ width 141px = ~36% bề ngang điện thoại. */
-.brand-logo { display: block; width: 141px; height: 40px; max-width: 141px; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(15,23,42,.18)); }
+/* Logo TO như shop trong Muse: rộng 280px ≈ 70% bề ngang điện thoại, cao 79px
+   (tỉ lệ ảnh 819/232 = 3,53:1). KHÔNG thu nhỏ nữa — lần thu nhỏ trước để lại
+   khoảng trống lớn bên phải header, đó đúng là chỗ user chửi. */
+.brand-logo { display: block; width: 280px; height: 79px; max-width: 72vw; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(15,23,42,.18)); }
 .header-actions { display: flex; gap: 8px; margin-left: auto; }
 .icon-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 18px; }
 .menu-btn { position: relative; width: 46px; height: 36px; flex: none; border-radius: 999px; border: 1px solid #a7f3d0; background: #d1fae5; cursor: pointer; padding: 0; box-shadow: 0 2px 8px rgba(15,23,42,.10); transition: transform .12s ease, border-color .2s ease; }
@@ -71,7 +70,7 @@ h3 { font-size: 16px; margin: 18px 0 8px; }
 .main-menu button { flex: 1 1 30%; background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 999px; padding: 11px; font-weight: 600; }
 
 .gate, main, footer { width: 100%; padding: 0 16px; }
-@media (min-width: 1024px) { .gate, main, footer { padding: 0 32px; } .gate-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center; } .brand-logo { width: 190px; height: 54px; max-width: 190px; } }
+@media (min-width: 1024px) { .gate, main, footer { padding: 0 32px; } .gate-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center; } .brand-logo { width: 340px; height: 96px; max-width: 340px; } }
 .gate-hero { padding: 24px 0 8px; }
 .stats-panel { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 16px 0; }
 @media (min-width: 1024px) { .stats-panel { grid-template-columns: repeat(4, 1fr); } }
