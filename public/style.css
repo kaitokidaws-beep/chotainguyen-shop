@@ -1,4 +1,9 @@
-/* Chợ Tài Nguyên Mmo — hệ màu: nền xanh đen lục bảo, pine chính, vàng cát, jade, azure */
+/* Chợ Tài Nguyên Mmo — hệ màu thống nhất theo ảnh mẫu: nền #eef2f7, thẻ trắng,
+   chữ navy #0f172a, xanh dương #2563eb là màu chủ đạo DUY NHẤT (nút, link, giá,
+   nav/filter đang chọn, pill danh mục); xanh lá #22c55e/#059669 CHỈ cho tiền/ví/
+   thành công (gradient ví, "+ Nạp tiền", pill Live, đã thanh toán/đã giao);
+   hổ phách #d97706 CHỈ cho đang chờ; đỏ #ef4444 CHỈ cho lỗi/đã hủy.
+   Logo các nền tảng giữ đúng màu thương hiệu thật, không nhuộm lại. */
 :root {
   --bg: #07130f; --bg2: #0c1d16; --card: #12261f; --card2: #173028;
   --text: #eef6f1; --muted: #a9c6b6; --border: #234b3a;
@@ -149,7 +154,9 @@ h3 { font-size: 16px; margin: 18px 0 8px; }
 .act-live svg { display: block; }
 .act-sub { margin: 4px 0 12px; }
 .act-row { display: flex; gap: 12px; border-radius: 16px; padding: 12px; margin: 8px 0; }
-.act-avatar { flex: none; width: 44px; height: 44px; border-radius: 50%; color: #fff; font-weight: 800; font-size: 15px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; border: 3px solid #22c55e; }
+/* Vòng avatar khớp đúng màu dòng của nó (xanh dương / tím / xanh lá / cyan / vàng) —
+   trước đây các vòng lệch màu nhau (hàng xanh dương lại viền xanh lá, hàng vàng lại viền tím). */
+.act-avatar { flex: none; width: 44px; height: 44px; border-radius: 50%; color: #fff; font-weight: 800; font-size: 15px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; border: 3px solid #2563eb; }
 .act-body { min-width: 0; flex: 1; }
 .act-top { display: flex; align-items: baseline; gap: 8px; }
 .act-top b { font-size: 15px; }
@@ -157,11 +164,11 @@ h3 { font-size: 16px; margin: 18px 0 8px; }
 .act-desc { color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
 .act-time { color: var(--muted); font-size: 12px; margin-top: 2px; }
 .act-more { display: block; width: 100%; background: #eef2f7; color: #0f172a; border: 1px solid #e2e8f0; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; padding: 12px; margin-top: 12px; text-align: center; }
-.act-c0 .act-avatar { border-color: #22c55e; }
-.act-c1 .act-avatar { border-color: #22c55e; }
+.act-c0 .act-avatar { border-color: #2563eb; }
+.act-c1 .act-avatar { border-color: #7c3aed; }
 .act-c2 .act-avatar { border-color: #059669; }
-.act-c3 .act-avatar { border-color: #d97706; }
-.act-c4 .act-avatar { border-color: #7c3aed; }
+.act-c3 .act-avatar { border-color: #0891b2; }
+.act-c4 .act-avatar { border-color: #d97706; }
 /* Dich vu noi bat: hang 4 muc, logo tron tren, nhan duoi (theo anh mau user gui) */
 .featured-card { margin: 16px 0; }
 .featured-title { font-size: 18px; font-weight: 800; margin: 0 0 14px; letter-spacing: .5px; }
@@ -183,7 +190,9 @@ h3 { font-size: 16px; margin: 18px 0 8px; }
 [data-theme="dark"] .act-live { background: rgba(5,150,105,.25); }
 .status-chip { display: inline-block; border: 1px solid var(--azure); color: var(--azure); border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 700; }
 .cat-head { margin: 22px 0 6px; }
-.cat-pill { display: inline-flex; align-items: center; gap: 8px; color: #3fd2f2; background: rgba(63,210,242,.12); border: 1px solid rgba(63,210,242,.45); border-radius: 999px; padding: 8px 16px; font-weight: 800; font-size: 13px; letter-spacing: 1px; }
+/* Pill danh mục dùng đúng màu chủ đạo xanh dương #2563eb (trước đây gốc là cyan #3fd2f2,
+   chỉ được ghi đè sang xanh ở theme sáng — giờ thống nhất một màu từ gốc). */
+.cat-pill { display: inline-flex; align-items: center; gap: 8px; color: #2563eb; background: rgba(37,99,235,.08); border: 1px solid rgba(37,99,235,.35); border-radius: 999px; padding: 8px 16px; font-weight: 800; font-size: 13px; letter-spacing: 1px; }
 .cat-pill svg { width: 15px; height: 15px; display: block; }
 .cat-head h2 { font-size: 26px; margin: 14px 0; }
 .cat-all { width: auto; padding: 13px 26px; }
@@ -288,5 +297,8 @@ footer { margin-top: 28px; background: var(--bg2); border-top: 1px solid var(--b
 [data-theme="light"] .cat-pill { color: #2563eb; background: rgba(37,99,235,.08); border-color: rgba(37,99,235,.35); }
 [data-theme="light"] .chip-green { background: rgba(16,185,129,.12); color: #059669; }
 [data-theme="light"] .hot-pill { background: rgba(37,99,235,.10); }
+/* Trạng thái: xanh lá = đã thanh toán/đã giao, HỔ PHÁCH = đang chờ (trước đây "Chờ xử lý"
+   bị nhuộm xanh dương vì dùng chung --gold-bright với giá tiền), đỏ = đã hủy/lỗi. */
+.status-pending { color: #d97706; font-weight: 700; }
 [data-theme="light"] .copyright { background: #0f172a; }
 [data-theme="light"] .copyright .muted { color: #94a3b8; }
