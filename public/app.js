@@ -211,8 +211,8 @@
     var all = ['Tất cả'].concat(PLATFORMS);
     $('chipRail').innerHTML = all.map(function (name) {
       var dot = name === 'Tất cả'
-        ? '<span class="dot" style="background:#00A86B"></span>'
-        : '<span class="dot" style="background:' + (PLATFORM_DOT[name] || '#00A86B') + '"></span>';
+        ? '<span class="dot" style="background:#0284c7"></span>'
+        : '<span class="dot" style="background:' + (PLATFORM_DOT[name] || '#0284c7') + '"></span>';
       return '<button type="button" class="chip' + (platformFilter === name ? ' active' : '') + '" data-platform="' + esc(name) + '">' +
         dot + esc(name) + ' <span class="count">' + (counts[name] || 0) + '</span></button>';
     }).join('');
@@ -229,9 +229,24 @@
       ? 'Chọn tài khoản phù hợp với bạn'
       : 'Nền tảng: ' + platformFilter;
     $('filterDot').hidden = !(filterOpts.inStock || filterOpts.hotOnly || filterOpts.min != null || filterOpts.max != null);
+    renderRows();
+  }
+
+  function browseIsFiltered() {
+    return searchQuery.trim() !== '' || platformFilter !== 'Tất cả' ||
+      filterOpts.inStock || filterOpts.hotOnly || filterOpts.min != null || filterOpts.max != null ||
+      sortMode !== 'best';
   }
 
   function renderRows() {
+    /* Rails follow search/sort/filter: while the visitor is searching, sorting
+       or filtering, the curated "Bán chạy" / "Mới về" rails are hidden so the
+       catalog results are the only products on screen (previously the rails
+       kept showing unrelated products during a search). */
+    var filtered = browseIsFiltered();
+    $('hotSection').hidden = filtered;
+    $('newSection').hidden = filtered;
+    if (filtered) { $('hotRow').innerHTML = ''; $('newRow').innerHTML = ''; return; }
     var active = products.filter(function (p) { return p.active !== false; });
     var hot = active.filter(function (p) { return p.is_hot; });
     if (hot.length < 4) {
