@@ -56,10 +56,24 @@ async function rename() {
 }
 
 // ---------- vào shop ----------
+// Giữ vị trí cuộn khi trang tải lại / render lại (Samsung Internet hay tải lại tab):
+// lưu scrollY vào sessionStorage, khôi phục sau khi shop render xong.
+let __saveT = 0;
+window.addEventListener('scroll', () => {
+  const now = Date.now(); if (now - __saveT < 300) return; __saveT = now;
+  try { sessionStorage.setItem('ctn_scroll', String(window.scrollY)); } catch {}
+}, { passive: true });
+function restoreScroll() {
+  try { const y = Number(sessionStorage.getItem('ctn_scroll') || 0); if (y > 0) window.scrollTo({ top: y, behavior: 'auto' }); } catch {}
+}
 async function enterShop() {
   $('gate').hidden = true; $('shop').hidden = false; $('walletRow').hidden = false;
-  await loadMe(); await loadProducts(); await loadActivity(); await loadWallet();
+  await loadMe();
+  // Nạp song song 1 lần thay vì nối tiếp 4 lượt: trang hiện đủ trong 1 lần vẽ,
+  // footer không nhảy lên giữa màn hình rồi bị đẩy xuống lại.
+  await Promise.all([loadProducts(), loadActivity(), loadWallet()]);
   showTab('shop', 'home');
+  restoreScroll();
 }
 async function loadMe() {
   try {
@@ -85,14 +99,15 @@ const PLATFORM_STYLE = {
   X: { c: '#000000', svg: '<svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>' },
   Zalo: { c: '#0068FF', svg: '<svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M6 7h12v3L9.2 14H18v3H6v-3l8.8-4H6z"/></svg>' },
 };
-function showHome() { if ($('shop').hidden) { setActiveNav('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); return; } showTab('shop', 'home'); }
+function showHome() { if ($('shop').hidden) { setActiveNav('home'); window.scrollTo({ top: 0, behavior: 'auto' }); return; } showTab('shop', 'home', { top: true }); }
 function showProducts() {
   if ($('shop').hidden) { setActiveNav('products'); toggleAuthPanel(true, 'register'); return; }
   showTab('shop', 'products'); setTimeout(() => { const g = document.getElementById('productGrid'); if (g) g.scrollIntoView({ behavior: 'smooth' }); }, 80);
 }
 async function loadProducts() {
-  const j = await api('/api/products'); products = j.products;
-  const stats = await api('/api/stats');
+  // Lấy sản phẩm + số liệu song song: render 1 lần, không vẽ lại nhiều lần làm trang giật.
+  const [j, stats] = await Promise.all([api('/api/products'), api('/api/stats')]);
+  products = j.products;
   $('statSold').textContent = stats.sold_30d; $('statProducts').textContent = stats.total_products;
   const platforms = ['Tất cả', ...new Set(products.map(p => p.platform))];
   $('platformFilters').innerHTML = platforms.map(p => {
@@ -269,10 +284,10 @@ async function loadLeaderboard() {
 function setActiveNav(key) {
   document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.toggle('active', key ? b.dataset.nav === key : false));
 }
-function showTab(tab, navKey) {
+function showTab(tab, navKey, opts = {}) {
   // Chưa đăng nhập: các tab trong shop đều nằm sau cổng đăng ký — mở khung đăng ký/đăng nhập thay vì im lặng không làm gì.
   if ($('shop').hidden) {
-    if (tab === 'shop' && navKey === 'home') { setActiveNav('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    if (tab === 'shop' && navKey === 'home') { setActiveNav('home'); window.scrollTo({ top: 0, behavior: 'auto' }); return; }
     setActiveNav(navKey || null);
     toggleAuthPanel(true, 'register');
     return;
@@ -287,7 +302,11 @@ function showTab(tab, navKey) {
   if (tab === 'wallet') loadWallet();
   if (tab === 'leaderboard') loadLeaderboard();
   if (tab === 'admin') loadAdmin();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // KHÔNG tự cuộn về đầu trang nữa: trước đây mọi lần đổi tab đều scrollTo(0, smooth),
+  // nó đánh nhau với tay vuốt của người dùng trên Samsung Internet — trang tự cuộn
+  // tuốt lên đầu / tuốt xuống vùng trắng trong lúc đang xem sản phẩm. Chỉ cuộn khi
+  // người dùng bấm đúng nút Trang chủ (opts.top), và cuộn tức thì, không smooth.
+  if (opts.top) window.scrollTo({ top: 0, behavior: 'auto' });
 }
 
 // ---------- chính sách ----------
