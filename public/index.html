@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chợ Tài Nguyên Mmo — Shop Tài Khoản Mạng Xã Hội</title>
-<link rel="stylesheet" href="style.css?v=29">
+<link rel="stylesheet" href="style.css?v=30">
 </head>
 <body>
 <div id="app">
@@ -15,10 +15,12 @@
       </div>
       <div class="header-mascot-wrap" aria-hidden="true"><img class="header-mascot" src="mascot.png" alt="" width="71" height="140"></div>
       <div class="header-user" id="headerUser" hidden>
+        <button class="icon-btn header-search" onclick="focusSearch()" title="Tìm kiếm" aria-label="Tìm kiếm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg></button>
         <button class="avatar-btn" id="avatarBtn" onclick="showTab('account')">M</button>
         <button class="icon-btn" onclick="showTab('cart')">🛒 <span id="cartCount">0</span></button>
       </div>
       <div class="header-actions">
+        <button class="icon-btn header-search" onclick="focusSearch()" title="Tìm kiếm" aria-label="Tìm kiếm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg></button>
         <button id="menuBtn" class="menu-btn" title="Menu" aria-label="Mở menu"><span></span><span></span><span></span></button>
       </div>
     </div>
@@ -66,6 +68,38 @@
 
   <main id="shop" hidden>
     <section id="tab-shop" class="tab">
+      <div class="card hero-card" id="heroCard">
+        <h1 class="hero-title">Tài Khoản Mạng Xã Hội <span class="accent">Chất Lượng Cao</span></h1>
+        <p class="muted hero-sub">Facebook, TikTok, Instagram, YouTube… có 2FA, email gốc, bảo hành 1 đổi 1 rõ ràng.</p>
+        <div class="hero-search">
+          <input id="searchInput" placeholder="Tìm tài khoản… VD: Gmail cổ, X, TikTok" oninput="onSearch()" onkeydown="if(event.key==='Enter'){onSearch(true);this.blur();}" enterkeyhint="search">
+          <button class="search-btn" onclick="onSearch(true)" aria-label="Tìm kiếm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg></button>
+        </div>
+        <div class="filters hero-filters" id="platformFilters"></div>
+      </div>
+      <div class="section-head">
+        <h2>Sản phẩm <span class="accent">nổi bật</span></h2>
+        <p class="muted small">Bấm vào thẻ để xem chi tiết và mua ngay.</p>
+      </div>
+      <div class="card filter-bar">
+        <div class="sort-pills" id="sortPills">
+          <button data-sort="foryou" class="active" onclick="setSort('foryou')">Dành cho bạn</button>
+          <button data-sort="popular" onclick="setSort('popular')">Phổ biến</button>
+          <button data-sort="newest" onclick="setSort('newest')">Mới nhất</button>
+          <button data-sort="price-low" onclick="setSort('price-low')">Giá thấp</button>
+          <button data-sort="price-high" onclick="setSort('price-high')">Giá cao</button>
+        </div>
+        <div class="filter-bar-row">
+          <button class="cat-btn" onclick="gotoCategories()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M7 12h10M10 17h4"/></svg> Danh mục</button>
+          <span class="prod-count" id="productCount">Có 12 sản phẩm</span>
+          <span class="view-toggle">
+            <button id="viewGridBtn" class="active" onclick="setView('grid')" title="Xem dạng lưới" aria-label="Xem dạng lưới"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg></button>
+            <button id="viewListBtn" onclick="setView('list')" title="Xem dạng danh sách" aria-label="Xem dạng danh sách"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+          </span>
+        </div>
+      </div>
+      <div id="productGrid" class="product-grid"></div>
+      <p id="emptyProducts" class="muted" hidden>Không có sản phẩm. Thử chọn nền tảng khác.</p>
       <div class="card activity-card">
         <div class="act-head"><span class="act-dot"></span><b>Hoạt động gần đây</b><span class="act-live">Live <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><path d="M7.8 7.8a6 6 0 0 0 0 8.4"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4"/><path d="M4.9 4.9a10.2 10.2 0 0 0 0 14.2"/><path d="M19.1 4.9a10.2 10.2 0 0 1 0 14.2"/></svg></span></div>
         <p class="muted act-sub">Giao dịch mới nhất từ hệ thống</p>
@@ -81,14 +115,6 @@
           <button class="featured-item" onclick="goFeatured('all')"><span class="featured-logo" style="background:#0d9488"><svg width="24" height="24" viewBox="0 0 16 16" fill="#fff"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg></span>Dịch vụ MMO</button>
         </div>
       </div>
-      <div class="cat-head">
-        <span class="cat-pill"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg> DANH MỤC SẢN PHẨM</span>
-        <h2>Tất cả danh mục tài khoản</h2>
-        <button class="btn-primary cat-all" onclick="showAllProducts()">Xem toàn bộ sản phẩm →</button>
-      </div>
-      <div class="filters" id="platformFilters"></div>
-      <div id="productGrid" class="product-grid"></div>
-      <p id="emptyProducts" class="muted" hidden>Không có sản phẩm. Thử chọn nền tảng khác.</p>
     </section>
 
     <section id="tab-wallet" class="tab" hidden>
@@ -215,6 +241,6 @@
 
   <div id="productModal" class="modal" hidden><div class="modal-box card" id="productModalBox"></div></div>
 </div>
-<script src="app.js?v=29"></script>
+<script src="app.js?v=30"></script>
 </body>
 </html>

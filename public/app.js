@@ -3,6 +3,7 @@ const $ = (id) => document.getElementById(id);
 const fmt = (n) => Number(n || 0).toLocaleString('vi-VN') + 'đ';
 let me = null, products = [], cart = JSON.parse(localStorage.getItem('ctn_cart') || '[]');
 let platformFilter = 'Tất cả', authMode = 'register', selectedAmount = 0;
+let searchQuery = '', sortMode = 'foryou', viewMode = 'grid';
 
 const token = () => localStorage.getItem('ctn_token');
 const headers = () => ({ 'Content-Type': 'application/json', ...(token() ? { Authorization: 'Bearer ' + token() } : {}) });
@@ -106,6 +107,42 @@ function showProducts() {
   if ($('shop').hidden) { setActiveNav('products'); toggleAuthPanel(true, 'register'); return; }
   showTab('shop', 'products'); setTimeout(() => { const g = document.getElementById('productGrid'); if (g) g.scrollIntoView({ behavior: 'smooth' }); }, 80);
 }
+// ---------- tìm kiếm + sắp xếp + dạng xem (theo mẫu gọn) ----------
+// Tìm kiếm không dấu: gõ "gmail co" vẫn khớp "Gmail Cổ".
+const norm = (s) => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+function onSearch(scroll) {
+  searchQuery = ($('searchInput') ? $('searchInput').value : '').trim();
+  renderProducts();
+  if (scroll) { const g = document.getElementById('productGrid'); if (g) g.scrollIntoView({ behavior: 'smooth' }); }
+}
+function setSort(mode) {
+  sortMode = mode;
+  document.querySelectorAll('#sortPills button').forEach(b => b.classList.toggle('active', b.dataset.sort === mode));
+  renderProducts();
+}
+function setView(mode) {
+  viewMode = mode;
+  $('viewGridBtn').classList.toggle('active', mode === 'grid');
+  $('viewListBtn').classList.toggle('active', mode === 'list');
+  $('productGrid').classList.toggle('list', mode === 'list');
+}
+function gotoCategories() {
+  const h = document.getElementById('heroCard');
+  if (h) { h.scrollIntoView({ behavior: 'smooth', block: 'start' }); h.classList.add('flash'); setTimeout(() => h.classList.remove('flash'), 900); }
+}
+function focusSearch() {
+  if ($('shop').hidden) { toggleAuthPanel(true, 'register'); return; }
+  showTab('shop', 'products');
+  setTimeout(() => { const inp = $('searchInput'); if (inp) { inp.scrollIntoView({ behavior: 'smooth', block: 'center' }); inp.focus({ preventScroll: true }); } }, 80);
+}
+function sortList(list) {
+  const l = [...list];
+  if (sortMode === 'popular') l.sort((a, b) => (b.sold || 0) - (a.sold || 0));
+  else if (sortMode === 'newest') l.sort((a, b) => (b.created_at || 0) - (a.created_at || 0) || b.id - a.id);
+  else if (sortMode === 'price-low') l.sort((a, b) => a.price - b.price);
+  else if (sortMode === 'price-high') l.sort((a, b) => b.price - a.price);
+  return l;
+}
 async function loadProducts() {
   // Lấy sản phẩm + số liệu song song: render 1 lần, không vẽ lại nhiều lần làm trang giật.
   const [j, stats] = await Promise.all([api('/api/products'), api('/api/stats')]);
@@ -117,44 +154,41 @@ async function loadProducts() {
     const st = p === 'Tất cả' ? { c: '#111111', svg: '★' } : (PLATFORM_STYLE[p] || { c: '#0b7a52', svg: '<svg width="22" height="22" viewBox="0 0 24 24"><text x="12" y="17" text-anchor="middle" font-size="14" font-weight="900" fill="#fff">' + p[0] + '</text></svg>' });
     return `<button class="${p === platformFilter ? 'active' : ''}" onclick="setFilter('${p}')"><span class="filter-logo" style="background:${st.c}">${st.svg}</span>${p} ${n}</button>`;
   }).join('');
-  const list = products.filter(p => platformFilter === 'Tất cả' || p.platform === platformFilter);
+  renderProducts();
+}
+function renderProducts() {
+  // Lưới PHẲNG (không còn panel từng nền tảng): lọc theo nền tảng + từ khóa, xếp theo tab đang chọn.
+  const q = norm(searchQuery);
+  let list = products.filter(p => (platformFilter === 'Tất cả' || p.platform === platformFilter) && (!q || norm(p.name).includes(q) || norm(p.platform).includes(q)));
+  list = sortList(list);
+  $('productCount').textContent = `Có ${list.length} sản phẩm`;
   $('emptyProducts').hidden = list.length > 0;
-  const order = [];
-  list.forEach(p => { if (!order.includes(p.platform)) order.push(p.platform); });
-  $('productGrid').innerHTML = order.map(pl => {
-    const items = list.filter(p => p.platform === pl);
-    const st = PLATFORM_STYLE[pl] || { c: '#0b7a52', svg: '<svg width="22" height="22" viewBox="0 0 24 24"><text x="12" y="17" text-anchor="middle" font-size="14" font-weight="900" fill="#fff">' + pl[0] + '</text></svg>' };
-    return `<div class="platform-panel">
-      <div class="panel-head"><span class="panel-logo" style="background:${st.c}">${st.svg}</span><b>${esc(pl)}</b><span class="muted small"><span class="dot"></span> ${items.length} sản phẩm</span></div>
-      <div class="platform-grid">${items.map(p => {
-        const old = Number(p.old_price || 0);
-        const disc = old > p.price ? Math.round((1 - p.price / old) * 100) : 0;
-        const bh = (String(p.warranty || '').match(/(\d+)\s*ngày/) || [])[1];
-        const sold = Number(p.sold || 0);
-        return `
-        <div class="product-card compact" onclick="openProduct(${p.id})">
-          <div class="p-banner" style="background:${st.c}">
-            <span class="p-banner-logo">${st.svg}</span>
-            ${disc ? `<span class="disc-badge">-${disc}%</span>` : ''}
-            <i class="stock-badge ${p.stock > 0 ? 'in' : 'out'}">${p.stock > 0 ? '● Còn hàng' : 'Hết hàng'}</i>
-            ${bh ? `<span class="bh-pill">🛡️ BH ${bh} ngày</span>` : ''}
-          </div>
-          <div class="p-body">
-            <b class="p-name">${esc(p.name)}</b>
-            <span class="sold-line">Đã bán ${sold} • Còn ${p.stock}</span>
-            ${p.is_hot ? '<span class="hot-pill">Hot</span>' : ''}
-            <span class="price-row"><span class="price">${fmt(p.price)}</span>${old > p.price ? ` <s class="old-price">${fmt(old)}</s>` : ''}</span>
-            <div class="p-actions">
-              <button class="btn-primary" onclick="event.stopPropagation();buyNow(${p.id})">🛒 Mua ngay</button>
-              <button class="btn-ghost detail-btn" onclick="event.stopPropagation();openProduct(${p.id})">Chi tiết sản phẩm</button>
-            </div>
-          </div>
-        </div>`; }).join('')}</div>
+  $('emptyProducts').textContent = q ? 'Không tìm thấy sản phẩm nào. Thử từ khóa hoặc nền tảng khác.' : 'Không có sản phẩm. Thử chọn nền tảng khác.';
+  $('productGrid').innerHTML = list.map(p => {
+    const st = PLATFORM_STYLE[p.platform] || { c: '#0b7a52', svg: '<svg width="22" height="22" viewBox="0 0 24 24"><text x="12" y="17" text-anchor="middle" font-size="14" font-weight="900" fill="#fff">' + p.platform[0] + '</text></svg>' };
+    const old = Number(p.old_price || 0);
+    const disc = old > p.price ? Math.round((1 - p.price / old) * 100) : 0;
+    const bh = (String(p.warranty || '').match(/(\d+)\s*ngày/) || [])[1];
+    const sold = Number(p.sold || 0);
+    return `
+    <div class="product-card compact" onclick="openProduct(${p.id})">
+      <div class="p-banner" style="background:${st.c}">
+        <span class="p-banner-logo">${st.svg}</span>
+        <span class="banner-badges">${p.is_hot ? '<span class="hot-badge">NỔI BẬT</span>' : ''}${disc ? `<span class="disc-badge">-${disc}%</span>` : ''}</span>
+        <i class="stock-badge ${p.stock > 0 ? 'in' : 'out'}">${p.stock > 0 ? '● Còn hàng' : 'Hết hàng'}</i>
+        ${bh ? `<span class="bh-pill">🛡️ BH ${bh} ngày</span>` : ''}
+      </div>
+      <div class="p-body">
+        <b class="p-name">${esc(p.name)}</b>
+        <span class="p-divider"></span>
+        <span class="price-row"><span class="price-from">Từ</span><span class="price">${fmt(p.price)}</span></span>
+        <span class="sold-line">${sold} đã bán • Còn ${p.stock}</span>
+      </div>
     </div>`;
   }).join('');
   updateCartBadge();
 }
-function setFilter(p) { platformFilter = p; loadProducts(); }
+function setFilter(p) { platformFilter = p; renderProducts(); }
 function openProduct(id) {
   const p = products.find(x => x.id === id); if (!p) return;
   $('productModalBox').innerHTML = `<button class="x" style="float:right;background:none;border:none;font-size:18px" onclick="closeModal()">✕</button>
@@ -240,7 +274,6 @@ function goFeatured(kind) {
   const g = document.getElementById('productGrid');
   if (g) g.scrollIntoView({ behavior: 'smooth' });
 }
-function showAllProducts() { if (typeof setFilter === 'function') setFilter('Tất cả'); const g = document.getElementById('productGrid'); if (g) g.scrollIntoView({ behavior: 'smooth' }); }
 
 // ---------- ví / nạp tiền ----------
 const QUICK = [20000, 50000, 100000, 200000, 500000, 1000000];
