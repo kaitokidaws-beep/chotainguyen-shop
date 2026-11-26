@@ -408,7 +408,7 @@
       if (btn) {
         e.stopPropagation();
         var pid = btn.getAttribute('data-id');
-        if (btn.getAttribute('data-action') === 'add-cart') { addToCart(pid, 1); toast('Đã thêm vào giỏ.'); }
+        if (btn.getAttribute('data-action') === 'add-cart') { if (addToCart(pid, 1)) { toast('Đã thêm vào giỏ.'); openCart(); } }
         else if (btn.getAttribute('data-action') === 'buy-now') { addToCart(pid, 1, true); openCheckout(); }
         return;
       }
@@ -433,7 +433,7 @@
   }
   function addToCart(id, qty, replace) {
     var p = findProduct(id);
-    if (!p || Number(p.stock) <= 0) { toast('Sản phẩm đã hết hàng.'); return; }
+    if (!p || Number(p.stock) <= 0) { toast('Sản phẩm đã hết hàng.'); return false; }
     qty = Math.max(1, Math.min(Number(qty) || 1, Number(p.stock) || 1));
     var line = null;
     cart.forEach(function (i) { if (String(i.id) === String(id)) line = i; });
@@ -442,6 +442,7 @@
     } else cart.push({ id: p.id, qty: qty });
     saveCart();
     renderCartBadge();
+    return true;
   }
   function renderCartBadge() {
     var n = cartCount();
@@ -516,7 +517,9 @@
       $('checkoutAuth').hidden = true;
       $('checkoutBuyer').hidden = false;
       $('buyerName').value = user.full_name || '';
-      $('buyerContact').value = user.username || '';
+      // Không tự điền username vào ô liên hệ: tài khoản không lưu SĐT/email,
+      // để trống để khách tự nhập liên hệ thật.
+      $('buyerContact').value = '';
       $('walletBalanceInCheckout').textContent = fmtMoney(user.balance || 0);
       $('insufficientNote').hidden = !(Number(user.balance || 0) < cartTotal());
     } else {
