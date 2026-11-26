@@ -15,9 +15,11 @@ async function api(path, opts = {}) {
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 // ---------- theme ----------
-// Không còn nút chuyển sáng/tối: shop luôn ở theme mặc định (dark emerald, :root).
+// Không còn nút chuyển sáng/tối: shop luôn ở theme sáng (trắng) như trước khi có nút chuyển.
 function applyTheme() {
-  document.documentElement.setAttribute('data-theme', 'dark');
+  // Dọn khóa theme cũ đã lưu trên máy khách để không bị kẹt ở theme tối.
+  try { localStorage.removeItem('ctn_theme'); localStorage.removeItem('ctn_theme_v2'); } catch (e) {}
+  document.documentElement.setAttribute('data-theme', 'light');
 }
 $('menuBtn').onclick = () => { $('mainMenu').hidden = !$('mainMenu').hidden; $('menuBtn').classList.toggle('open', !$('mainMenu').hidden); };
 
