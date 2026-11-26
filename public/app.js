@@ -143,7 +143,7 @@ function setView(mode) {
   $('productGrid').classList.toggle('list', mode === 'list');
 }
 function gotoCategories() {
-  const h = document.getElementById('heroCard');
+  const h = document.getElementById('bentoSec');
   if (h) { h.scrollIntoView({ behavior: 'smooth', block: 'start' }); h.classList.add('flash'); setTimeout(() => h.classList.remove('flash'), 900); }
 }
 function focusSearch() {
@@ -164,13 +164,95 @@ async function loadProducts() {
   const [j, stats] = await Promise.all([api('/api/products'), api('/api/stats')]);
   products = j.products;
   $('statSold').textContent = stats.sold_30d; $('statProducts').textContent = stats.total_products;
+  $('heroSold').textContent = stats.sold_30d; $('heroProducts').textContent = stats.total_products;
   const platforms = ['Tất cả', ...new Set(products.map(p => p.platform))];
+  // Danh mục dạng ô bento lớn: logo + tên + số lượng + giá thấp nhất thật
+  // của nền tảng đó (không bịa — tính từ sản phẩm thật đang bán).
   $('platformFilters').innerHTML = platforms.map(p => {
-    const n = p === 'Tất cả' ? products.length : products.filter(x => x.platform === p).length;
-    const st = p === 'Tất cả' ? { c: '#111111', svg: '★' } : (PLATFORM_STYLE[p] || { c: '#0b7a52', svg: '<svg width="22" height="22" viewBox="0 0 24 24"><text x="12" y="17" text-anchor="middle" font-size="14" font-weight="900" fill="#fff">' + p[0] + '</text></svg>' });
-    return `<button class="${p === platformFilter ? 'active' : ''}" onclick="setFilter('${p}')"><span class="filter-logo" style="background:${st.c}">${st.svg}</span>${p} ${n}</button>`;
+    const items = p === 'Tất cả' ? products : products.filter(x => x.platform === p);
+    const n = items.length;
+    const min = items.length ? Math.min(...items.map(x => x.price)) : 0;
+    const st = p === 'Tất cả' ? { c: '#1a1512', svg: '★' } : (PLATFORM_STYLE[p] || { c: '#0b7a52', svg: '<svg width="22" height="22" viewBox="0 0 24 24"><text x="12" y="17" text-anchor="middle" font-size="14" font-weight="900" fill="#fff">' + p[0] + '</text></svg>' });
+    return `<button class="bento-tile${p === platformFilter ? ' active' : ''}" style="--tile:${st.c}" onclick="setFilter('${p}')"><span class="bento-logo">${st.svg}</span><span class="bento-name">${p}</span><span class="bento-meta">${n} sản phẩm · từ ${fmt(min)}</span></button>`;
   }).join('');
+  renderSpotlight();
   renderProducts();
+}
+// ---------- spotlight carousel (MWG "carousel": cuộn native + snap,
+// nút prev/next + chấm đánh dấu aria-current + vùng thông báo trạng thái) ----------
+let spotSlides = [], spotIdx = 0, spotRaf = null, spotSettleTimer = null;
+function renderSpotlight() {
+  const track = $('spotlightTrack'); if (!track) return;
+  const hot = products.filter(p => p.is_hot);
+  const bySold = [...products].sort((a, b) => (b.sold || 0) - (a.sold || 0));
+  const seen = new Set(); const list = [];
+  for (const p of [...hot, ...bySold]) { if (!seen.has(p.id)) { seen.add(p.id); list.push(p); } if (list.length >= 4) break; }
+  spotSlides = list; spotIdx = 0;
+  track.innerHTML = list.map((p, i) => {
+    const st = PLATFORM_STYLE[p.platform] || { c: '#333', svg: '' };
+    const old = Number(p.old_price || 0);
+    const disc = old > p.price ? Math.round((1 - p.price / old) * 100) : 0;
+    return `<article class="spot-slide" role="group" aria-roledescription="slide" aria-label="${i + 1} trên ${list.length}" data-marker-name="Đi tới ${esc(p.name)}" onclick="openProduct(${p.id})">
+      <div class="spot-media" style="background:${st.c}">
+        <span class="spot-media-logo">${st.svg}</span>
+        <span class="banner-badges">${p.is_hot ? '<span class="hot-badge">NỔI BẬT</span>' : ''}${disc ? `<span class="disc-badge">-${disc}%</span>` : ''}</span>
+        <i class="stock-badge ${p.stock > 0 ? 'in' : 'out'}">${p.stock > 0 ? '● Còn hàng' : 'Hết hàng'}</i>
+        <div class="spot-price"><b>${fmt(p.price)}</b><span>${Number(p.sold || 0)} đã bán • Còn ${p.stock}</span></div>
+      </div>
+      <div class="spot-body">
+        <span class="spot-platform">${esc(p.platform)}</span>
+        <h3>${esc(p.name)}</h3>
+        <p class="spot-sub">${esc(p.warranty || '')}</p>
+        <div class="spot-actions">
+          <button class="btn-primary" onclick="event.stopPropagation(); buyNow(${p.id})">Mua ngay</button>
+          <button class="btn-ghost" onclick="event.stopPropagation(); openProduct(${p.id})">Chi tiết</button>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+  $('spotlightMarkers').innerHTML = list.map((p, i) => `<button type="button" data-slide="${i}" aria-label="Đi tới ${esc(p.name)}" aria-current="${i === 0 ? 'true' : 'false'}"></button>`).join('');
+  wireSpotlight();
+}
+function spotSlideWidth() {
+  const track = $('spotlightTrack');
+  const s = track.querySelector('.spot-slide');
+  return s ? s.getBoundingClientRect().width + 12 : track.clientWidth;
+}
+function spotGo(i, announce) {
+  const track = $('spotlightTrack'); if (!track || !spotSlides.length) return;
+  spotIdx = (i + spotSlides.length) % spotSlides.length;
+  track.scrollTo({ left: spotIdx * spotSlideWidth(), behavior: isReducedMotion ? 'auto' : 'smooth' });
+  spotSync(spotIdx, announce);
+}
+function spotSync(i, announce) {
+  document.querySelectorAll('#spotlightMarkers button').forEach((b, j) => b.setAttribute('aria-current', j === i ? 'true' : 'false'));
+  if (announce) { const st = $('spotStatus'); if (st && spotSlides[i]) st.textContent = `Sản phẩm ${i + 1} trên ${spotSlides.length}: ${spotSlides[i].name}`; }
+}
+function spotSettle() {
+  const track = $('spotlightTrack'); if (!track || !spotSlides.length) return;
+  const i = Math.round(track.scrollLeft / spotSlideWidth());
+  if (i >= 0 && i < spotSlides.length && i !== spotIdx) { spotIdx = i; spotSync(i, true); }
+}
+function wireSpotlight() {
+  const track = $('spotlightTrack');
+  $('spotPrev').onclick = () => spotGo(spotIdx - 1, true);
+  $('spotNext').onclick = () => spotGo(spotIdx + 1, true);
+  document.querySelectorAll('#spotlightMarkers button').forEach(b => {
+    b.onclick = () => spotGo(Number(b.dataset.slide), true);
+  });
+  // Chấm đánh dấu cập nhật trực tiếp khi cuộn (rAF); trạng thái đọc lên
+  // chỉ sau khi cuộn dừng hẳn — scrollend nếu có, không thì debounce.
+  track.onscroll = () => {
+    if (spotRaf) return;
+    spotRaf = requestAnimationFrame(() => {
+      spotRaf = null;
+      const i = Math.round(track.scrollLeft / spotSlideWidth());
+      if (i >= 0 && i < spotSlides.length && i !== spotIdx) { spotIdx = i; spotSync(i, false); }
+    });
+    if (!('onscrollend' in track)) { clearTimeout(spotSettleTimer); spotSettleTimer = setTimeout(spotSettle, 140); }
+  };
+  if ('onscrollend' in track) track.addEventListener('scrollend', spotSettle);
+  spotSync(0, false);
 }
 function renderProducts() {
   // Lưới PHẲNG (không còn panel từng nền tảng): lọc theo nền tảng + từ khóa, xếp theo tab đang chọn.
@@ -188,20 +270,22 @@ function renderProducts() {
     const sold = Number(p.sold || 0);
     const delay = (i % 8) * 40; // stagger: thẻ hiện dần từ dưới lên
     return `
-    <div class="product-card compact" style="animation-delay:${delay}ms" onclick="openProduct(${p.id})" tabindex="0" onkeydown="if(event.key==='Enter')openProduct(${p.id})">
-      <div class="p-banner" style="background:${st.c}" data-card-banner="${p.id}">
-        <span class="p-banner-logo">${st.svg}</span>
+    <article class="p-card" style="animation-delay:${delay}ms" onclick="openProduct(${p.id})" tabindex="0" onkeydown="if(event.key==='Enter')openProduct(${p.id})">
+      <div class="p-media" style="background:${st.c}" data-card-banner="${p.id}">
+        <span class="p-media-logo">${st.svg}</span>
         <span class="banner-badges">${p.is_hot ? '<span class="hot-badge">NỔI BẬT</span>' : ''}${disc ? `<span class="disc-badge">-${disc}%</span>` : ''}</span>
         <i class="stock-badge ${p.stock > 0 ? 'in' : 'out'}">${p.stock > 0 ? '● Còn hàng' : 'Hết hàng'}</i>
         ${bh ? `<span class="bh-pill">🛡️ BH ${bh} ngày</span>` : ''}
+        <div class="p-media-info">
+          <span class="p-price"><span class="price-from">Từ</span>${fmt(p.price)}</span>
+          <span class="p-sold">${sold} đã bán • Còn ${p.stock}</span>
+        </div>
       </div>
       <div class="p-body">
         <b class="p-name">${esc(p.name)}</b>
-        <span class="p-divider"></span>
-        <span class="price-row"><span class="price-from">Từ</span><span class="price">${fmt(p.price)}</span></span>
-        <span class="sold-line">${sold} đã bán • Còn ${p.stock}</span>
+        <span class="p-meta">${esc(p.platform)} · ${esc(p.warranty || '')}</span>
       </div>
-    </div>`;
+    </article>`;
   }).join('');
   updateCartBadge();
 }
@@ -212,7 +296,7 @@ function openProduct(id) {
   const box = $('productModalBox');
   box.innerHTML = `<button class="x" onclick="closeModal()" aria-label="Đóng">✕</button>
     <span class="platform-tag">${esc(p.platform)}</span><h2 id="productModalTitle" tabindex="-1">${esc(p.name)}</h2>
-    <div class="p-banner" style="background:${st.c}" data-vt-banner="${p.id}"><span class="p-banner-logo">${st.svg}</span></div>
+    <div class="p-media" style="background:${st.c}" data-vt-banner="${p.id}"><span class="p-media-logo">${st.svg}</span></div>
     <p class="muted">${esc(p.description)}</p><p class="price">${fmt(p.price)}${Number(p.old_price || 0) > p.price ? ` <s class="old-price">${fmt(p.old_price)}</s> <span class="disc-badge">-${Math.round((1 - p.price / p.old_price) * 100)}%</span>` : ''}</p>
     <p class="stock">Đã bán ${Number(p.sold || 0)} • Còn ${p.stock} tài khoản</p><p class="warranty">🛡️ ${esc(p.warranty)}</p>
     <button class="btn-primary" onclick="buyNow(${p.id}); closeModal()">Mua ngay</button>
@@ -226,11 +310,11 @@ function openProduct(id) {
   if (!isReducedMotion && document.startViewTransition && cardBanner) {
     const vtName = 'p-banner-' + p.id;
     cardBanner.style.viewTransitionName = vtName;
-    const mb = box.querySelector('.p-banner'); if (mb) mb.style.viewTransitionName = vtName;
+    const mb = box.querySelector('.p-media'); if (mb) mb.style.viewTransitionName = vtName;
     const vt = document.startViewTransition(show);
     vt.finished.catch(() => {}).finally(() => {
       cardBanner.style.viewTransitionName = '';
-      const b = box.querySelector('.p-banner'); if (b) b.style.viewTransitionName = '';
+      const b = box.querySelector('.p-media'); if (b) b.style.viewTransitionName = '';
     });
   } else show();
 }
