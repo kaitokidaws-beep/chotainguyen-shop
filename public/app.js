@@ -273,6 +273,7 @@
       '<div class="prow-side">' +
         (isDeal && d ? '<span class="prow-old">' + fmt(p.old_price) + '</span>' : '') +
         '<span class="prow-price-line">' + (isDeal && d ? '<span class="prow-pct">−' + d + '%</span>' : '') + '<span class="prow-price">' + fmt(p.price) + '</span></span>' +
+        (isDeal && d ? '<div class="prow-save">Tiết kiệm ' + fmt(p.old_price - p.price) + '</div>' : '') +
         '<div class="prow-actions">' +
           '<button type="button" class="btn-buy" data-act="buy" data-id="' + p.id + '"' + (out ? ' disabled' : '') + '>Mua ngay</button>' +
           '<button type="button" class="btn-addcart" data-act="add" data-id="' + p.id + '" aria-label="Thêm vào giỏ"' + (out ? ' disabled' : '') + '>' + PLUS_SVG + '</button>' +
