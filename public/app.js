@@ -1,6 +1,7 @@
-/* Chợ Tài Nguyên Mmo — rebuilt from competitor research (RESEARCH.md).
-   Structure: category sections of dense product rows (MCV / mmonhalam model).
-   No hero banner, no rails. The deal lives ON the first product row. */
+/* Chợ Tài Nguyên Mmo v53 — premium storefront restyle on the research structure
+   (RESEARCH.md). No hero banner, products first, highlight ON the first product
+   row of the first section (real best-discount product, deduped). Compact row
+   cards with platform monogram tiles; ink-black prices; no emoji in chrome. */
 (function () {
   'use strict';
 
@@ -26,6 +27,11 @@
     if (!p.old_price || p.old_price <= p.price) return 0;
     return Math.round((1 - p.price / p.old_price) * 100);
   }
+  /* "Bảo hành 1 đổi 1 trong 7 ngày" -> "BH 7 ngày" (short, fits one meta line) */
+  function warrantyShort(w) {
+    var m = /trong\s+(\d+)\s*ngày/.exec(String(w || ''));
+    return m ? 'BH ' + m[1] + ' ngày' : 'Bảo hành 1 đổi 1';
+  }
   var toastTO = null;
   function toast(msg) {
     var t = $('toast');
@@ -36,23 +42,19 @@
   }
 
   /* ---------------- state ---------------- */
-  var TOKEN_KEY = 'ctn_token';   /* same key as v49-v51: live sessions survive */
+  var TOKEN_KEY = 'ctn_token';   /* same key as v49-v52: live sessions survive */
   var CART_KEY = 'ctn_cart';
   var PLATFORMS = ['Facebook', 'TikTok', 'Instagram', 'YouTube', 'Telegram', 'Gmail', 'X', 'Zalo'];
   var PLAT_COLOR = {
-    Facebook: '#1877f2', TikTok: '#0f172a', Instagram: '#e1306c', YouTube: '#ff0000',
+    Facebook: '#1877f2', TikTok: '#0f172a', Instagram: '', YouTube: '#ff0000',
     Telegram: '#229ed9', Gmail: '#ea4335', X: '#0f172a', Zalo: '#0068ff'
   };
-  var PLAT_DESC = {
-    Facebook: 'Clone, Page, Via — hàng bán chạy nhất shop',
-    TikTok: 'Follow, acc cổ — live đủ điều kiện',
-    Instagram: 'Follow thật, clone US',
-    YouTube: 'Kênh sub — đủ điều kiện bật kiếm tiền',
-    Telegram: 'Premium — kích hoạt nhanh',
-    Gmail: 'Email gốc — dùng được ngay',
-    X: 'Acc cổ — email gốc, 2FA',
-    Zalo: 'Acc cổ — bạn bè đầy, tương tác thật'
+  var PLAT_MONO = {
+    Facebook: 'FB', TikTok: 'TT', Instagram: 'IG', YouTube: 'YT',
+    Telegram: 'TG', Gmail: 'GM', X: 'X', Zalo: 'ZL'
   };
+  var PLUS_SVG = '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+  var FLAME_SVG = '<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M12 2c1 3.5-2 5.5-2 8.5 0 1.5 1 2.5 2 2.5S14 12 14 11c2 1.5 3 3.5 3 5.5A5.5 5.5 0 0 1 6.5 16C6.5 10 11 7 12 2z"/></svg>';
   var products = [];
   var user = null;
   var token = localStorage.getItem(TOKEN_KEY) || '';
@@ -189,9 +191,10 @@
     }).then(function () {
       api('/api/stats').then(function (s) {
         statsData = s;
-        $('statsLine').innerHTML = 'Đã bán <strong>' + (s.sold_30d || 0) + ' acc</strong> · <strong>' +
-          (s.total_products || products.length) + ' sản phẩm</strong> · Giao tự động 24/7 · Bảo hành 1 đổi 1';
-      }).catch(function () {});
+        $('trustCountText').textContent = (s.total_products || products.length) + ' sản phẩm';
+      }).catch(function () {
+        $('trustCountText').textContent = products.length + ' sản phẩm';
+      });
       api('/api/notifications').then(function (d) {
         notifications = d.notifications || [];
         startTicker();
@@ -273,28 +276,36 @@
     else arr.sort(function (a, b) { return b.sold - a.sold || a.id - b.id; });
     return arr;
   }
+  function platTile(pl) {
+    var color = PLAT_COLOR[pl] || '#1d4ed8';
+    var cls = pl === 'Instagram' ? 'plat-tile ig' : 'plat-tile';
+    var style = pl === 'Instagram' ? '' : ' style="background:' + color + '"';
+    return '<span class="' + cls + '"' + style + '>' + esc(PLAT_MONO[pl] || esc(pl.slice(0, 2).toUpperCase())) + '</span>';
+  }
   function rowHtml(p, isDeal) {
     var d = discount(p);
     var out = p.stock <= 0;
-    var color = PLAT_COLOR[p.platform] || '#0284c7';
     return '<article class="prow' + (isDeal ? ' prow-deal' : '') + '" data-open-detail="' + p.id + '">' +
+      platTile(p.platform) +
       '<div class="prow-main">' +
         '<div class="prow-top">' +
-          '<span class="plat-tag"><span class="plat-dot" style="background:' + color + '"></span>' + esc(p.platform) + '</span>' +
-          (isDeal ? '<span class="badge-deal">🔥 GIẢM MẠNH NHẤT</span>' : '') +
+          '<span class="plat-tag">' + esc(p.platform) + '</span>' +
+          (isDeal ? '<span class="badge-deal">' + FLAME_SVG + 'GIẢM MẠNH NHẤT</span>' : '') +
           (p.is_hot && !isDeal ? '<span class="badge-hot">HOT</span>' : '') +
         '</div>' +
         '<h3 class="prow-name">' + esc(p.name) + '</h3>' +
-        '<p class="prow-spec">' + esc(p.warranty || '') + (p.description ? ' · ' + esc(p.description) : '') + '</p>' +
         '<p class="prow-meta">' + (out ? '<span class="out">Tạm hết hàng</span>' : 'Còn <b>' + p.stock + '</b>') +
-          ' · Đã bán <b>' + p.sold + '</b></p>' +
+          ' · Đã bán <b>' + p.sold + '</b> · ' + esc(warrantyShort(p.warranty)) + '</p>' +
       '</div>' +
       '<div class="prow-side">' +
         (d ? '<span class="prow-old">' + fmt(p.old_price) + '</span>' : '') +
         '<span class="prow-price">' + fmt(p.price) + '</span>' +
         (d ? '<span class="prow-pct">−' + d + '%</span>' : '') +
-        '<button type="button" class="btn-buy" data-act="buy" data-id="' + p.id + '"' + (out ? ' disabled' : '') + '>Mua ngay</button>' +
-        '<button type="button" class="btn-addcart" data-act="add" data-id="' + p.id + '"' + (out ? ' disabled' : '') + '>＋ Giỏ</button>' +
+        (isDeal && d ? '<span class="prow-save">Tiết kiệm ' + fmt(p.old_price - p.price) + '</span>' : '') +
+        '<div class="prow-actions">' +
+          '<button type="button" class="btn-buy" data-act="buy" data-id="' + p.id + '"' + (out ? ' disabled' : '') + '>Mua ngay</button>' +
+          '<button type="button" class="btn-addcart" data-act="add" data-id="' + p.id + '" aria-label="Thêm vào giỏ"' + (out ? ' disabled' : '') + '>' + PLUS_SVG + '</button>' +
+        '</div>' +
       '</div>' +
     '</article>';
   }
@@ -334,9 +345,10 @@
         return b.sold - a.sold || a.id - b.id;
       });
       var sold = rows.reduce(function (s, p) { return s + p.sold; }, 0);
+      var color = PLAT_COLOR[pl] || '#1d4ed8';
       return '<section class="cat-sec">' +
-        '<header class="cat-head"><h2>' + esc(pl) + '<span class="cat-count">' + rows.length + ' sản phẩm</span></h2>' +
-        '<p class="cat-sub">' + esc(PLAT_DESC[pl] || '') + ' — Đã bán ' + sold + ' acc</p></header>' +
+        '<header class="cat-head" style="border-left-color:' + color + '"><h2>' + esc(pl) + '<span class="cat-count">' + rows.length + ' sản phẩm</span></h2>' +
+        '<span class="cat-sold">Đã bán ' + sold + ' acc</span></header>' +
         '<div class="rows">' + rows.map(function (p) { return rowHtml(p, deal && p.id === deal.id); }).join('') + '</div>' +
       '</section>';
     }).join('');
@@ -359,15 +371,20 @@
     var out = p.stock <= 0;
     var same = products.filter(function (x) { return x.platform === p.platform && x.id !== p.id; }).slice(0, 4);
     var deal = bestDeal();
+    var isDeal = !!(deal && p.id === deal.id);
     $('productDetail').innerHTML =
-      '<div class="detail-top">' +
-        '<span class="plat-tag"><span class="plat-dot" style="background:' + (PLAT_COLOR[p.platform] || '#0284c7') + '"></span>' + esc(p.platform) + '</span>' +
-        ((deal && p.id === deal.id) ? '<span class="badge-deal">🔥 GIẢM MẠNH NHẤT</span>' : '') +
-        (p.is_hot ? '<span class="badge-hot">HOT</span>' : '') +
+      '<div class="detail-head">' + platTile(p.platform) +
+        '<div style="min-width:0">' +
+          '<div class="prow-top">' +
+            '<span class="plat-tag">' + esc(p.platform) + '</span>' +
+            (isDeal ? '<span class="badge-deal">' + FLAME_SVG + 'GIẢM MẠNH NHẤT</span>' : '') +
+            (p.is_hot ? '<span class="badge-hot">HOT</span>' : '') +
+          '</div>' +
+          '<h3>' + esc(p.name) + '</h3>' +
+        '</div>' +
       '</div>' +
-      '<h3 style="margin:6px 0 4px;font-size:18px">' + esc(p.name) + '</h3>' +
-      '<div><span class="detail-price">' + fmt(p.price) + '</span> ' +
-        (d ? '<span class="detail-old">' + fmt(p.old_price) + '</span> <span class="prow-pct">−' + d + '%</span>' : '') + '</div>' +
+      '<div class="detail-price-row"><span class="detail-price' + (isDeal ? ' deal' : '') + '">' + fmt(p.price) + '</span> ' +
+        (d ? '<span class="detail-old">' + fmt(p.old_price) + '</span> <span class="prow-pct">−' + d + '%</span> <span class="detail-save">Tiết kiệm ' + fmt(p.old_price - p.price) + '</span>' : '') + '</div>' +
       '<p class="detail-stock">' + (out ? 'Tạm hết hàng' : 'Còn ' + p.stock + ' tài khoản') + ' · Đã bán ' + p.sold + '</p>' +
       '<table class="spec-table">' +
         '<tr><td>Nền tảng</td><td><b>' + esc(p.platform) + '</b></td></tr>' +
@@ -382,7 +399,7 @@
       '</div>' +
       (same.length ? '<div class="mini-rows"><h3 class="sub-head">Cùng nền tảng ' + esc(p.platform) + '</h3>' +
         same.map(function (x) {
-          return '<button type="button" class="mini-row" data-open-detail="' + x.id + '"><span>' + esc(x.name) + '<br><small style="color:#64748b;font-weight:400">Còn ' + x.stock + ' · Đã bán ' + x.sold + '</small></span><span>' + fmt(x.price) + '</span></button>';
+          return '<button type="button" class="mini-row" data-open-detail="' + x.id + '"><span class="mini-name"><b>' + esc(x.name) + '</b><small>Còn ' + x.stock + ' · Đã bán ' + x.sold + '</small></span><span>' + fmt(x.price) + '</span></button>';
         }).join('') + '</div>' : '');
     $('detailMinus').addEventListener('click', function () { if (detailQty > 1) { detailQty--; $('detailQtyNum').textContent = detailQty; } });
     $('detailPlus').addEventListener('click', function () { if (detailQty < p.stock) { detailQty++; $('detailQtyNum').textContent = detailQty; } else toast('Chỉ còn ' + p.stock + ' tài khoản.'); });
@@ -497,7 +514,7 @@
       $('checkoutAuth').hidden = true;
       $('checkoutDone').hidden = false;
       $('checkoutDone').innerHTML =
-        '<p style="font-size:18px;font-weight:800;color:#16a34a">✅ Đặt hàng thành công!</p>' +
+        '<p class="order-ok">Đặt hàng thành công!</p>' +
         '<p>Mã đơn của bạn: <b style="font-size:18px">' + esc(d.code) + '</b></p>' +
         '<p>Tổng: <b>' + fmt(d.total) + '</b> — ' + esc(d.message || '') + '</p>' +
         '<p style="color:#64748b;font-size:13px">Lưu mã đơn này để tra cứu. Tài khoản sẽ được gửi theo liên hệ bạn đã nhập.</p>' +

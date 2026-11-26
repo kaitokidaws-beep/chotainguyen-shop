@@ -5,20 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Chợ Tài Nguyên Mmo — Tài khoản mạng xã hội giá tốt</title>
 <meta name="description" content="Mua tài khoản Facebook, TikTok, Instagram, YouTube, Telegram, Gmail, X, Zalo. Giao tự động 24/7, bảo hành 1 đổi 1.">
-<link rel="stylesheet" href="style.css?v=45">
+<link rel="stylesheet" href="style.css?v=46">
 </head>
 <body>
 <header class="site-head">
   <div class="wrap head-row">
-    <a class="brand" href="#" id="brandHome">
-      <img src="logo.png" alt="Chợ Tài Nguyên Mmo" class="brand-logo" width="40" height="40">
-      <span class="brand-text"><strong>CHỢ TÀI NGUYÊN MMO</strong><small>HỆ THỐNG TỰ ĐỘNG 24/7</small></span>
+    <a class="brand" href="#" id="brandHome" aria-label="Chợ Tài Nguyên Mmo — về đầu trang">
+      <img src="logo.png" alt="Chợ Tài Nguyên Mmo" class="brand-logo" width="141" height="40">
     </a>
     <div class="head-actions">
       <button type="button" class="wallet-chip" id="walletChip" hidden><span>Ví:</span> <b id="walletBalance">0đ</b></button>
-      <button type="button" class="icon-btn" id="cartBtn" aria-label="Giỏ hàng">🛒<span class="cart-badge" id="cartCount" hidden>0</span></button>
-      <button type="button" class="btn btn-outline" id="topupBtn">+ <span class="topup-full">Nạp tiền</span><span class="topup-short">Nạp</span></button>
-      <button type="button" class="btn btn-primary" id="authBtn">Đăng nhập</button>
+      <button type="button" class="icon-btn" id="cartBtn" aria-label="Giỏ hàng"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1.6"/><circle cx="19" cy="21" r="1.6"/><path d="M2.5 3h2l2.6 12.5a2 2 0 0 0 2 1.5h8.8a2 2 0 0 0 2-1.6L21.5 7H6"/></svg><span class="cart-badge" id="cartCount" hidden>0</span></button>
+      <button type="button" class="btn btn-gold-outline" id="topupBtn">+ <span class="topup-full">Nạp tiền</span><span class="topup-short">Nạp</span></button>
+      <button type="button" class="btn btn-gold" id="authBtn">Đăng nhập</button>
       <div class="account-wrap" id="accountWrap" hidden>
         <button type="button" class="avatar-btn" id="accountBtn" aria-label="Tài khoản của tôi"><span class="avatar-circle" id="avatarInitial">?</span></button>
         <div class="account-menu" id="accountMenu" hidden>
@@ -32,25 +31,28 @@
       </div>
     </div>
   </div>
-  <div class="wrap head-search-row">
-    <div class="search-box">
-      <span class="search-icon" aria-hidden="true">🔍</span>
-      <input type="search" id="searchInput" placeholder="Tìm tài khoản: gmail, facebook, tiktok…" autocomplete="off" aria-label="Tìm kiếm sản phẩm">
-      <button type="button" class="search-clear" id="searchClear" aria-label="Xóa tìm kiếm" hidden>×</button>
-    </div>
-  </div>
-  <nav class="wrap cat-nav" id="catNav" aria-label="Danh mục sản phẩm"></nav>
 </header>
 
-<div class="wrap trust-line">
-  <span id="statsLine">Đang tải…</span>
-  <span class="ticker" id="ticker" hidden>🛒 <span id="tickerText"></span></span>
+<div class="wrap head-search-row">
+  <div class="search-box">
+    <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg>
+    <input type="search" id="searchInput" placeholder="Tìm tài khoản: gmail, facebook, tiktok…" autocomplete="off" aria-label="Tìm kiếm sản phẩm">
+    <button type="button" class="search-clear" id="searchClear" aria-label="Xóa tìm kiếm" hidden>×</button>
+  </div>
 </div>
+<nav class="wrap cat-nav" id="catNav" aria-label="Danh mục sản phẩm"></nav>
+
+<div class="wrap trust-strip" id="trustStrip">
+  <span class="trust-item"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z"/></svg>Giao tự động 24/7</span>
+  <span class="trust-item"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5.5v5.6c0 5 3.4 8.6 8 10.4 4.6-1.8 8-5.4 8-10.4V5.5L12 2z"/><path d="m8.8 12 2.2 2.2 4.2-4.4"/></svg>Bảo hành 1 đổi 1</span>
+  <span class="trust-item" id="trustCount"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg><span id="trustCountText">12 sản phẩm</span></span>
+</div>
+<div class="wrap ticker-bar" id="ticker" hidden><span class="live-dot" aria-hidden="true"></span><span id="tickerText" class="ticker-text"></span></div>
 
 <main class="wrap">
   <div class="filter-bar">
     <span class="result-count" id="resultCount"></span>
-    <label class="sort-wrap">Sắp xếp
+    <label class="sort-wrap">
       <select id="sortSelect" aria-label="Sắp xếp sản phẩm">
         <option value="best">Bán chạy</option>
         <option value="discount">Giảm nhiều nhất</option>
@@ -59,7 +61,7 @@
         <option value="new">Mới nhất</option>
       </select>
     </label>
-    <button type="button" class="btn btn-outline btn-filter" id="filterBtn">Lọc <span class="filter-dot" id="filterDot" hidden></span></button>
+    <button type="button" class="btn btn-outline btn-filter" id="filterBtn" aria-label="Lọc sản phẩm"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 5h16M7 12h10M10 19h4"/></svg><span>Lọc</span><span class="filter-dot" id="filterDot" hidden></span></button>
   </div>
 
   <div id="catalog" aria-live="polite"></div>
@@ -84,7 +86,7 @@
   </section>
 
   <section class="block" id="leaderboardBlock">
-    <h2>🏆 BXH nạp tiền tháng</h2>
+    <h2><svg class="h2-icon" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M7 6H4a1 1 0 0 0-1 1c0 2.2 1.8 4 4 4M17 6h3a1 1 0 0 1 1 1c0 2.2-1.8 4-4 4"/></svg>BXH nạp tiền tháng</h2>
     <ol class="leaderboard-list" id="leaderboardList"></ol>
     <p class="my-rank" id="myRank" hidden></p>
   </section>
@@ -128,7 +130,7 @@
   <div class="copyright">© 2026 Chợ Tài Nguyên Mmo — Tài khoản mạng xã hội giá tốt.</div>
 </footer>
 
-<button type="button" class="bot-fab" id="botBtn" aria-label="Chat với shop">💬</button>
+<button type="button" class="bot-fab" id="botBtn" aria-label="Chat với shop"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 21l2-5.6A8.5 8.5 0 1 1 21 11.5z"/></svg></button>
 <div class="bot-panel" id="botPanel" hidden role="dialog" aria-label="Chat với shop">
   <div class="bot-head"><strong>Chat với shop — 24/7</strong><button type="button" class="bot-close" id="botClose" aria-label="Đóng chat">×</button></div>
   <div class="bot-messages" id="botMessages"></div>
@@ -296,6 +298,6 @@
 </div>
 
 <div class="toast" id="toast" hidden></div>
-<script src="app.js?v=45"></script>
+<script src="app.js?v=46"></script>
 </body>
 </html>
