@@ -4,16 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chợ Tài Nguyên Mmo — Shop Tài Khoản Mạng Xã Hội</title>
-<link rel="stylesheet" href="style.css?v=23">
+<link rel="stylesheet" href="style.css?v=24">
 </head>
 <body>
 <div id="app">
-  <header class="site-header">
-    <div class="header-row">
+  <header class="site-header" id="siteHeader">
+    <div class="header-row header-main">
       <div class="brand">
         <img class="brand-logo" src="logo.png" alt="Chợ Tài Nguyên Mmo" width="280" height="79">
       </div>
       <div class="header-mascot-wrap" aria-hidden="true"><img class="header-mascot" src="mascot.png" alt="" width="71" height="140"></div>
+      <div class="header-user" id="headerUser" hidden>
+        <button class="avatar-btn" id="avatarBtn" onclick="showTab('account')">M</button>
+        <button class="icon-btn" onclick="showTab('cart')">🛒 <span id="cartCount">0</span></button>
+      </div>
       <div class="header-actions">
         <button id="menuBtn" class="menu-btn" title="Menu" aria-label="Mở menu"><span></span><span></span><span></span></button>
       </div>
@@ -21,8 +25,6 @@
     <div class="header-row wallet-row" id="walletRow" hidden>
       <button class="wallet-chip" onclick="showTab('wallet')"><span class="wallet-label">💰 Ví của bạn</span><b>Số dư ví: <span id="walletBalance">0đ</span></b></button>
       <button class="wallet-topup" onclick="showTab('wallet')">+ Nạp tiền</button>
-      <button class="avatar-btn" id="avatarBtn" onclick="showTab('account')">M</button>
-      <button class="icon-btn" onclick="showTab('cart')">🛒 <span id="cartCount">0</span></button>
     </div>
     <nav id="mainMenu" class="main-menu" hidden>
       <button onclick="showTab('account')">👤 Tài khoản</button>
@@ -213,6 +215,6 @@
 
   <div id="productModal" class="modal" hidden><div class="modal-box card" id="productModalBox"></div></div>
 </div>
-<script src="app.js?v=23"></script>
+<script src="app.js?v=24"></script>
 </body>
 </html>

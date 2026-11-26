@@ -69,6 +69,9 @@ function restoreScroll() {
 }
 async function enterShop() {
   $('gate').hidden = true; $('shop').hidden = false; $('walletRow').hidden = false;
+  // Header đã đăng nhập trên điện thoại: hamburger trái, logo giữa, avatar + giỏ phải
+  // (theo ảnh mẫu user gửi). PC không đổi nhờ CSS chỉ áp dụng <1024px.
+  $('siteHeader').classList.add('logged-in'); $('headerUser').hidden = false;
   await loadMe();
   // Nạp song song 1 lần thay vì nối tiếp 4 lượt: trang hiện đủ trong 1 lần vẽ,
   // footer không nhảy lên giữa màn hình rồi bị đẩy xuống lại.
