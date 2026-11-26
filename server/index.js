@@ -8,7 +8,15 @@ const { db, setting, setSetting } = require('./db');
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.json({ limit: '1mb' }));
-app.use(express.static(path.join(__dirname, '..', 'public')));
+// Trang entry index.html KHÔNG được cache: nó là DOM duy nhất của shop. Nếu trình
+// duyệt giữ HTML cũ qua một lần deploy (tab mở sẵn, bfcache...), HTML cũ không có
+// #siteHeader / #headerUser nên app.js mới sẽ throw trong enterShop() và header kẹt
+// ở dạng cũ dù file ?v= mới đã lên live. Asset có ?v= vẫn cache bình thường.
+app.use(express.static(path.join(__dirname, '..', 'public'), {
+  setHeaders(res, filePath) {
+    if (filePath.endsWith('.html')) res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+  },
+}));
 
 // ---------- tiện ích ----------
 const fmt = (n) => Number(n || 0).toLocaleString('vi-VN') + 'đ';
@@ -348,6 +356,9 @@ app.post('/api/admin/settings', auth, requireOwner, (req, res) => {
 });
 
 // ---------- SPA fallback ----------
-app.get('*', (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'index.html')));
+app.get('*', (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+});
 
 app.listen(PORT, () => console.log(`Chợ Tài Nguyên Mmo chạy tại http://localhost:${PORT}`));

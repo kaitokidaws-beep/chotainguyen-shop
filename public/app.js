@@ -69,9 +69,7 @@ function restoreScroll() {
 }
 async function enterShop() {
   $('gate').hidden = true; $('shop').hidden = false; $('walletRow').hidden = false;
-  // Header đã đăng nhập trên điện thoại: hamburger trái, logo giữa, avatar + giỏ phải
-  // (theo ảnh mẫu user gửi). PC không đổi nhờ CSS chỉ áp dụng <1024px.
-  $('siteHeader').classList.add('logged-in'); $('headerUser').hidden = false;
+  applyLoggedInHeader();
   await loadMe();
   // Nạp song song 1 lần thay vì nối tiếp 4 lượt: trang hiện đủ trong 1 lần vẽ,
   // footer không nhảy lên giữa màn hình rồi bị đẩy xuống lại.
@@ -400,8 +398,22 @@ async function setOrderStatus(code, status) { try { await api(`/api/admin/orders
 async function confirmDeposit(code) { if (!confirm(`Xác nhận cộng tiền cho yêu cầu ${code}? Chỉ bấm khi đã kiểm tra tiền/thẻ thật.`)) return; try { const j = await api(`/api/admin/deposits/${code}/confirm`, { method: 'POST' }); alert(j.message); await loadAdmin(); } catch (e) { alert(e.message); } }
 
 // ---------- khởi động ----------
+// Header đã đăng nhập trên điện thoại: hamburger trái, logo giữa, avatar + giỏ phải
+// (theo ảnh mẫu user gửi). PC không đổi nhờ CSS chỉ áp dụng <1024px.
+// Null-safe: nếu DOM đang là bản HTML cũ (không có #siteHeader / #headerUser),
+// không được throw ở đây — throw sẽ chặn enterShop() trước khi sản phẩm và
+// hoạt động kịp tải, kẹt shop ở trạng thái nửa vời với header cũ.
+function applyLoggedInHeader() {
+  const h = document.getElementById('siteHeader');
+  if (h) h.classList.add('logged-in');
+  const u = document.getElementById('headerUser');
+  if (u) u.hidden = false;
+}
 applyTheme();
 (async () => {
+  // Bật header đã đăng nhập NGAY khi có token, trước khi chờ /api/stats — lúc máy
+  // Fly đang ngủ thì stats có thể chờ vài giây, header không được kẹt ở dạng khách.
+  if (token()) applyLoggedInHeader();
   const stats = await api('/api/stats').catch(() => null);
   if (stats) { $('statSold').textContent = stats.sold_30d; $('statProducts').textContent = stats.total_products; }
   if (token()) { try { await enterShop(); } catch { $('gate').hidden = false; } }
