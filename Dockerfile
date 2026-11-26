@@ -1,13 +1,13 @@
 # syntax = docker/dockerfile:1
 
-# Chợ Tài Nguyên Mmo — server Rust (Axum + SQLite).
-# Build 2 giai đoạn: biên dịch bằng Rust rồi chạy bằng image Debian mỏng
-# chỉ chứa binary + file tĩnh public/. Nghe trên $PORT (mặc định 8080).
+# Chợ Tài Nguyên Mmo — backend Rust.
+# Two stages: compile with the Rust image, then ship only the binary
+# plus the static frontend in a slim Debian image.
 
 # --- Builder ---
 FROM rust:1.100-slim-bookworm AS builder
 WORKDIR /app
-# rusqlite (bundled) biên dịch SQLite từ source nên cần trình biên dịch C.
+# The bundled SQLite build needs a C compiler.
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential pkg-config && \
     rm -rf /var/lib/apt/lists/*
@@ -17,15 +17,14 @@ RUN cargo build --release
 
 # --- Runtime ---
 FROM debian:bookworm-slim
-LABEL fly_launch_runtime="Rust"
 WORKDIR /app
-# ca-certificates: reqwest gọi API SePay/Casso qua HTTPS.
+# ca-certificates: the top-up check calls SePay / Casso over HTTPS.
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 COPY --from=builder /app/target/release/shop /app/shop
 COPY public ./public
 
-ENV PORT="8080"
+ENV PORT=8080
 EXPOSE 8080
 CMD ["/app/shop"]

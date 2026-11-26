@@ -1,5 +1,5 @@
-node_modules/
+target/
 shop.db
 shop.db-journal
 .env
-/target
+node_modules/

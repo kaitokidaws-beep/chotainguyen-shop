@@ -1,8 +1,8 @@
 [package]
 name = "shop-cho-tai-nguyen-mmo"
-version = "2.0.0"
+version = "3.0.0"
 edition = "2021"
-description = "Chợ Tài Nguyên Mmo — shop bán tài khoản mạng xã hội, backend Rust (Axum + SQLite). Thay thế server Node/Express cũ, cùng API, cùng frontend, cùng dữ liệu."
+description = "Chợ Tài Nguyên Mmo — backend Rust (Axum + SQLite) cho shop bán tài khoản mạng xã hội."
 
 [[bin]]
 name = "shop"
