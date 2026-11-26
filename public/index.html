@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chợ Tài Nguyên Mmo — Shop Tài Khoản Mạng Xã Hội</title>
-<link rel="stylesheet" href="style.css?v=21">
+<link rel="stylesheet" href="style.css?v=22">
 </head>
 <body>
 <div id="app">
@@ -19,7 +19,8 @@
       </div>
     </div>
     <div class="header-row wallet-row" id="walletRow" hidden>
-      <button class="wallet-chip" onclick="showTab('wallet')"><span class="wallet-label">💰 Số dư ví</span><b id="walletBalance">0đ</b></button>
+      <button class="wallet-chip" onclick="showTab('wallet')"><span class="wallet-label">💰 Ví của bạn</span><b>Số dư ví: <span id="walletBalance">0đ</span></b></button>
+      <button class="wallet-topup" onclick="showTab('wallet')">+ Nạp tiền</button>
       <button class="avatar-btn" id="avatarBtn" onclick="showTab('account')">M</button>
       <button class="icon-btn" onclick="showTab('cart')">🛒 <span id="cartCount">0</span></button>
     </div>
@@ -64,10 +65,19 @@
   <main id="shop" hidden>
     <section id="tab-shop" class="tab">
       <div class="card activity-card">
-        <div class="act-head"><span class="act-dot"></span><b>Hoạt động gần đây</b><span class="act-live">Live</span></div>
+        <div class="act-head"><span class="act-dot"></span><b>Hoạt động gần đây</b><span class="act-live">Live <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><path d="M7.8 7.8a6 6 0 0 0 0 8.4"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4"/><path d="M4.9 4.9a10.2 10.2 0 0 0 0 14.2"/><path d="M19.1 4.9a10.2 10.2 0 0 1 0 14.2"/></svg></span></div>
         <p class="muted act-sub">Giao dịch mới nhất từ hệ thống</p>
         <div id="actList"></div>
-        <button class="act-more" onclick="showTab('wallet')">Nạp tiền ngay →</button>
+        <button class="act-more" id="actMoreBtn" onclick="toggleActivity()">Xem thêm hoạt động →</button>
+      </div>
+      <div class="card featured-card">
+        <h3 class="featured-title">DỊCH VỤ NỔI BẬT</h3>
+        <div class="featured-row">
+          <button class="featured-item" onclick="goFeatured('fb')"><span class="featured-logo" style="background:#1877F2"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></span>Tài khoản FB</button>
+          <button class="featured-item" onclick="goFeatured('pagelike')"><span class="featured-logo" style="background:#22c55e"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg></span>Page Like</button>
+          <button class="featured-item" onclick="goFeatured('x')"><span class="featured-logo" style="background:#000000"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></span>Tài khoản X</button>
+          <button class="featured-item" onclick="goFeatured('all')"><span class="featured-logo" style="background:#0d9488"><svg width="24" height="24" viewBox="0 0 16 16" fill="#fff"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg></span>Dịch vụ MMO</button>
+        </div>
       </div>
       <div class="cat-head">
         <span class="cat-pill"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg> DANH MỤC SẢN PHẨM</span>
@@ -203,6 +213,6 @@
 
   <div id="productModal" class="modal" hidden><div class="modal-box card" id="productModalBox"></div></div>
 </div>
-<script src="app.js?v=21"></script>
+<script src="app.js?v=22"></script>
 </body>
 </html>

@@ -205,9 +205,10 @@ function timeAgo(ts) {
 }
 function actColorIdx(a) { let h = 0; const s = (a.name || '') + a.created_at; for (const c of s) h = (h * 31 + c.charCodeAt(0)) % 997; return h % ACT_COLORS; }
 function actInitials(name) { const t = String(name || 'K').replace(/\*+$/, ''); return (t.slice(0, 2) || 'K').toUpperCase(); }
-async function loadActivity() {
+let activityExpanded = false;
+async function loadActivity(limit = 6) {
   try {
-    const j = await api('/api/activity');
+    const j = await api('/api/activity?limit=' + limit);
     const list = j.activity || [];
     if (!list.length) { $('actList').innerHTML = '<p class="muted">Chưa có hoạt động nào.</p>'; return; }
     $('actList').innerHTML = list.map(a => {
@@ -216,6 +217,23 @@ async function loadActivity() {
       return `<div class="act-row act-c${ci}"><span class="act-avatar">${esc(actInitials(a.name))}</span><div class="act-body"><div class="act-top"><b>${esc(a.name)}</b>${amt}</div><div class="act-desc">${esc(a.desc)}</div><div class="act-time">${timeAgo(a.created_at)}</div></div></div>`;
     }).join('');
   } catch { $('actList').innerHTML = '<p class="muted">Không tải được hoạt động.</p>'; }
+}
+function toggleActivity() {
+  activityExpanded = !activityExpanded;
+  $('actMoreBtn').textContent = activityExpanded ? 'Thu gọn ↑' : 'Xem thêm hoạt động →';
+  loadActivity(activityExpanded ? 20 : 6);
+}
+function goFeatured(kind) {
+  if (kind === 'pagelike') {
+    const p = products.find(x => /page/i.test(x.name) && /10\s*k/i.test(x.name));
+    if (p) { openProduct(p.id); return; }
+    kind = 'fb';
+  }
+  if (kind === 'fb') setFilter('Facebook');
+  else if (kind === 'x') setFilter('X');
+  else setFilter('Tất cả');
+  const g = document.getElementById('productGrid');
+  if (g) g.scrollIntoView({ behavior: 'smooth' });
 }
 function showAllProducts() { if (typeof setFilter === 'function') setFilter('Tất cả'); const g = document.getElementById('productGrid'); if (g) g.scrollIntoView({ behavior: 'smooth' }); }
 

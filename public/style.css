@@ -68,8 +68,14 @@ h3 { font-size: 16px; margin: 18px 0 8px; }
 .main-menu { position: absolute; top: 100%; right: 14px; z-index: 25; display: flex; flex-direction: column; gap: 4px; width: auto; min-width: 230px; max-width: 280px; margin-top: 6px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 8px; box-shadow: var(--shadow); animation: menuDrop .22s ease; }
 @keyframes menuDrop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .menu-btn span { transition: none; } .main-menu { animation: none; } }
-.wallet-row { margin-top: 8px; }
-.wallet-chip { flex: 1; text-align: left; background: var(--card); border: 1px solid var(--gold); color: var(--gold-bright); border-radius: 14px; padding: 10px 14px; font-size: 15px; }
+/* The vi gradient: xanh teal dam ben trai chuyen sang xanh la sang ben phai (theo anh mau user gui) */
+.wallet-row { margin-top: 8px; display: flex; align-items: center; gap: 10px; background: linear-gradient(90deg, #0a3d4f 0%, #0b6b52 48%, #22c55e 100%); border-radius: 20px; padding: 16px; box-shadow: 0 6px 18px rgba(6, 60, 60, .18); }
+.wallet-chip { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; background: none; border: none; color: #fff; padding: 0; font-size: 15px; cursor: pointer; }
+.wallet-chip b { font-size: 20px; color: #fff; }
+.wallet-label { font-size: 15px; color: #fff; font-weight: 600; }
+.wallet-topup { flex: none; background: #22c55e; color: #fff; border: 1px solid rgba(255,255,255,.55); border-radius: 999px; padding: 12px 18px; font-size: 15px; font-weight: 800; white-space: nowrap; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 4px 10px rgba(0,0,0,.18); }
+.wallet-row .avatar-btn { background: #fff; color: #2563eb; }
+.wallet-row .icon-btn { background: rgba(255,255,255,.18); color: #fff; border: 1px solid rgba(255,255,255,.4); }
 .avatar-btn { width: 44px; height: 44px; border-radius: 12px; background: var(--pine); color: #fff; font-weight: 800; font-size: 18px; border: none; }
 .main-menu { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .main-menu button { flex: none; width: 100%; text-align: left; background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 999px; padding: 11px; font-weight: 600; }
@@ -118,17 +124,30 @@ h3 { font-size: 16px; margin: 18px 0 8px; }
 .status-cancelled { color: var(--red); font-weight: 700; }
 .act-head { display: flex; align-items: center; gap: 8px; }
 .act-dot { width: 10px; height: 10px; border-radius: 50%; background: #22c55e; flex: none; }
-.act-live { margin-left: auto; background: #d1fae5; color: #059669; font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 999px; }
+.act-live { margin-left: auto; background: #d1fae5; color: #059669; font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 999px; display: inline-flex; align-items: center; gap: 4px; }
+.act-live svg { display: block; }
 .act-sub { margin: 4px 0 12px; }
 .act-row { display: flex; gap: 12px; border-radius: 16px; padding: 12px; margin: 8px 0; }
-.act-avatar { flex: none; width: 44px; height: 44px; border-radius: 50%; color: #fff; font-weight: 800; font-size: 15px; display: flex; align-items: center; justify-content: center; }
+.act-avatar { flex: none; width: 44px; height: 44px; border-radius: 50%; color: #fff; font-weight: 800; font-size: 15px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; border: 3px solid #22c55e; }
 .act-body { min-width: 0; flex: 1; }
 .act-top { display: flex; align-items: baseline; gap: 8px; }
 .act-top b { font-size: 15px; }
 .act-amt { margin-left: auto; background: #fff; border: 1px solid var(--border); border-radius: 999px; padding: 3px 10px; font-size: 13px; font-weight: 800; white-space: nowrap; }
 .act-desc { color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
 .act-time { color: var(--muted); font-size: 12px; margin-top: 2px; }
-.act-more { background: none; border: none; color: var(--pine-soft); font-weight: 800; font-size: 15px; cursor: pointer; padding: 8px 0 0; }
+.act-more { display: block; width: 100%; background: #eef2f7; color: #0f172a; border: 1px solid #e2e8f0; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; padding: 12px; margin-top: 12px; text-align: center; }
+.act-c0 .act-avatar { border-color: #22c55e; }
+.act-c1 .act-avatar { border-color: #22c55e; }
+.act-c2 .act-avatar { border-color: #059669; }
+.act-c3 .act-avatar { border-color: #d97706; }
+.act-c4 .act-avatar { border-color: #7c3aed; }
+/* Dich vu noi bat: hang 4 muc, logo tron tren, nhan duoi (theo anh mau user gui) */
+.featured-card { margin: 16px 0; }
+.featured-title { font-size: 18px; font-weight: 800; margin: 0 0 14px; letter-spacing: .5px; }
+.featured-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.featured-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; padding: 4px 2px; text-align: center; }
+.featured-logo { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,.14); flex: none; }
+.featured-logo svg { width: 24px; height: 24px; display: block; }
 .act-c0 { background: #dbeafe; } .act-c0 .act-avatar { background: #2563eb; }
 .act-c1 { background: #ede9fe; } .act-c1 .act-avatar { background: #7c3aed; }
 .act-c2 { background: #d1fae5; } .act-c2 .act-avatar { background: #059669; }
@@ -147,9 +166,7 @@ h3 { font-size: 16px; margin: 18px 0 8px; }
 .cat-pill svg { width: 15px; height: 15px; display: block; }
 .cat-head h2 { font-size: 26px; margin: 14px 0; }
 .cat-all { width: auto; padding: 13px 26px; }
-.wallet-chip { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
-.wallet-chip b { font-size: 20px; }
-.wallet-label { font-size: 13px; color: var(--gold-bright); font-weight: 600; }
+/* (Quy tac .wallet-chip / .wallet-label nam o phan the vi gradient phia tren) */
 .bottom-nav button span { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; }
 .bottom-nav button svg { width: 22px; height: 22px; }
 /* (Đã xóa dòng ghi đè display block lạc loài ở đây. Lưới giờ là grid thật, panel xếp chồng 1 cột.) */
