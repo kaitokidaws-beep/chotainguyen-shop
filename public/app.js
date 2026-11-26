@@ -3,7 +3,7 @@ const $ = (id) => document.getElementById(id);
 const fmt = (n) => Number(n || 0).toLocaleString('vi-VN') + 'đ';
 let me = null, products = [], cart = JSON.parse(localStorage.getItem('ctn_cart') || '[]');
 let platformFilter = 'Tất cả', authMode = 'register', selectedAmount = 0;
-let searchQuery = '', sortMode = 'foryou', viewMode = 'grid';
+let searchQuery = '', sortMode = 'foryou', viewMode = 'feed';
 
 const token = () => localStorage.getItem('ctn_token');
 const headers = () => ({ 'Content-Type': 'application/json', ...(token() ? { Authorization: 'Bearer ' + token() } : {}) });
@@ -29,11 +29,11 @@ function setupDialogLightDismiss() {
 }
 
 // ---------- theme ----------
-// Không còn nút chuyển sáng/tối: shop luôn ở theme sáng (trắng) như trước khi có nút chuyển.
+// Chợ Đêm (v35): shop luôn ở theme tối. Không còn nút chuyển sáng/tối.
 function applyTheme() {
-  // Dọn khóa theme cũ đã lưu trên máy khách để không bị kẹt ở theme tối.
+  // Dọn khóa theme cũ đã lưu trên máy khách để không bị kẹt ở theme sáng.
   try { localStorage.removeItem('ctn_theme'); localStorage.removeItem('ctn_theme_v2'); } catch (e) {}
-  document.documentElement.setAttribute('data-theme', 'light');
+  document.documentElement.setAttribute('data-theme', 'dark');
 }
 $('menuBtn').onclick = () => { $('mainMenu').hidden = !$('mainMenu').hidden; $('menuBtn').classList.toggle('open', !$('mainMenu').hidden); };
 
@@ -138,9 +138,13 @@ function setSort(mode) {
 }
 function setView(mode) {
   viewMode = mode;
+  $('viewFeedBtn').classList.toggle('active', mode === 'feed');
   $('viewGridBtn').classList.toggle('active', mode === 'grid');
   $('viewListBtn').classList.toggle('active', mode === 'list');
-  $('productGrid').classList.toggle('list', mode === 'list');
+  const g = $('productGrid');
+  g.classList.toggle('feed', mode === 'feed');
+  g.classList.toggle('grid', mode === 'grid');
+  g.classList.toggle('list', mode === 'list');
 }
 function gotoCategories() {
   const h = document.getElementById('catSec');
@@ -178,27 +182,81 @@ async function loadProducts() {
   renderFeatured();
   renderProducts();
 }
-// ---------- nổi bật: dải cuộn ngang, DÙNG CHUNG 1 hàm vẽ thẻ với lưới
-// (khommo247) — không còn carousel Spotlight thẻ lớn riêng (gọn source). ----------
+// ---------- nổi bật: carousel MWG (native scroll + snap, nút prev/next,
+// chấm đánh dấu, vùng status đọc vị trí slide) — DÙNG CHUNG 1 hàm vẽ thẻ
+// với lưới sản phẩm (gọn source). ----------
+let featTotal = 0, featNames = [], __featIdx = 0, __featRaf = 0, __featWired = false;
 function renderFeatured() {
   const track = $('featTrack'); if (!track) return;
   const hot = products.filter(p => p.is_hot);
   const bySold = [...products].sort((a, b) => (b.sold || 0) - (a.sold || 0));
   const seen = new Set(); const list = [];
   for (const p of [...hot, ...bySold]) { if (!seen.has(p.id)) { seen.add(p.id); list.push(p); } if (list.length >= 4) break; }
-  track.innerHTML = list.map((p, i) => cardHTML(p, i)).join('');
+  featTotal = list.length; featNames = list.map(p => p.name);
+  track.innerHTML = list.map((p, i) => cardHTML(p, i, list.length)).join('');
+  const mk = $('featMarkers');
+  if (mk) mk.innerHTML = list.map((p, i) => `<button type="button" data-feat="${i}" aria-label="Đi tới sản phẩm nổi bật ${i + 1}: ${esc(p.name)}"${i === 0 ? ' aria-current="true"' : ''}></button>`).join('');
+  updateFeatStatus(0);
 }
-// 1 hàm vẽ thẻ duy nhất cho cả dải nổi bật + lưới sản phẩm (khommo247):
-// ảnh 110px + badge góc trái + tên 2 dòng + gạch đứt + "Từ Xđ" + đã bán.
-function cardHTML(p, i) {
+function updateFeatStatus(idx) {
+  __featIdx = idx;
+  document.querySelectorAll('#featMarkers button').forEach((b, i) => {
+    if (i === idx) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+  });
+  const st = $('featStatus');
+  if (st && featTotal) st.textContent = `Sản phẩm nổi bật ${idx + 1} trên ${featTotal}: ${featNames[idx] || ''}`;
+}
+function featGo(i) {
+  const track = $('featTrack'); if (!track || !featTotal) return;
+  const idx = ((i % featTotal) + featTotal) % featTotal;
+  const slide = track.children[idx];
+  if (!slide) return;
+  updateFeatStatus(idx);
+  slide.scrollIntoView({ behavior: isReducedMotion ? 'auto' : 'smooth', inline: 'center', block: 'nearest' });
+}
+function setupFeatCarousel() {
+  if (__featWired) return; __featWired = true;
+  const track = $('featTrack'); if (!track) return;
+  const prev = $('featPrev'), next = $('featNext');
+  if (prev) prev.onclick = () => featGo(__featIdx - 1);
+  if (next) next.onclick = () => featGo(__featIdx + 1);
+  const mk = $('featMarkers');
+  if (mk) mk.addEventListener('click', e => {
+    const b = e.target.closest('button[data-feat]');
+    if (b) featGo(Number(b.dataset.feat));
+  });
+  // Đồng bộ chấm + status theo vị trí cuộn thật (throttle 1 lần/khung hình),
+  // thông báo sau khi cuộn xong (scrollend, fallback: debounce scroll).
+  let settleT = 0;
+  const sync = () => {
+    const mid = track.scrollLeft + track.clientWidth / 2;
+    let best = 0, bestD = Infinity;
+    [...track.children].forEach((c, i) => {
+      const d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid);
+      if (d < bestD) { bestD = d; best = i; }
+    });
+    if (best !== __featIdx) updateFeatStatus(best);
+  };
+  track.addEventListener('scroll', () => {
+    if (__featRaf) return;
+    __featRaf = requestAnimationFrame(() => { __featRaf = 0; sync(); });
+  }, { passive: true });
+  if ('onscrollend' in track) track.addEventListener('scrollend', sync);
+  else track.addEventListener('scroll', () => { clearTimeout(settleT); settleT = setTimeout(sync, 120); }, { passive: true });
+}
+// 1 hàm vẽ thẻ duy nhất cho cả carousel nổi bật + lưới sản phẩm:
+// banner ảnh lớn + badge góc trái + tên 2 dòng + gạch đứt + "Từ Xđ" + đã bán.
+// slideTotal > 0: thẻ nằm trong carousel → gắn role slide + nhãn "i trên N".
+function cardHTML(p, i, slideTotal) {
   const st = PLATFORM_STYLE[p.platform] || { c: '#0284c7', svg: '<svg width="22" height="22" viewBox="0 0 24 24"><text x="12" y="17" text-anchor="middle" font-size="14" font-weight="900" fill="#fff">' + p.platform[0] + '</text></svg>' };
   const old = Number(p.old_price || 0);
   const disc = old > p.price ? Math.round((1 - p.price / old) * 100) : 0;
   const bh = (String(p.warranty || '').match(/(\d+)\s*ngày/) || [])[1];
   const sold = Number(p.sold || 0);
   const delay = (i % 8) * 40; // stagger: thẻ hiện dần từ dưới lên
+  const slideAttr = slideTotal ? ` role="group" aria-roledescription="slide" aria-label="${i + 1} trên ${slideTotal}"` : '';
   return `
-  <article class="p-card" style="animation-delay:${delay}ms" onclick="openProduct(${p.id})" tabindex="0" onkeydown="if(event.key==='Enter')openProduct(${p.id})">
+  <article class="p-card" style="animation-delay:${delay}ms"${slideAttr} onclick="openProduct(${p.id})" tabindex="0" onkeydown="if(event.key==='Enter')openProduct(${p.id})">
     <div class="p-media" style="background:${st.c}" data-card-banner="${p.id}">
       <span class="p-media-logo">${st.svg}</span>
       <span class="banner-badges">${p.is_hot ? '<span class="hot-badge">NỔI BẬT</span>' : ''}${disc ? `<span class="disc-badge">-${disc}%</span>` : ''}</span>
@@ -507,4 +565,5 @@ applyTheme();
   if (token()) { try { await enterShop(); } catch { $('gate').hidden = false; } }
   updateCartBadge();
   setupDialogLightDismiss();
+  setupFeatCarousel();
 })();
