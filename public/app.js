@@ -230,6 +230,7 @@
       : 'Nền tảng: ' + platformFilter;
     $('filterDot').hidden = !(filterOpts.inStock || filterOpts.hotOnly || filterOpts.min != null || filterOpts.max != null);
     renderRows();
+    renderDealBanner();
   }
 
   function browseIsFiltered() {
@@ -258,6 +259,43 @@
     var newest = active.slice().sort(function (a, b) { return new Date(b.created_at || 0) - new Date(a.created_at || 0); });
     $('newRow').innerHTML = newest.slice(0, 10).map(cardHtml).join('') ||
       '<p class="sheet-note">Chưa có sản phẩm mới.</p>';
+  }
+
+  /* Hero deal banner: the ONE loud focal point — the real highest-discount
+     in-stock product, computed from the loaded catalog (never hardcoded).
+     Hòa giải với tìm kiếm/sắp xếp/lọc như 2 rail: khi đang lọc thì ẩn
+     banner để kết quả tìm kiếm là thứ duy nhất trên màn hình. */
+  function bestDealProduct() {
+    var best = null, bestOff = 0;
+    products.forEach(function (p) {
+      if (p.active === false || Number(p.stock) <= 0) return;
+      if (!(p.old_price && p.old_price > p.price)) return;
+      var off = Math.round((1 - p.price / p.old_price) * 100);
+      if (off > bestOff || (off === bestOff && best && (p.sold || 0) > (best.sold || 0))) {
+        best = p; bestOff = off;
+      }
+    });
+    return best ? { p: best, off: bestOff } : null;
+  }
+  function renderDealBanner() {
+    var deal = bestDealProduct();
+    var show = !browseIsFiltered() && !!deal;
+    $('dealBanner').hidden = !show;
+    if (!show) { $('dealBannerInner').innerHTML = ''; return; }
+    var p = deal.p;
+    $('dealBannerInner').innerHTML =
+      '<div class="deal-banner-text">' +
+        '<span class="deal-tag">🔥 DEAL SỐC</span>' +
+        '<div class="deal-name">' + esc(p.name) + '</div>' +
+        '<div class="deal-price-row">' +
+          '<span class="deal-old">' + fmtMoney(p.old_price) + '</span>' +
+          '<span class="deal-price">' + fmtMoney(p.price) + '</span>' +
+          '<span class="deal-off">-' + deal.off + '%</span>' +
+        '</div>' +
+        '<div class="deal-stock">Chỉ còn ' + (Number(p.stock) || 0) + ' tài khoản — nhanh tay kẻo hết!</div>' +
+      '</div>' +
+      '<button type="button" class="deal-cta" id="dealBuyBtn" data-id="' + esc(p.id) + '">Mua ngay</button>';
+    $('dealBuyBtn').addEventListener('click', function () { openProduct(p.id); });
   }
 
   /* ---------------- load: products / stats / activity / leaderboard / ticker ---------------- */
