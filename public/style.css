@@ -41,16 +41,17 @@ h3 { font-size: 16px; margin: 18px 0 8px; }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--jade); display: inline-block; }
 
 /* header — logo trái, nút phải, tràn hết bề ngang */
-.site-header { position: sticky; top: 0; z-index: 20; background: var(--bg); border-bottom: 1px solid var(--border); padding: 10px 16px; }
+.site-header { position: sticky; top: 0; z-index: 20; background: var(--bg); border-bottom: 1px solid var(--border); padding: 8px 16px; }
 .header-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; }
 .brand { flex: 1; min-width: 0; }
-.brand-logo { height: 62px; width: auto; max-width: 340px; filter: drop-shadow(0 4px 10px rgba(0,0,0,.45)); }
+/* Logo giống shop trong Muse: tối đa 220px trên điện thoại, nằm trái cùng hàng với nút menu, không cao thêm */
+.brand-logo { display: block; height: 62px; width: auto; max-width: 220px; filter: drop-shadow(0 2px 6px rgba(15,23,42,.18)); }
 .header-actions { display: flex; gap: 8px; margin-left: auto; }
 .icon-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 18px; }
-.menu-btn { position: relative; width: 46px; height: 36px; flex: none; border-radius: 999px; border: 1px solid var(--border); background: var(--card); cursor: pointer; padding: 0; box-shadow: 0 2px 8px rgba(0,0,0,.18); transition: transform .12s ease, border-color .2s ease; }
-.menu-btn:hover { border-color: var(--pine); }
+.menu-btn { position: relative; width: 46px; height: 36px; flex: none; border-radius: 999px; border: 1px solid #a7f3d0; background: #d1fae5; cursor: pointer; padding: 0; box-shadow: 0 2px 8px rgba(15,23,42,.10); transition: transform .12s ease, border-color .2s ease; }
+.menu-btn:hover { border-color: #34d399; }
 .menu-btn:active { transform: scale(.94); }
-.menu-btn span { position: absolute; left: 13px; width: 20px; height: 2px; border-radius: 2px; background: var(--text); transition: transform .25s ease, opacity .2s ease, top .25s ease; }
+.menu-btn span { position: absolute; left: 13px; width: 20px; height: 2px; border-radius: 2px; background: #0f172a; transition: transform .25s ease, opacity .2s ease, top .25s ease; }
 .menu-btn span:nth-child(1) { top: 12px; }
 .menu-btn span:nth-child(2) { top: 17px; }
 .menu-btn span:nth-child(3) { top: 22px; }
@@ -60,10 +61,10 @@ h3 { font-size: 16px; margin: 18px 0 8px; }
 .main-menu { animation: menuDrop .22s ease; }
 @keyframes menuDrop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .menu-btn span { transition: none; } .main-menu { animation: none; } }
-.wallet-row { margin-top: 10px; }
+.wallet-row { margin-top: 8px; }
 .wallet-chip { flex: 1; text-align: left; background: var(--card); border: 1px solid var(--gold); color: var(--gold-bright); border-radius: 14px; padding: 10px 14px; font-size: 15px; }
 .avatar-btn { width: 44px; height: 44px; border-radius: 12px; background: var(--pine); color: #fff; font-weight: 800; font-size: 18px; border: none; }
-.main-menu { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.main-menu { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .main-menu button { flex: 1 1 30%; background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 999px; padding: 11px; font-weight: 600; }
 
 .gate, main, footer { width: 100%; padding: 0 16px; }
