@@ -292,9 +292,17 @@ footer{max-width:1200px;margin:0 auto;padding:44px 16px 10px}
   .cover-title{font-size:96px}
   .cover-cta{flex-direction:row;max-width:560px}
   .cover-cta .btn-primary,.cover-cta .btn-ghost{width:auto;padding:15px 26px}
-  .cover-mascot{display:block;position:absolute;right:5%;bottom:6%;z-index:1;pointer-events:none;filter:drop-shadow(0 18px 34px rgba(139,92,246,.45))}
+  .cover-mascot{display:block;position:absolute;right:24px;bottom:6%;z-index:1;pointer-events:none;filter:drop-shadow(0 18px 34px rgba(139,92,246,.45))}
   .cover-mascot img{width:150px;height:auto}
-  .cover-shop .cover-inner{max-width:640px;margin-left:calc((100vw - 1080px)/2)}
+  /* Hero shop PC: nội dung căn trái THẬT + chừa cột phải 220px cho cáo.
+     Quy tắc cũ margin-left:calc((100vw - 1080px)/2) SAI: cover nằm trong .tab
+     1200px căn giữa, còn 100vw là cả viewport — ở 1919px nó đẩy inner tới
+     x=835, mép phải inner (1475) chui xuống dưới cáo (1335–1485) nên nút tìm
+     kiếm ở cuối ô search và chip TikTok bị cáo đè lên. Với padding-right
+     220px + margin-left:0, inner kết thúc trước vùng của cáo ở mọi chiều rộng
+     nên chồng lấn là không thể xảy ra về mặt hình học. */
+  .cover-shop{padding-right:220px}
+  .cover-shop .cover-inner{max-width:640px;margin-left:0}
   .feat-track .p-card{flex-basis:320px}
   .product-grid.feed{grid-template-columns:1fr 1fr;display:grid}
   .product-grid.grid{grid-template-columns:repeat(3,1fr)}
