@@ -1,28 +1,32 @@
 <!DOCTYPE html>
-<html lang="vi" data-theme="dark">
+<html lang="vi" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0a0d16">
+<meta name="theme-color" content="#f4f8fc">
 <title>Chợ Tài Nguyên Mmo — Shop Tài Khoản Mạng Xã Hội</title>
-<link rel="stylesheet" href="style.css?v=36">
+<link rel="stylesheet" href="style.css?v=37">
 </head>
 <body>
 <div id="app">
-  <!-- ===== Top bar dính: logo (nền trắng) + ví + avatar + giỏ + menu ===== -->
+  <!-- ===== Top bar dính, mảnh, trắng: logo + TÌM KIẾM NGAY TRONG BAR + ví + avatar + giỏ + menu ===== -->
   <header class="site-header" id="siteHeader">
     <div class="scroll-progress" aria-hidden="true"></div>
     <div class="header-row header-main">
       <div class="brand">
         <img class="brand-logo" src="logo.png" alt="Chợ Tài Nguyên Mmo" width="280" height="79">
       </div>
+      <search class="top-search">
+        <form class="top-search-form" role="search" onsubmit="onSearch(true); return false;">
+          <input id="searchInput" type="search" name="q" placeholder="Tìm tài khoản…" oninput="onSearch()" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="search" aria-label="Tìm tài khoản">
+          <button class="search-btn" type="submit" aria-label="Tìm kiếm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg></button>
+        </form>
+      </search>
       <div class="header-user" id="headerUser" hidden>
-        <button class="icon-btn header-search" onclick="focusSearch()" title="Tìm kiếm" aria-label="Tìm kiếm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg></button>
         <button class="avatar-btn" id="avatarBtn" onclick="showTab('account')">M</button>
         <button class="icon-btn" onclick="showTab('cart')">🛒 <span id="cartCount">0</span></button>
       </div>
       <div class="header-actions">
-        <button class="icon-btn header-search" onclick="focusSearch()" title="Tìm kiếm" aria-label="Tìm kiếm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg></button>
         <button id="menuBtn" class="menu-btn" title="Menu" aria-label="Mở menu"><span></span><span></span><span></span></button>
       </div>
     </div>
@@ -38,26 +42,25 @@
     </nav>
   </header>
 
-  <!-- ===== Cổng đăng ký: cover tối full màn hình, chữ khổng lồ ===== -->
+  <!-- ===== Cổng đăng ký: trang nhất sáng, chữ serif lớn + thẻ đăng ký trắng ===== -->
   <section id="gate" class="gate">
-    <div class="cover" id="gateCover">
-      <div class="orb orb-a" aria-hidden="true"></div>
-      <div class="orb orb-b" aria-hidden="true"></div>
-      <div class="cover-inner">
-        <p class="cover-kicker"><span class="pulse-dot"></span> Hệ thống tự động 24/7</p>
-        <h1 class="cover-title">Tài khoản<br>mạng xã hội<br><span class="grad">chất lượng cao.</span></h1>
-        <p class="cover-sub">Facebook, TikTok, Instagram, YouTube… có 2FA, email gốc, bảo hành 1 đổi 1 rõ ràng. Kho tài khoản, giá bán và đặt hàng nằm ở khu vực thành viên bên trong.</p>
-        <div class="cover-cta">
-          <button class="btn-primary" onclick="toggleAuthPanel(true)">Bắt đầu ngay — Đăng ký miễn phí</button>
-          <button class="btn-ghost" onclick="toggleAuthPanel(true, 'login')">Đã có tài khoản? Đăng nhập</button>
-        </div>
-        <div class="cover-stats">
-          <div><b id="statProducts">…</b><span>sản phẩm đang bán</span></div>
-          <div><b id="statSold">…</b><span>đã bán · 30 ngày</span></div>
-          <div><b>24/7</b><span>giao tự động</span></div>
+    <div class="frontpage" id="gateCover">
+      <div class="fp-grid">
+        <div class="fp-main">
+          <p class="eyebrow">Chợ Tài Nguyên Mmo · Hệ thống tự động 24/7</p>
+          <h1 class="fp-title">Tài khoản<br>mạng xã hội<br><em>chất lượng cao.</em></h1>
+          <p class="fp-standfirst">Facebook, TikTok, Instagram, YouTube… có 2FA, email gốc, bảo hành 1 đổi 1 rõ ràng. Kho tài khoản, giá bán và đặt hàng nằm ở khu vực thành viên bên trong.</p>
+          <div class="fp-cta">
+            <button class="btn-primary" onclick="toggleAuthPanel(true)">Bắt đầu ngay — Đăng ký miễn phí</button>
+            <button class="btn-ghost" onclick="toggleAuthPanel(true, 'login')">Đã có tài khoản? Đăng nhập</button>
+          </div>
+          <div class="fp-stats">
+            <div><b id="statProducts">…</b><span>sản phẩm đang bán</span></div>
+            <div><b id="statSold">…</b><span>đã bán · 30 ngày</span></div>
+            <div><b>24/7</b><span>giao tự động</span></div>
+          </div>
         </div>
       </div>
-      <div class="scroll-cue" aria-hidden="true">Vuốt xuống <span>↓</span></div>
     </div>
     <div id="authPanel" class="auth-panel" hidden>
       <div class="auth-titlebar"><span class="dots"><i></i><i></i><i></i></span><span class="chip-green" id="authChip">Đăng Ký Miễn Phí</span><button class="x" onclick="toggleAuthPanel(false)">✕</button></div>
@@ -75,35 +78,35 @@
 
   <main id="shop" hidden>
     <section id="tab-shop" class="tab">
-      <!-- ===== Hero full màn hình: chữ khổng lồ + tìm kiếm + số liệu + ô nền tảng ===== -->
-      <div class="cover cover-shop" id="heroCover">
-        <div class="orb orb-a" aria-hidden="true"></div>
-        <div class="orb orb-b" aria-hidden="true"></div>
-        <div class="cover-mascot" aria-hidden="true" hidden><img src="mascot.png" alt="" width="150" height="296"></div>
-        <div class="cover-inner">
-          <p class="cover-kicker"><span class="pulse-dot"></span> Hệ thống tự động 24/7</p>
-          <h1 class="cover-title">Tài khoản<br>mạng xã hội<br><span class="grad">chất lượng cao.</span></h1>
-          <p class="cover-sub">Facebook, TikTok, Instagram, YouTube… có 2FA, email gốc, bảo hành 1 đổi 1 rõ ràng.</p>
-          <search>
-            <form class="hero-search" role="search" onsubmit="onSearch(true); return false;">
-              <input id="searchInput" type="search" name="q" placeholder="Tìm tài khoản… VD: Gmail cổ, X, TikTok" oninput="onSearch()" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="search" aria-label="Tìm tài khoản">
-              <button class="search-btn" type="submit" aria-label="Tìm kiếm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg></button>
-            </form>
-          </search>
-          <div class="cover-stats">
-            <div><b id="heroProducts">…</b><span>sản phẩm đang bán</span></div>
-            <div><b id="heroSold">…</b><span>đã bán · 30 ngày</span></div>
-            <div><b>24/7</b><span>giao tự động</span></div>
+      <!-- ===== Trang nhất: tiêu đề serif lớn + bài cover là 1 sản phẩm thật ===== -->
+      <div class="frontpage" id="heroCover">
+        <div class="fp-grid">
+          <div class="fp-main">
+            <p class="eyebrow">Chợ Tài Nguyên Mmo · Hệ thống tự động 24/7</p>
+            <h1 class="fp-title">Tài khoản<br>mạng xã hội<br><em>chất lượng cao.</em></h1>
+            <p class="fp-standfirst">Facebook, TikTok, Instagram, YouTube… có 2FA, email gốc, bảo hành 1 đổi 1 rõ ràng.</p>
+            <div class="fp-stats">
+              <div><b id="heroProducts">…</b><span>sản phẩm đang bán</span></div>
+              <div><b id="heroSold">…</b><span>đã bán · 30 ngày</span></div>
+              <div><b>24/7</b><span>giao tự động</span></div>
+            </div>
           </div>
-          <div class="hero-chips" id="platformFilters"></div>
+          <article class="fp-story" id="coverStory" aria-label="Sản phẩm nổi bật"></article>
         </div>
-        <div class="scroll-cue" aria-hidden="true">Vuốt xuống <span>↓</span></div>
       </div>
 
-      <!-- ===== Nổi bật: carousel MWG (snap + nút + chấm + status) ===== -->
+      <!-- ===== Danh mục: rail ô hình lớn, mỗi ô 1 nền tảng ===== -->
+      <section class="catsec">
+        <div class="sec-head">
+          <div><p class="kicker">Chọn theo nền tảng</p><h2>Danh mục</h2></div>
+        </div>
+        <div class="cat-rail" id="platformFilters"></div>
+      </section>
+
+      <!-- ===== Nổi bật: carousel MWG, thẻ dọc ảnh là chính, giá nằm trên ảnh ===== -->
       <section class="feat" aria-roledescription="carousel" aria-label="Sản phẩm nổi bật">
         <div class="sec-head">
-          <div><p class="kicker">Tuyển chọn</p><h2>Nổi bật đêm nay</h2></div>
+          <div><p class="kicker">Tuyển chọn</p><h2>Nổi bật hôm nay</h2></div>
           <div class="feat-nav">
             <button type="button" id="featPrev" aria-label="Sản phẩm nổi bật trước">←</button>
             <button type="button" id="featNext" aria-label="Sản phẩm nổi bật sau">→</button>
@@ -114,7 +117,7 @@
         <p class="visually-hidden" id="featStatus" role="status" aria-live="polite"></p>
       </section>
 
-      <!-- ===== Khám phá: thanh lọc dính + feed truyện dọc (mặc định) ===== -->
+      <!-- ===== Khám phá: thanh lọc dính + lưới 2 cột (thẻ đầu là bài feature ngang) ===== -->
       <div class="toolbar" id="catSec">
         <div class="sort-pills" id="sortPills">
           <button data-sort="foryou" class="active" onclick="setSort('foryou')">Dành cho bạn</button>
@@ -126,17 +129,16 @@
         <div class="toolbar-row">
           <span class="sec-count" id="productCount">Có 12 sản phẩm</span>
           <span class="view-toggle">
-            <button id="viewFeedBtn" class="active" onclick="setView('feed')" title="Xem dạng truyện" aria-label="Xem dạng truyện">▦</button>
-            <button id="viewGridBtn" onclick="setView('grid')" title="Xem dạng lưới" aria-label="Xem dạng lưới"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg></button>
+            <button id="viewGridBtn" class="active" onclick="setView('grid')" title="Xem dạng lưới" aria-label="Xem dạng lưới"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg></button>
             <button id="viewListBtn" onclick="setView('list')" title="Xem dạng danh sách" aria-label="Xem dạng danh sách"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
           </span>
         </div>
       </div>
 
-      <div id="productGrid" class="product-grid feed"></div>
+      <div id="productGrid" class="product-grid grid"></div>
       <p id="emptyProducts" class="muted" hidden>Không có sản phẩm. Thử chọn nền tảng khác.</p>
 
-      <!-- ===== Tin cậy: 4 ô kính (trong #tab-shop, sau đăng nhập vẫn hiện) ===== -->
+      <!-- ===== Tin cậy: 4 ô trắng (trong #tab-shop, sau đăng nhập vẫn hiện) ===== -->
       <section class="trust">
         <div class="trust-item">🛡️<div><b>Bảo hành 1 đổi 1</b><span>Lỗi là đổi, đúng hạn ghi trên sản phẩm</span></div></div>
         <div class="trust-item">⚡<div><b>Giao tự động 24/7</b><span>Thanh toán xong là nhận ngay</span></div></div>
@@ -144,7 +146,7 @@
         <div class="trust-item">💬<div><b>Hỗ trợ 24/7</b><span>Bot trả lời ngay, mọi lúc</span></div></div>
       </section>
 
-      <!-- ===== Mua hàng 3 bước: timeline dọc ===== -->
+      <!-- ===== Mua hàng 3 bước: 3 thẻ ngang ===== -->
       <section class="steps">
         <div class="sec-head">
           <div><p class="kicker">Nhanh trong 3 phút</p><h2>Mua hàng như thế nào?</h2></div>
@@ -166,16 +168,16 @@
         <button class="act-more" id="actMoreBtn" onclick="toggleActivity()">Xem thêm hoạt động →</button>
       </section>
 
-      <!-- ===== Dịch vụ nổi bật: rail cuộn ngang ===== -->
+      <!-- ===== Dịch vụ nổi bật: lưới ô vuông ===== -->
       <section class="services">
         <div class="sec-head">
           <div><p class="kicker">Nhanh gọn</p><h2>Dịch vụ nổi bật</h2></div>
         </div>
-        <div class="services-rail">
+        <div class="services-grid">
           <button class="service-tile" onclick="goFeatured('fb')"><span class="service-logo" style="background:#1877F2"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></span><span class="service-name">Tài khoản FB</span><span class="service-sub">Clone US · Cổ · Page</span></button>
           <button class="service-tile" onclick="goFeatured('pagelike')"><span class="service-logo" style="background:#0e7c6b"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg></span><span class="service-name">Page Like</span><span class="service-sub">10K Like · Bật kiếm tiền</span></button>
           <button class="service-tile" onclick="goFeatured('x')"><span class="service-logo" style="background:#000000"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></span><span class="service-name">Tài khoản X</span><span class="service-sub">Cổ 2018 · Có mail gốc</span></button>
-          <button class="service-tile" onclick="goFeatured('all')"><span class="service-logo" style="background:#7c3aed"><svg width="26" height="26" viewBox="0 0 16 16" fill="#fff"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg></span><span class="service-name">Dịch vụ MMO</span><span class="service-sub">Xem toàn bộ 12 sản phẩm</span></button>
+          <button class="service-tile" onclick="goFeatured('all')"><span class="service-logo" style="background:#0369a1"><svg width="26" height="26" viewBox="0 0 16 16" fill="#fff"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg></span><span class="service-name">Dịch vụ MMO</span><span class="service-sub">Xem toàn bộ 12 sản phẩm</span></button>
         </div>
       </section>
     </section>
@@ -267,7 +269,7 @@
     </section>
   </main>
 
-  <!-- ===== Footer: logo + 2 cột + bản quyền ===== -->
+  <!-- ===== Footer sáng + dải bản quyền navy ===== -->
   <footer>
     <div class="footer-brand"><img class="brand-logo" src="logo.png" alt="Chợ Tài Nguyên Mmo" width="280" height="79"></div>
     <div class="footer-cols">
@@ -286,14 +288,14 @@
       </div>
     </div>
     <div id="policyBox" class="card policy-box" hidden></div>
-    <div class="copyright">© 2026 Chợ Tài Nguyên Mmo — Mọi quyền được bảo lưu.<br><span class="muted">Giá và tồn kho hiển thị trên trang là giá đang bán tại thời điểm bạn xem.</span></div>
+    <div class="copyright">© 2026 Chợ Tài Nguyên Mmo — Mọi quyền được bảo lưu.<br><span>Giá và tồn kho hiển thị trên trang là giá đang bán tại thời điểm bạn xem.</span></div>
   </footer>
 
-  <!-- ===== Dock nổi: Nạp tiền là nút tròn nổi giữa ===== -->
+  <!-- ===== Thanh điều hướng dưới: phẳng, trắng, full chiều rộng — không còn dock viên thuốc ===== -->
   <nav class="bottom-nav">
     <button data-nav="home" onclick="showHome()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/></svg><span>Trang chủ</span></button>
     <button data-nav="products" onclick="showProducts()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1" fill="currentColor" stroke="none"/></svg><span>Sản phẩm</span></button>
-    <button data-nav="wallet" class="nav-fab" onclick="showTab('wallet')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-6 9 6"/><path d="M4 9v11M20 9v11M8 12v6M12 12v6M16 12v6M2 21h20"/></svg><span>Nạp tiền</span></button>
+    <button data-nav="wallet" class="nav-topup" onclick="showTab('wallet')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-6 9 6"/><path d="M4 9v11M20 9v11M8 12v6M12 12v6M16 12v6M2 21h20"/></svg><span>Nạp tiền</span></button>
     <button data-nav="orders" onclick="showTab('orders')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.5a1 1 0 0 0 1 .5h9.9a1 1 0 0 0 1-.8L20 8H6"/><circle cx="9.5" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg><span>Đơn hàng</span></button>
     <button data-nav="account" onclick="showTab('account')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.2-3.8 4.4-5.5 8-5.5s6.8 1.7 8 5.5"/></svg><span>Tài khoản</span></button>
   </nav>
@@ -307,6 +309,6 @@
 
   <dialog id="productModal" class="modal-dialog" closedby="any" aria-labelledby="productModalTitle"><div class="modal-box" id="productModalBox"></div></dialog>
 </div>
-<script src="app.js?v=36"></script>
+<script src="app.js?v=37"></script>
 </body>
 </html>

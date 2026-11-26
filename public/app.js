@@ -3,7 +3,7 @@ const $ = (id) => document.getElementById(id);
 const fmt = (n) => Number(n || 0).toLocaleString('vi-VN') + 'đ';
 let me = null, products = [], cart = JSON.parse(localStorage.getItem('ctn_cart') || '[]');
 let platformFilter = 'Tất cả', authMode = 'register', selectedAmount = 0;
-let searchQuery = '', sortMode = 'foryou', viewMode = 'feed';
+let searchQuery = '', sortMode = 'foryou', viewMode = 'grid';
 
 const token = () => localStorage.getItem('ctn_token');
 const headers = () => ({ 'Content-Type': 'application/json', ...(token() ? { Authorization: 'Bearer ' + token() } : {}) });
@@ -29,11 +29,11 @@ function setupDialogLightDismiss() {
 }
 
 // ---------- theme ----------
-// Chợ Đêm (v35): shop luôn ở theme tối. Không còn nút chuyển sáng/tối.
+// Chợ Sáng (v37): shop luôn ở theme sáng, tông xanh nước + trắng.
 function applyTheme() {
-  // Dọn khóa theme cũ đã lưu trên máy khách để không bị kẹt ở theme sáng.
+  // Dọn khóa theme cũ đã lưu trên máy khách để không bị kẹt ở theme tối.
   try { localStorage.removeItem('ctn_theme'); localStorage.removeItem('ctn_theme_v2'); } catch (e) {}
-  document.documentElement.setAttribute('data-theme', 'dark');
+  document.documentElement.setAttribute('data-theme', 'light');
 }
 $('menuBtn').onclick = () => { $('mainMenu').hidden = !$('mainMenu').hidden; $('menuBtn').classList.toggle('open', !$('mainMenu').hidden); };
 
@@ -138,22 +138,22 @@ function setSort(mode) {
 }
 function setView(mode) {
   viewMode = mode;
-  $('viewFeedBtn').classList.toggle('active', mode === 'feed');
   $('viewGridBtn').classList.toggle('active', mode === 'grid');
   $('viewListBtn').classList.toggle('active', mode === 'list');
   const g = $('productGrid');
-  g.classList.toggle('feed', mode === 'feed');
   g.classList.toggle('grid', mode === 'grid');
   g.classList.toggle('list', mode === 'list');
+  renderProducts();
 }
 function gotoCategories() {
   const h = document.getElementById('catSec');
   if (h) { h.scrollIntoView({ behavior: 'smooth', block: 'start' }); h.classList.add('flash'); setTimeout(() => h.classList.remove('flash'), 900); }
 }
 function focusSearch() {
+  // Tìm kiếm nằm ngay trong top bar dính — luôn thấy, chỉ cần focus, không cuộn.
   if ($('shop').hidden) { toggleAuthPanel(true, 'register'); return; }
-  showTab('shop', 'products');
-  setTimeout(() => { const inp = $('searchInput'); if (inp) { inp.scrollIntoView({ behavior: 'smooth', block: 'center' }); inp.focus({ preventScroll: true }); } }, 80);
+  const inp = $('searchInput');
+  if (inp) inp.focus({ preventScroll: true });
 }
 function sortList(list) {
   const l = [...list];
@@ -170,17 +170,47 @@ async function loadProducts() {
   $('statSold').textContent = stats.sold_30d; $('statProducts').textContent = stats.total_products;
   $('heroSold').textContent = stats.sold_30d; $('heroProducts').textContent = stats.total_products;
   const platforms = ['Tất cả', ...new Set(products.map(p => p.platform))];
-  // Danh mục dạng chip cuộn ngang (khommo247 + MCV): logo thật + tên + số
-  // lượng + giá thấp nhất thật của nền tảng đó (tính từ sản phẩm thật).
+  // Danh mục dạng rail ô hình lớn (Chợ Sáng): khối màu thương hiệu + logo lớn
+  // + tên + số lượng + giá thấp nhất thật của nền tảng đó (tính từ sản phẩm thật).
   $('platformFilters').innerHTML = platforms.map(p => {
     const items = p === 'Tất cả' ? products : products.filter(x => x.platform === p);
     const n = items.length;
     const min = items.length ? Math.min(...items.map(x => x.price)) : 0;
-    const st = p === 'Tất cả' ? { c: '#0284c7', svg: '★' } : (PLATFORM_STYLE[p] || { c: '#0284c7', svg: p[0] });
-    return `<button class="chip${p === platformFilter ? ' active' : ''}" onclick="setFilter('${p}')"><span class="chip-logo" style="background:${st.c}">${st.svg}</span>${p} <span class="chip-meta">${n} · từ ${fmt(min)}</span></button>`;
+    const st = p === 'Tất cả' ? { c: '#0369a1', svg: '★' } : (PLATFORM_STYLE[p] || { c: '#0369a1', svg: p[0] });
+    return `<button class="cat-tile${p === platformFilter ? ' active' : ''}" onclick="setFilter('${p}')"><span class="cat-top" style="background:${st.c}">${st.svg}</span><span class="cat-body"><span class="cat-name">${p}</span><span class="cat-meta">${n} sản phẩm · từ ${fmt(min)}</span></span></button>`;
   }).join('');
+  renderCoverStory();
   renderFeatured();
   renderProducts();
+}
+// Bài cover trang nhất: 1 sản phẩm thật (hot trước, rồi bán chạy nhất) với
+// ảnh lớn + giá + 2 nút hành động. Không bịa chữ quảng cáo — chỉ dữ liệu thật.
+function renderCoverStory() {
+  const box = $('coverStory'); if (!box) return;
+  const hot = products.find(p => p.is_hot);
+  const top = hot || [...products].sort((a, b) => (b.sold || 0) - (a.sold || 0))[0];
+  if (!top) { box.style.display = 'none'; return; }
+  box.style.display = '';
+  const st = PLATFORM_STYLE[top.platform] || { c: '#0369a1', svg: '' };
+  const old = Number(top.old_price || 0);
+  const disc = old > top.price ? Math.round((1 - top.price / old) * 100) : 0;
+  box.innerHTML = `
+    <div class="story-media" style="background:${st.c}">
+      <span class="p-media-logo">${st.svg}</span>
+      <span class="banner-badges">${top.is_hot ? '<span class="hot-badge">NỔI BẬT</span>' : ''}${disc ? `<span class="disc-badge">-${disc}%</span>` : ''}</span>
+      <i class="stock-badge ${top.stock > 0 ? 'in' : 'out'}">${top.stock > 0 ? '● Còn hàng' : 'Hết hàng'}</i>
+    </div>
+    <div class="story-body">
+      <span class="story-kicker">Sản phẩm nổi bật · ${esc(top.platform)}</span>
+      <h2>${esc(top.name)}</h2>
+      <p class="story-meta">${esc(top.description || top.warranty || '')}</p>
+      <div class="story-price"><b>${fmt(top.price)}</b>${old > top.price ? `<s class="old-price">${fmt(old)}</s>` : ''}</div>
+      <p class="story-sold">${Number(top.sold || 0)} đã bán • Còn ${top.stock} tài khoản · 🛡️ ${esc(top.warranty || '')}</p>
+      <div class="story-btns">
+        <button class="btn-primary" onclick="buyNow(${top.id})">Mua ngay</button>
+        <button class="btn-ghost" onclick="openProduct(${top.id})">Xem chi tiết</button>
+      </div>
+    </div>`;
 }
 // ---------- nổi bật: carousel MWG (native scroll + snap, nút prev/next,
 // chấm đánh dấu, vùng status đọc vị trí slide) — DÙNG CHUNG 1 hàm vẽ thẻ
@@ -262,6 +292,7 @@ function cardHTML(p, i, slideTotal) {
       <span class="banner-badges">${p.is_hot ? '<span class="hot-badge">NỔI BẬT</span>' : ''}${disc ? `<span class="disc-badge">-${disc}%</span>` : ''}</span>
       <i class="stock-badge ${p.stock > 0 ? 'in' : 'out'}">${p.stock > 0 ? '● Còn hàng' : 'Hết hàng'}</i>
       ${bh ? `<span class="bh-pill">🛡️ BH ${bh} ngày</span>` : ''}
+      <span class="p-price-overlay"><b>${fmt(p.price)}</b><span>${sold} đã bán</span></span>
     </div>
     <div class="p-body">
       <b class="p-name">${esc(p.name)}</b>
@@ -281,6 +312,8 @@ function renderProducts() {
   $('emptyProducts').hidden = list.length > 0;
   $('emptyProducts').textContent = q ? 'Không tìm thấy sản phẩm nào. Thử từ khóa hoặc nền tảng khác.' : 'Không có sản phẩm. Thử chọn nền tảng khác.';
   $('productGrid').innerHTML = list.map((p, i) => cardHTML(p, i)).join('');
+  // Thẻ đầu lưới là bài feature ngang full chiều rộng (chỉ dạng lưới, còn kết quả).
+  if (viewMode === 'grid' && $('productGrid').firstElementChild) $('productGrid').firstElementChild.classList.add('p-feature');
   updateCartBadge();
 }
 function setFilter(p) { platformFilter = p; renderProducts(); }
