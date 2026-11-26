@@ -150,23 +150,24 @@ app.get('/api/notifications', (req, res) => {
 app.get('/api/activity', (req, res) => {
   const limit = Math.max(1, Math.min(50, parseInt(req.query.limit, 10) || 6));
   const items = [];
-  for (const r of db.prepare("SELECT buyer_name, items_json, total, created_at FROM orders WHERE status IN ('paid','delivered') ORDER BY created_at DESC LIMIT ?").all(limit)) {
+  for (const r of db.prepare("SELECT buyer_name, items_json, total, created_at FROM orders WHERE status IN ('paid','delivered') ORDER BY created_at DESC LIMIT 50").all()) {
     const it = JSON.parse(r.items_json);
     items.push({ type: 'purchase', name: maskName(r.buyer_name), desc: 'Thanh toán thành công · ' + (it[0]?.name || 'Tài khoản'), amount: -r.total, created_at: r.created_at });
   }
-  for (const r of db.prepare("SELECT buyer_name, items_json, created_at FROM orders WHERE status = 'pending' ORDER BY created_at DESC LIMIT ?").all(limit)) {
+  for (const r of db.prepare("SELECT buyer_name, items_json, created_at FROM orders WHERE status = 'pending' ORDER BY created_at DESC LIMIT 50").all()) {
     const it = JSON.parse(r.items_json);
     items.push({ type: 'order', name: maskName(r.buyer_name), desc: 'Đặt hàng · ' + (it[0]?.name || 'Tài khoản'), amount: null, created_at: r.created_at });
   }
   const methodText = { bank: 'Chuyển khoản ngân hàng', momo: 'MoMo', zalopay: 'ZaloPay', card: 'Thẻ cào' };
-  for (const r of db.prepare("SELECT d.amount, d.method, d.created_at, u.full_name FROM deposits d JOIN users u ON u.id = d.user_id WHERE d.status = 'verified' ORDER BY d.created_at DESC LIMIT ?").all(limit)) {
+  for (const r of db.prepare("SELECT d.amount, d.method, d.created_at, u.full_name FROM deposits d JOIN users u ON u.id = d.user_id WHERE d.status = 'verified' ORDER BY d.created_at DESC LIMIT 50").all()) {
     items.push({ type: 'topup', name: maskName(r.full_name), desc: 'Nạp tiền thành công · ' + (methodText[r.method] || 'Chuyển khoản'), amount: r.amount, created_at: r.created_at });
   }
-  for (const r of db.prepare('SELECT full_name, created_at FROM users ORDER BY created_at DESC LIMIT ?').all(limit)) {
+  for (const r of db.prepare('SELECT full_name, created_at FROM users ORDER BY created_at DESC LIMIT 50').all()) {
     items.push({ type: 'register', name: maskName(r.full_name), desc: 'Đăng ký tài khoản mới · Gia nhập nền tảng', amount: null, created_at: r.created_at });
   }
   items.sort((a, b) => b.created_at - a.created_at);
-  res.json({ activity: items.slice(0, limit) });
+  // total = so hoat dong that (toi da 50), de client biet co can nut Xem them hay khong
+  res.json({ activity: items.slice(0, limit), total: items.length });
 });
 
 // ---------- ví / nạp tiền ----------

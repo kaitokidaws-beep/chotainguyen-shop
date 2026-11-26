@@ -206,10 +206,14 @@ function timeAgo(ts) {
 function actColorIdx(a) { let h = 0; const s = (a.name || '') + a.created_at; for (const c of s) h = (h * 31 + c.charCodeAt(0)) % 997; return h % ACT_COLORS; }
 function actInitials(name) { const t = String(name || 'K').replace(/\*+$/, ''); return (t.slice(0, 2) || 'K').toUpperCase(); }
 let activityExpanded = false;
-async function loadActivity(limit = 6) {
+async function loadActivity(limit) {
+  if (limit == null) limit = activityExpanded ? 20 : 4;
   try {
     const j = await api('/api/activity?limit=' + limit);
     const list = j.activity || [];
+    // An nut Xem them khi tong so hoat dong <= 4 (khong co gi de mo rong)
+    const total = (j.total != null) ? j.total : list.length;
+    $('actMoreBtn').style.display = total <= 4 ? 'none' : '';
     if (!list.length) { $('actList').innerHTML = '<p class="muted">Chưa có hoạt động nào.</p>'; return; }
     $('actList').innerHTML = list.map(a => {
       const ci = actColorIdx(a);
@@ -221,7 +225,7 @@ async function loadActivity(limit = 6) {
 function toggleActivity() {
   activityExpanded = !activityExpanded;
   $('actMoreBtn').textContent = activityExpanded ? 'Thu gọn ↑' : 'Xem thêm hoạt động →';
-  loadActivity(activityExpanded ? 20 : 6);
+  loadActivity(activityExpanded ? 20 : 4);
 }
 function goFeatured(kind) {
   if (kind === 'pagelike') {
