@@ -1,8 +1,8 @@
-/* Chợ Tài Nguyên Mmo — hệ màu thống nhất theo ảnh mẫu: nền #eef2f7, thẻ trắng,
-   chữ navy #0f172a, xanh dương #2563eb là màu chủ đạo DUY NHẤT (nút, link, giá,
-   nav/filter đang chọn, pill danh mục); xanh lá #22c55e/#059669 CHỈ cho tiền/ví/
-   thành công (gradient ví, "+ Nạp tiền", pill Live, đã thanh toán/đã giao);
-   hổ phách #d97706 CHỈ cho đang chờ; đỏ #ef4444 CHỈ cho lỗi/đã hủy.
+/* Chợ Tài Nguyên Mmo — tông chủ đạo xanh nước + trắng: nền #eef2f7, thẻ trắng,
+   chữ navy #0f172a, xanh nước #0284c7/#0ea5e9/#38bdf8 là màu chủ đạo (nút, link, giá,
+   nav/filter đang chọn, pill danh mục, avatar, badge giỏ, gradient ví);
+   xanh lá #22c55e/#059669 CHỈ cho thành công/live (pill Live, đã thanh toán/đã giao,
+   huy hiệu Miễn phí); hổ phách #d97706 CHỈ cho đang chờ; đỏ #ef4444 CHỈ cho lỗi/đã hủy.
    Logo các nền tảng giữ đúng màu thương hiệu thật, không nhuộm lại. */
 :root {
   --bg: #07130f; --bg2: #0c1d16; --card: #12261f; --card2: #173028;
@@ -14,8 +14,8 @@
 [data-theme="light"] {
   --bg: #eef2f7; --bg2: #ffffff; --card: #ffffff; --card2: #f1f5f9;
   --text: #0f172a; --muted: #64748b; --border: #e2e8f0;
-  --pine: #2563eb; --pine-soft: #3b82f6; --pine-deep: #1d4ed8;
-  --gold: #1d4ed8; --gold-bright: #2563eb; --jade: #10b981; --azure: #2563eb;
+  --pine: #0284c7; --pine-soft: #0ea5e9; --pine-deep: #075985;
+  --gold: #075985; --gold-bright: #0284c7; --jade: #10b981; --azure: #0284c7;
   --shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 2px 8px rgba(15,23,42,.08), 0 16px 36px rgba(15,23,42,.10);
 }
 * { box-sizing: border-box; }
@@ -61,8 +61,8 @@ h3 { font-size: 16px; margin: 18px 0 8px; }
 .header-mascot-wrap { display: none; }
 .header-actions { display: flex; gap: 8px; margin-left: auto; }
 .icon-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 18px; }
-.menu-btn { position: relative; width: 46px; height: 36px; flex: none; border-radius: 999px; border: 1px solid #dbeafe; background: #eef2f7; cursor: pointer; padding: 0; box-shadow: 0 2px 8px rgba(15,23,42,.10); transition: transform .12s ease, border-color .2s ease; }
-.menu-btn:hover { border-color: #93c5fd; }
+.menu-btn { position: relative; width: 46px; height: 36px; flex: none; border-radius: 999px; border: 1px solid #bae6fd; background: #eef2f7; cursor: pointer; padding: 0; box-shadow: 0 2px 8px rgba(15,23,42,.10); transition: transform .12s ease, border-color .2s ease; }
+.menu-btn:hover { border-color: #7dd3fc; }
 .menu-btn:active { transform: scale(.94); }
 .menu-btn span { position: absolute; left: 13px; width: 20px; height: 2px; border-radius: 2px; background: #0f172a; transition: transform .25s ease, opacity .2s ease, top .25s ease; }
 .menu-btn span:nth-child(1) { top: 12px; }
@@ -76,20 +76,20 @@ h3 { font-size: 16px; margin: 18px 0 8px; }
 @keyframes menuDrop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .menu-btn span { transition: none; } .main-menu { animation: none; } }
 /* The vi gradient: xanh teal dam ben trai chuyen sang xanh la sang ben phai (theo anh mau user gui) */
-.wallet-row { margin-top: 8px; display: flex; align-items: center; gap: 10px; background: linear-gradient(90deg, #0a3d4f 0%, #0b6b52 48%, #22c55e 100%); border-radius: 20px; padding: 16px; box-shadow: 0 6px 18px rgba(6, 60, 60, .18); }
+.wallet-row { margin-top: 8px; display: flex; align-items: center; gap: 10px; background: linear-gradient(90deg, #0c4a6e 0%, #0284c7 48%, #38bdf8 100%); border-radius: 20px; padding: 16px; box-shadow: 0 6px 18px rgba(12, 74, 110, .20); }
 .wallet-chip { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; background: none; border: none; color: #fff; padding: 0; font-size: 15px; cursor: pointer; }
 .wallet-chip b { font-size: 20px; color: #fff; }
 .wallet-label { font-size: 15px; color: #fff; font-weight: 600; }
-.wallet-topup { flex: none; background: #ffffff; color: #059669; border: 1px solid rgba(255,255,255,.85); border-radius: 999px; padding: 12px 18px; font-size: 15px; font-weight: 800; white-space: nowrap; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 4px 10px rgba(0,0,0,.18); }
+.wallet-topup { flex: none; background: #ffffff; color: #0284c7; border: 1px solid rgba(255,255,255,.85); border-radius: 999px; padding: 12px 18px; font-size: 15px; font-weight: 800; white-space: nowrap; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 4px 10px rgba(0,0,0,.18); }
 .avatar-btn { width: 44px; height: 44px; border-radius: 12px; background: var(--pine); color: #fff; font-weight: 800; font-size: 18px; border: none; }
 /* Avatar + giỏ ở header (chỉ hiện khi đã đăng nhập, trên điện thoại — xem
    media query bên dưới). Avatar là ô vuông xanh với chữ cái đầu như ảnh mẫu;
    giỏ có badge số xanh ở góc phải trên như ảnh mẫu. Trên PC ẩn để header PC
    giữ nguyên (logo trái, linh vật giữa, nút menu phải). */
 .header-user { display: none; }
-.header-user .avatar-btn { background: #2563eb; color: #fff; }
+.header-user .avatar-btn { background: #0284c7; color: #fff; }
 .header-user .icon-btn { position: relative; background: transparent; border: none; font-size: 26px; }
-.header-user #cartCount { position: absolute; top: -2px; right: -6px; min-width: 20px; height: 20px; border-radius: 999px; background: #2563eb; color: #fff; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; padding: 0 5px; }
+.header-user #cartCount { position: absolute; top: -2px; right: -6px; min-width: 20px; height: 20px; border-radius: 999px; background: #0284c7; color: #fff; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; padding: 0 5px; }
 /* Header đã đăng nhập trên điện thoại (<1024px): hamburger trái, logo giữa,
    avatar + giỏ phải — theo đúng ảnh mẫu user gửi. Logo thu nhỏ theo chiều
    cao 52px để vừa 3 nhóm trên màn hình hẹp, không tràn. Menu thả xuống neo
@@ -156,7 +156,7 @@ h3 { font-size: 16px; margin: 18px 0 8px; }
 .act-row { display: flex; gap: 12px; border-radius: 16px; padding: 12px; margin: 8px 0; }
 /* Vòng avatar khớp đúng màu dòng của nó (xanh dương / tím / xanh lá / cyan / vàng) —
    trước đây các vòng lệch màu nhau (hàng xanh dương lại viền xanh lá, hàng vàng lại viền tím). */
-.act-avatar { flex: none; width: 44px; height: 44px; border-radius: 50%; color: #fff; font-weight: 800; font-size: 15px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; border: 3px solid #2563eb; }
+.act-avatar { flex: none; width: 44px; height: 44px; border-radius: 50%; color: #fff; font-weight: 800; font-size: 15px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; border: 3px solid #0284c7; }
 .act-body { min-width: 0; flex: 1; }
 .act-top { display: flex; align-items: baseline; gap: 8px; }
 .act-top b { font-size: 15px; }
@@ -164,7 +164,7 @@ h3 { font-size: 16px; margin: 18px 0 8px; }
 .act-desc { color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
 .act-time { color: var(--muted); font-size: 12px; margin-top: 2px; }
 .act-more { display: block; width: 100%; background: #eef2f7; color: #0f172a; border: 1px solid #e2e8f0; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; padding: 12px; margin-top: 12px; text-align: center; }
-.act-c0 .act-avatar { border-color: #2563eb; }
+.act-c0 .act-avatar { border-color: #0284c7; }
 .act-c1 .act-avatar { border-color: #7c3aed; }
 .act-c2 .act-avatar { border-color: #059669; }
 .act-c3 .act-avatar { border-color: #0891b2; }
@@ -176,12 +176,12 @@ h3 { font-size: 16px; margin: 18px 0 8px; }
 .featured-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; padding: 4px 2px; text-align: center; }
 .featured-logo { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,.14); flex: none; }
 .featured-logo svg { width: 24px; height: 24px; display: block; }
-.act-c0 { background: #dbeafe; } .act-c0 .act-avatar { background: #2563eb; }
+.act-c0 { background: #e0f2fe; } .act-c0 .act-avatar { background: #0284c7; }
 .act-c1 { background: #ede9fe; } .act-c1 .act-avatar { background: #7c3aed; }
 .act-c2 { background: #d1fae5; } .act-c2 .act-avatar { background: #059669; }
 .act-c3 { background: #cffafe; } .act-c3 .act-avatar { background: #0891b2; }
 .act-c4 { background: #fef3c7; } .act-c4 .act-avatar { background: #d97706; }
-[data-theme="dark"] .act-c0 { background: rgba(37,99,235,.20); }
+[data-theme="dark"] .act-c0 { background: rgba(2,132,199,.20); }
 [data-theme="dark"] .act-c1 { background: rgba(124,58,237,.20); }
 [data-theme="dark"] .act-c2 { background: rgba(5,150,105,.20); }
 [data-theme="dark"] .act-c3 { background: rgba(8,145,178,.20); }
@@ -190,9 +190,9 @@ h3 { font-size: 16px; margin: 18px 0 8px; }
 [data-theme="dark"] .act-live { background: rgba(5,150,105,.25); }
 .status-chip { display: inline-block; border: 1px solid var(--azure); color: var(--azure); border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 700; }
 .cat-head { margin: 22px 0 6px; }
-/* Pill danh mục dùng đúng màu chủ đạo xanh dương #2563eb (trước đây gốc là cyan #3fd2f2,
+/* Pill danh mục dùng đúng màu chủ đạo xanh nước #0284c7 (trước đây gốc là cyan #3fd2f2,
    chỉ được ghi đè sang xanh ở theme sáng — giờ thống nhất một màu từ gốc). */
-.cat-pill { display: inline-flex; align-items: center; gap: 8px; color: #2563eb; background: rgba(37,99,235,.08); border: 1px solid rgba(37,99,235,.35); border-radius: 999px; padding: 8px 16px; font-weight: 800; font-size: 13px; letter-spacing: 1px; }
+.cat-pill { display: inline-flex; align-items: center; gap: 8px; color: #0284c7; background: rgba(2,132,199,.08); border: 1px solid rgba(2,132,199,.35); border-radius: 999px; padding: 8px 16px; font-weight: 800; font-size: 13px; letter-spacing: 1px; }
 .cat-pill svg { width: 15px; height: 15px; display: block; }
 .cat-head h2 { font-size: 26px; margin: 14px 0; }
 .cat-all { width: auto; padding: 13px 26px; }
@@ -276,7 +276,7 @@ footer { margin-top: 28px; background: var(--bg2); border-top: 1px solid var(--b
 .p-actions .btn-primary { white-space: normal; line-height: 1.25; padding: 11px 10px; }
 
 /* Tươi + 3D: sáng tối riêng + tôn trọng giảm chuyển động */
-[data-theme="light"] body { background-image: radial-gradient(720px 340px at 12% -4%, rgba(37,99,235,.10), transparent 62%), radial-gradient(760px 360px at 88% 2%, rgba(56,189,248,.08), transparent 62%); }
+[data-theme="light"] body { background-image: radial-gradient(720px 340px at 12% -4%, rgba(2,132,199,.10), transparent 62%), radial-gradient(760px 360px at 88% 2%, rgba(56,189,248,.08), transparent 62%); }
 [data-theme="light"] .product-card:hover { box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 6px 14px rgba(15,23,42,.12), 0 24px 46px rgba(15,23,42,.16); }
 @media (prefers-reduced-motion: reduce) {
   .product-card, .btn-primary, .bot-fab { transition: none !important; }
@@ -285,18 +285,18 @@ footer { margin-top: 28px; background: var(--bg2); border-top: 1px solid var(--b
 
 /* Phối màu theo trang mẫu (giao diện sáng): xanh dương chủ đạo, nền xanh xám nhạt, thẻ trắng, chữ xanh navy */
 [data-theme="light"] .site-header { background: #ffffff; }
-[data-theme="light"] .btn-primary { color: #ffffff; box-shadow: 0 3px 0 var(--pine-deep), 0 10px 20px rgba(37,99,235,.30); }
-[data-theme="light"] .btn-primary:active { box-shadow: 0 1px 0 var(--pine-deep), 0 4px 10px rgba(37,99,235,.28); }
-[data-theme="light"] .filters button.active { box-shadow: 0 3px 0 var(--pine-deep), 0 8px 16px rgba(37,99,235,.28); }
-[data-theme="light"] .bot-fab { box-shadow: 0 4px 0 var(--pine-deep), 0 12px 24px rgba(37,99,235,.35); }
-[data-theme="light"] .bot-fab:active { box-shadow: 0 2px 0 var(--pine-deep), 0 6px 14px rgba(37,99,235,.30); }
-[data-theme="light"] .bottom-nav button.active svg { filter: drop-shadow(0 0 8px rgba(37,99,235,.55)); }
-[data-theme="light"] .bottom-nav button.active span { text-shadow: 0 0 10px rgba(37,99,235,.45); }
-[data-theme="light"] .price { text-shadow: 0 0 14px rgba(37,99,235,.22); }
-[data-theme="light"] .product-card.compact .price { text-shadow: 0 0 14px rgba(37,99,235,.28); }
-[data-theme="light"] .cat-pill { color: #2563eb; background: rgba(37,99,235,.08); border-color: rgba(37,99,235,.35); }
+[data-theme="light"] .btn-primary { color: #ffffff; box-shadow: 0 3px 0 var(--pine-deep), 0 10px 20px rgba(2,132,199,.30); }
+[data-theme="light"] .btn-primary:active { box-shadow: 0 1px 0 var(--pine-deep), 0 4px 10px rgba(2,132,199,.28); }
+[data-theme="light"] .filters button.active { box-shadow: 0 3px 0 var(--pine-deep), 0 8px 16px rgba(2,132,199,.28); }
+[data-theme="light"] .bot-fab { box-shadow: 0 4px 0 var(--pine-deep), 0 12px 24px rgba(2,132,199,.35); }
+[data-theme="light"] .bot-fab:active { box-shadow: 0 2px 0 var(--pine-deep), 0 6px 14px rgba(2,132,199,.30); }
+[data-theme="light"] .bottom-nav button.active svg { filter: drop-shadow(0 0 8px rgba(2,132,199,.55)); }
+[data-theme="light"] .bottom-nav button.active span { text-shadow: 0 0 10px rgba(2,132,199,.45); }
+[data-theme="light"] .price { text-shadow: 0 0 14px rgba(2,132,199,.22); }
+[data-theme="light"] .product-card.compact .price { text-shadow: 0 0 14px rgba(2,132,199,.28); }
+[data-theme="light"] .cat-pill { color: #0284c7; background: rgba(2,132,199,.08); border-color: rgba(2,132,199,.35); }
 [data-theme="light"] .chip-green { background: rgba(16,185,129,.12); color: #059669; }
-[data-theme="light"] .hot-pill { background: rgba(37,99,235,.10); }
+[data-theme="light"] .hot-pill { background: rgba(2,132,199,.10); }
 /* Trạng thái: xanh lá = đã thanh toán/đã giao, HỔ PHÁCH = đang chờ (trước đây "Chờ xử lý"
    bị nhuộm xanh dương vì dùng chung --gold-bright với giá tiền), đỏ = đã hủy/lỗi. */
 .status-pending { color: #d97706; font-weight: 700; }
