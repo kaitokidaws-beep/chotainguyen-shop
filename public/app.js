@@ -15,11 +15,10 @@ async function api(path, opts = {}) {
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 // ---------- theme ----------
+// Không còn nút chuyển sáng/tối: shop luôn ở theme mặc định (dark emerald, :root).
 function applyTheme() {
-  const t = localStorage.getItem('ctn_theme_v2') || 'light';
-  document.documentElement.setAttribute('data-theme', t);
+  document.documentElement.setAttribute('data-theme', 'dark');
 }
-$('themeBtn').onclick = () => { localStorage.setItem('ctn_theme_v2', (localStorage.getItem('ctn_theme_v2') || 'light') === 'light' ? 'dark' : 'light'); applyTheme(); };
 $('menuBtn').onclick = () => { $('mainMenu').hidden = !$('mainMenu').hidden; $('menuBtn').classList.toggle('open', !$('mainMenu').hidden); };
 
 // ---------- gate / auth ----------
